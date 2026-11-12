@@ -1,0 +1,36 @@
+# Data, model checkpoints and run outputs live on the external drive, never in git.
+data/
+runs/
+models/
+adapters/
+*.safetensors
+*.npz
+*.gguf
+
+# Licensed or third-party text, gold test labels, and the contents of sealed forecasts.
+# Only hash manifests (research/ledger/) are committed.
+corpus/
+transcripts/
+gold/
+sealed/
+**/gold_test*
+
+# Secrets and per-machine config.
+.env
+.env.*
+*.key
+.secrets/
+
+# Python and tooling.
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+
+# OS and editors.
+.DS_Store
+.vscode/
+.idea/
