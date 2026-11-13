@@ -73,6 +73,11 @@ pit_handling, informs_decision, depth, url, verified`
 `depth` is `triaged` or `deep`. `verified` is `yes` only when the row was checked against the
 source.
 
+## `streams/`
+
+One CSV and one synthesis per stream, as written by the stream's reviewer. `matrix.csv` is their
+merge; `gaps.md` is built from the syntheses.
+
 ## `gaps.md`
 
 Three lists: gaps mapped to candidate experiments; questions already answered that this project

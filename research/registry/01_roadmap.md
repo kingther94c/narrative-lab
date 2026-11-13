@@ -1,22 +1,27 @@
 # Roadmap
 
-v1, 2026-11-12. Source: the plan the owner approved on 2026-11-12, kept verbatim in
-[`docs/plans/2026-11-12_phase0_plan.md`](../../docs/plans/2026-11-12_phase0_plan.md) (Chinese),
-which builds on proposal v0.1 ([`docs/proposal/v0.1.md`](../../docs/proposal/v0.1.md)). Where this
-file and the approved plan differ, the approved plan wins until `changelog.md` records an
-amendment. **Start every session here.**
+v2, 2026-11-13. Source: the plan the owner approved on 2026-11-13, kept verbatim in
+[`docs/plans/2026-11-13_phase0_plan_v2.md`](../../docs/plans/2026-11-13_phase0_plan_v2.md)
+(Chinese). It revises v1 (2026-11-12,
+[`docs/plans/2026-11-12_phase0_plan.md`](../../docs/plans/2026-11-12_phase0_plan.md)) in the light
+of the literature review, the feasibility probes and the transcript audit. Both build on proposal
+v0.1 ([`docs/proposal/v0.1.md`](../../docs/proposal/v0.1.md)). Where this file and the approved
+plan differ, the approved plan wins until `changelog.md` records an amendment.
+**Start every session here.**
 
 ## Where the programme stands
 
 | Track | Status |
 |---|---|
-| WP0 Repo scaffold | Done 2026-11-12. Committed locally, not pushed |
-| WP1 Literature review | Not started |
-| WP2 Data audit | Waiting on the SEC contact string, except the transcript-licence part |
-| WP3 Feasibility probes | Not started |
-| WP4 Labelling pilot | Waiting on WP2 samples and the owner's time |
-| WP5 Sealed ledger | Waiting on WP2. Deadline 2027-01-10 |
+| WP0 Repo scaffold | Done 2026-11-12 |
+| WP1 Literature review | First pass done 2026-11-13: 86 items triaged, 22 deep notes, `matrix.csv`, `gaps.md`. Closed unless a design decision reopens it. One follow-up: de Kok 2025 needs a full read by someone with journal access |
+| WP2 Data audit | Transcript part done (`research/design/data_audit.md` §2). The rest waits on the SEC contact string |
+| WP3 Feasibility probes | Probes 1 and 2 done as EXP-0000 (`research/design/feasibility.md`). Remaining probes wait on WP2 samples, a download decision and an API key |
+| WP4 Labelling pilot | Codebook v1 drafted (`research/design/labeling_codebook.md`). Labelling waits on WP2 samples and the owner's time |
+| WP5 Sealed ledger | Waits on WP2 and the visibility decision. Deadline 2027-01-10 |
 | WP6 Research design v1.0 | Waits for WP1 to WP5 |
+
+Nothing has been pushed.
 
 ## North star
 
@@ -28,254 +33,210 @@ application. The proposal does not presume alpha, and neither does this roadmap.
 Head-to-head results expire with model versions. The asset that lasts is a benchmark that gains a
 fresh batch of clean, post-cutoff items every earnings season.
 
-## What we know going in (2026-11-12)
+## What Phase 0 has established so far
 
-| Area | Fact | Source | Consequence |
-|---|---|---|---|
-| ResearchOS results | Runs used 15 or 21 earnings cases; the trained-versus-untrained Brier intervals all span zero (for example -0.008 [-0.021, +0.006] and -0.004 [-0.023, +0.011]) | `../Foundry/ResearchOS/runs/2026-10-first-real-run/README.md`, `../Foundry/ResearchOS/runs/2026-10-smallbank-run/README.md` | Sample size is the first constraint |
-| ResearchOS perspectives | Guidance and expectations gap ended on top; "management tone added least". Mean pairwise correlation of the seven perspectives was 0.855 read together and 0.387 read in isolation | Same, and `../Foundry/ResearchOS/runs/2026-10-perspectives-run/README.md` | First task is guidance; extract each feature on its own |
-| ResearchOS masking | "Every one of the 15 masks ended identifiable"; abstraction left eight of eight identifiable. The working guard is the knowledge cutoff, 2026-06-30 | `../Foundry/ResearchOS/runs/2026-10-first-real-run/README.md` | No masking; test on post-cutoff documents |
-| ResearchOS data † | Documents were fetched per case from the web and are not stored on this machine; transcripts came from roic.ai and Motley Fool; no consensus source was reachable for small caps | ResearchOS run notes | Bulk data needs another source; transcripts are the hard part |
-| Local models † | `py313` has `mlx_lm` 0.32.2. On the external drive: Qwen3.5-4B, Qwen3.5-9B, Gemma 4 12B, DianJin-R1-7B (finance-tuned), gpt-oss-20b. Ollama is not installed | `../learning_ai/learnai/openweights.py` | Phase 0 installs nothing; MLX is the only local runtime |
-| Measured and unmeasured † | Qwen3.5-9B: prefill about 1,130 tok/s, decode about 31 tok/s, measured only up to about 2.4k prompt tokens. MLX LoRA has never been run | `runs/finbench/*/*.meta.json` on the external drive | Long-prompt inference and LoRA memory are the two largest unknowns |
-| Finance baseline † | 150-question screening: local models 73 to 77%, Claude reference 92% | `../learning_ai/docs/FINANCE_MODEL_SELECTION.md` §3 | A starting number for the local-versus-commercial gap |
-| Model timeline | Qwen3.5 small models released 2026-03-02; Gemma 4 released 2026-04-02; ResearchOS uses 2026-06-30 as the cutoff for Opus 5.5 | Links at the end; ResearchOS run notes | Documents after 2026-06-30 are clean for the local models and Opus 5.5: two earnings seasons so far |
-| Storage | 128 GB free on the internal disk; 1.8 TB external drive mounted | `df`, 2026-11-12 | Models, data and run outputs go on the external drive |
-| GitHub | `kingther94c/narrative-lab` is public and empty | `gh repo view`, 2026-11-12 | The owner decides visibility before the first push |
+| Finding | Kind | Where |
+|---|---|---|
+| No public benchmark labels guidance revisions across consecutive quarters | Hypothesis, not refuted by a targeted search | `research/literature/streams/04_benchmarks.md` |
+| No study scores LLM extraction of guidance tuples or revision classes against gold labels | Hypothesis, not refuted | `research/literature/streams/02_llm_signals.md` |
+| No head-to-head of prompting, retrieval, fine-tuning and tools on financial narrative tasks, small open-weight against commercial | Hypothesis, not refuted; one candidate paper could not be opened | `research/literature/streams/05_adaptation.md` |
+| Changes in disclosure text carry more than levels; dictionary tone is a weak baseline | Empirical finding (literature) | `research/literature/streams/01_text_analysis.md` |
+| Numeric EPS guidance is about 5% of forward-looking sentences in earnings releases; under uncertainty firms drop numbers and say more in words | Empirical finding (literature) | `research/literature/papers/bozanic-2018-other-forward-looking-statements.md` |
+| Masking leaves 31 to 70% of transcripts re-identifiable and removes signal; recall of pre-cutoff facts fades well before the stated cutoff | Empirical finding (literature) | `research/literature/streams/03_lookahead.md` |
+| Whole documents fit for local inference: a 32k-token prompt peaks at 4.75 GiB on Qwen3.5-4B and 6.99 GiB on the 9B | Empirical finding (EXP-0000) | `research/design/feasibility.md` §1 |
+| LoRA on Qwen3.5 fits only 512 tokens (4B) or 256 (9B) within 12 GiB; Gemma 4 12B reaches 2,048 and DianJin-R1-7B 4,096 | Empirical finding (EXP-0000) | `research/design/feasibility.md` §2 |
+| The Hugging Face transcript set has no credible licence, ends in May 2025 and lacks failed companies | Verified from its card and viewer | `research/design/data_audit.md` §2 |
+| The plan's sample-size arithmetic holds if two systems disagree on at most 15% of items | Re-derived | `research/literature/streams/07_statistics.md` |
 
-† Reported by a read-only survey of the sibling repos on 2026-11-12 and not re-read line by line.
-Check the cited file before relying on the figure. The other rows were checked against the cited
-file.
+What was known before Phase 0 (ResearchOS results, local model measurements, storage, the public
+GitHub repo) is in the v1 plan and in `feature_evidence.md`.
 
-A quick literature check, which is not the review, added four points:
+## Amendments to proposal v0.1
 
-- Chronologically consistent small models exist (ChronoBERT / ChronoGPT, yearly vintages 1999 to
-  2024). The proposal's statement that no convenient point-in-time general LLM exists holds for
-  strong models; a clean but weak reference model is available.
-- Masking is not enough, which matches ResearchOS: GPT-4o re-identified a firm from a fully masked
-  earnings call transcript, and other work gives a formal test based on a memorisation proxy and
-  reports that memorisation inflates apparent predictive power.
-- No widely used public benchmark was found that labels guidance revisions or narrative shifts
-  across consecutive quarters.
-- No head-to-head empirical study was found of prompting, RAG, fine-tuning and tools on small
-  open-weight versus commercial models for financial narrative tasks.
+From v1, still standing:
 
-The last two are hypotheses about gaps. WP1 confirms or refutes them.
-
-## Five amendments to proposal v0.1
-
-1. **Decide first what may be claimed.** L1 is confirmatory. L2 is tested only where a numeric
-   anchor exists. L3 is exploratory. The reasoning is statistical power; see
-   `00_master_methodology.md` §1.
-2. **Phase I builds one task family: guidance revision.** Its labels can be computed from numbers
-   and checked by one person; the data is all on EDGAR and covers the small caps where failures
-   happen; an upbeat headline over a cut or silently dropped metric is failure detection in
-   miniature. Tone, confidence shift and management-versus-analyst divergence have no ground truth
-   a single annotator can supply, so L1 on them would measure agreement with a teacher model. They
-   enter the benchmark only after a labelling pilot shows one annotator can label them reliably.
-3. **Phase 0 is three parallel lines plus one deadline.** The design is constrained by what the
-   literature has answered, what data can be had, and what this machine can run. The deadline is
-   sealing: results for the quarter after the 2026 third-quarter reports start arriving in
-   mid-January 2027. EDGAR documents are permanent; the window before the outcome is not.
-4. **Goal B's core evidence comes from a factorial experiment on open-weight models.** Commercial
-   fine-tuning is absent or opaque and cannot be compared on the same base model. Commercial
-   models run the design without the fine-tuning factor, as a capability reference. LoRA
-   feasibility on 32 GB is therefore a precondition of Goal B and is measured in Phase 0.
-5. **Time, not masking; and a rolling benchmark.** Test documents postdate every roster model's
-   cutoff. Otherwise recall inflates accuracy and favours large models, which biases Goal C.
+1. **Decide first what may be claimed.** L1 is confirmatory. L2 is tested against an anchor. L3 is
+   exploratory. See `00_master_methodology.md` §1.
+2. **Phase I builds one task family: guidance revision.** Softer constructs enter the benchmark
+   only after a labelling pilot shows one annotator can label them reliably.
+3. **Phase 0 is three parallel lines plus one deadline**: sealing forecasts before the results that
+   follow the 2026 third-quarter reports arrive in mid-January 2027.
+4. **Goal B's core evidence comes from a factorial experiment on open-weight models.**
+5. **Time, not masking; and a rolling benchmark.**
 
 Deferred, not dropped: tasks on earnings call transcripts, return prediction, internal-
-representation analysis, model routing and hybrids, and integration into ResearchOS. They are
-re-prioritised once Phases I and II have results.
+representation analysis, model routing and hybrids, integration into ResearchOS, and a pilot of
+the narrative-change task.
 
-## Phase 0 — Literature review and research design
+## Revisions in v2
 
-Phase 0 trains no model that will be evaluated. Target: design frozen by the end of December 2026.
+Each is traced to its evidence in `research/literature/gaps.md` or
+`research/design/feasibility.md`.
 
-WP1, WP2 and WP3 do not depend on each other. WP6 waits for all the others.
+1. **The fine-tuning arm changes base model.** ~~Full factorial on Qwen3.5-4B and 9B~~ — STRUCK
+   (EXP-0000). The factorial runs on two models with ordinary attention: Qwen2.5-7B-Instruct and
+   Gemma 4 12B. Qwen2.5-7B-Instruct needs a download of about 5 GB and the owner's say-so; until
+   then only Gemma 4 12B, which is on disk. Its LoRA feasibility was measured on its derivative
+   DianJin-R1-7B, which becomes the like-for-like "domain-trained by someone else" reference.
+   Qwen3.5-4B and 9B stay, running the 12 cells without fine-tuning, as the commercial models do.
+   Training items are capped at 2,048 tokens. The 12 GiB budget stays.
+2. **The label scheme.** A revision has two attributes, direction and range width, plus four
+   states. Announced withdrawal is separate from silent dropping. Metrics go beyond EPS.
+   Qualitative guidance is a core stratum. Minimal pairs get unedited controls. Two baselines are
+   added. Details in `research/design/labeling_codebook.md`.
+3. **The L2 anchor sits on the outcome.** ~~L2 only where the guidance is numeric~~ — STRUCK
+   (Bozanic 2018). Qualitative guidance enters L2 too, checked against the next quarter's as-filed
+   figure for the same metric, stratified by the size of the change.
+4. **Labelling gates.** ~~Test-retest kappa of at least 0.8 on 100 items~~ — STRUCK (stream 07).
+   The gate is on the lower bound of kappa's interval, with raw agreement and AC1 reported beside
+   it. A sample of extractions that models found and gold lacks is adjudicated. ~~30 pairs of
+   narrative change in the Phase 0 pilot~~ — STRUCK: 30 pairs cannot decide anything; the task gets
+   its own 100-pair pilot after Benchmark v0.
+5. **Statistics.** Test-set size comes from the pilot's disagreement rate. Confirmatory contrasts
+   are named in advance and corrected with Holm. Cluster by company; quarter is a stratum.
+   Interactions come from an item-level mixed logit, by stratum. Goal C is tested below the
+   ceiling with its power stated. The fine-tuned level is trained on the prompt format of its
+   cell. Checkpoint selection and LoRA search count as development evaluations.
+6. **Memorisation probe and time stamps.** The probe is redesigned (methodology §9). An item-level
+   test of whether recall inflates extraction accuracy is added. Registrations and sealed manifests
+   need a push or an external time stamp. Commercial-model results are "clean (vendor-stated
+   cutoff)". ~~Chronologically consistent models as a clean reference~~ — STRUCK (stream 03).
+7. **Failure tiers.** The four 8-K items stay as the hard tier, counted by sub-item with company
+   denominators. Softer tiers are defined for pre-registration. The structured bar is the
+   eight-variable hazard model. EXP-0001 states expected event counts.
 
-### WP1 — Literature review
+## Phase 0 — remaining work
 
-**Research direction.** Find out what is already answered, so the first benchmark and experiments
-aim at real gaps.
-
-**Plan.** Seven streams, each tied to the design decision it settles:
-
-| Stream | Question it must answer | Seeds |
-|---|---|---|
-| Financial text analysis before LLMs | Which narrative features have documented predictive power, for which outcome, how large; which baselines must be beaten | Loughran–McDonald 2011; Cohen–Malloy–Nguyen 2020; Hassan et al. 2019 |
-| LLMs extracting financial signals | What LLMs add over dictionaries and FinBERT; how others evaluated | Lopez-Lira–Tang 2023; Kim–Muhn–Nikolaev 2024; Jha et al. 2024 |
-| Look-ahead and memorisation | Which evaluation protocol holds up | He et al. 2025 ✓; Glasserman–Lin 2023 ✓; Lopez-Lira–Tang–Zhu 2025 ✓; Gao–Jiang–Yan 2025 ✓ |
-| Financial NLP benchmarks | What can be reused, what is missing, how others labelled | FinanceBench; FinQA; FinBen; arXiv 2510.03195 ✓; arXiv 2510.23464 ✓ |
-| Comparing adaptation methods | How to compare fairly; known confounds | Ovadia et al. 2023; Balaguer et al. 2024; Li et al. 2023 ✓ |
-| Distress and failure prediction | How failure is operationalised; base rates; structured baselines | Altman 1968; Beneish 1999; Campbell–Hilscher–Szilagyi 2008 |
-| Statistical method | Multiple testing; valid inference from LLM labels | Harvey–Liu–Zhu 2016; Angelopoulos et al. 2023 |
-
-✓ means checked against the paper's abstract on 2026-11-12. The other seeds are from memory and
-are verified before they enter the review.
-
-Per stream: search, triage 10 to 15, deep-read 3 to 5.
-
-**Guardrails.** Every citation has a working link and is checked against the source. Stop at about
-50 triaged papers, or when two consecutive batches change no design decision.
-
-**Deliverables.** About 20 notes in `research/literature/papers/`, `matrix.csv`, `gaps.md`.
-
-**Gate.** Every design default below is marked supported, contradicted or not addressed by the
-literature, with a note cited for each.
+Phase 0 trains no model that will be evaluated. Target: design frozen by the end of December
+2026, and forecasts sealed before 2027-01-10. Both dates assume the SEC contact string arrives in
+the week of 2026-11-16; the 14-day gap between labelling rounds otherwise pushes the freeze into
+January.
 
 ### WP2 — Data audit
 
-**Research direction.** Establish what data can actually be had, with what point-in-time and
-survivorship properties, under what licence.
+**Research direction.** Establish what data can be had, with what point-in-time and survivorship
+properties, under what licence.
 
 **Plan.**
 
 | Need | First choice | What to verify |
 |---|---|---|
 | Disclosure text: 8-K earnings press releases, 10-Q, 10-K | SEC EDGAR | Acceptance timestamps, exhibit parsing, rate limits |
-| Earnings call transcripts | Hugging Face `kurry/sp500_earnings_transcripts` | Whether provenance and licence hold up, truncation, whether removed index members are included |
 | Fundamentals as filed | SEC XBRL company facts | First-filed values; handling of restatements |
-| Failure events | 8-K items 1.03 (bankruptcy), 3.01 (delisting notice), 4.02 (non-reliance on prior financials), 2.06 (material impairment) | Bulk availability; base rates |
-| Returns including delisted stocks | Open. Free sources usually drop delisted tickers; whether the IBKR daily closes ResearchOS used cover them is unverified | Coverage and cost. If unavailable, L3 uses survivors only and says so |
+| Failure events | 8-K items 1.03, 3.01, 4.02, 2.06 | Bulk availability; counts by sub-item, with company denominators |
+| Returns including delisted stocks | Open | Coverage and cost. The eight-variable baseline needs daily prices for delisted companies |
 | Consensus estimates | Bulk sources are mostly paid | If unavailable, the "earnings downgrade" endpoint becomes realised fundamentals |
+| Earnings call transcripts | Done: private secondary layer at most | Post-cutoff transcripts need a paid API ($60 to $149 a month) |
 
 Two censuses decide whether the benchmark is feasible:
 
-- Guidance census: 50 companies by 8 quarters. Count the share of press releases with numeric
-  guidance and the mix of change types.
-- Hard-event census: how many of each of the four 8-K items were filed after 2026-06-30.
-
-Each source gets one small sample pull (tens of documents, stored on the external drive).
+- Guidance census: 50 companies by 8 quarters. Count the share of releases with numeric guidance,
+  the share with only qualitative guidance, the mix of change types, and each company's updating
+  routine.
+- Hard-event census: filings of each sub-item after 2026-06-30, with the number of companies as
+  denominator.
 
 **Guardrails.** No EDGAR request until the owner has chosen the contact string. Nothing pulled goes
 into git.
 
-**Deliverables.** `research/design/data_audit.md`: coverage and defect rate per source, the two
-censuses, a go / no-go per candidate task and per outcome variable, storage estimate, licence
-notes.
+**Deliverables.** The remaining sections of `research/design/data_audit.md`.
 
 **Gate.** Usable document pairs are counted, not estimated.
 
 ### WP3 — Feasibility probes
 
-**Research direction.** Measure what this machine can do before the design assumes it.
+**Research direction.** Measure what this machine and the candidate models can do before the
+design assumes it.
 
-**Plan.** Grouped by model, queued overnight, one job at a time.
+**Plan.**
 
-1. Long-prompt inference: Qwen3.5-4B and 9B at 4k, 8k, 16k and 32k prompt tokens: prefill speed,
-   decode speed, peak memory.
-2. LoRA: `mlx_lm.lora` on the 4B and 9B at sequence lengths 1k, 2k, 4k and 8k on public text: peak
-   memory, seconds per step, and whether the Qwen3.5 layers accept LoRA.
-3. Headroom pilot: on 100 document pairs compare a rule baseline, Qwen3.5-4B, 9B, Gemma 4 12B,
-   DianJin and a commercial model. Pass conditions are written into the registry before the run:
-   the rule baseline is clearly behind and the best model is not at the ceiling. If the 4B already
-   exceeds 90%, move to a harder stratum. The pilot also gives the disagreement rate between
-   systems for the power estimate.
-4. Memorisation probe: ask each model, closed-book, for a company's guidance in a given quarter;
-   compare accuracy before and after its cutoff.
-5. Structured-output compliance, verbatim hit rate of evidence quotes, and tool-call reliability.
+1. LoRA on Qwen2.5-7B-Instruct at 1k, 2k and 4k tokens, once downloaded.
+2. Headroom pilot on 100 document pairs, starting with the qualitative-guidance stratum: keyword
+   rules, pair similarity plus dictionary tone change, Qwen3.5-4B and 9B, Gemma 4 12B, DianJin, a
+   commercial model. Pass conditions go into the registry before the run. It also gives the
+   disagreement rate that sizes the test set.
+3. Memorisation probe, as redesigned in `00_master_methodology.md` §9.
+4. Structured-output compliance, verbatim hit rate of evidence quotes, tool-call reliability.
+5. API cost per item for the commercial part.
 
-**Guardrails.** Run in `py313`. Download no model. The LoRA runs are engineering measurements and
-produce no model that is evaluated. Budget for the commercial part is estimated from what
-ResearchOS recorded (about $0.16 to $0.22 per case) and measured in the pilot.
+**Guardrails.** One MLX job at a time, within 12 GiB. No model is downloaded without the owner's
+say-so. No more than three research agents in parallel: eight at once exhausted the usage
+allowance on 2026-11-12.
 
-**Deliverables.** `research/design/feasibility.md`: tables with the command, model repo and
-revision for every number, and what follows for benchmark size, compute hours and API budget.
+**Deliverables.** The remaining sections of `research/design/feasibility.md`.
 
 **Gate.** Phase II fits a stated compute and API budget.
 
 ### WP4 — Labelling pilot
 
-**Research direction.** Show that one annotator can label the task reliably, and find out whether a
-softer task can be labelled at all.
+**Research direction.** Show that one annotator can label guidance revisions reliably.
 
-**Plan.**
+**Plan.** The owner reviews codebook v1. Then 100 guidance pairs are labelled twice, 14 days
+apart, in a different order and blind to the first round.
 
-- The codebook defines the guidance tuple (metric, period, low, high, basis) and the change class
-  (raised, maintained, lowered, narrowed, withdrawn or no longer mentioned, initiated).
-- The change class is computed from the tuples by rule and checked by the owner.
-- 100 guidance pairs are labelled twice, 14 days apart.
-- 30 pairs of "cross-quarter narrative change" are labelled the same way.
+**Guardrails.** No roster model labels or pre-labels these items. A rule-based parser may propose
+tuples.
 
-**Guardrails.** No roster model labels or pre-labels these items. The commercial baseline is likely
-a Claude model, so Claude does not produce gold labels.
+**Deliverables.** Codebook v1 as revised; both rounds of label files, outside git; agreement
+computed by script.
 
-**Deliverables.** `research/design/labeling_codebook.md`; both rounds of label files kept outside
-git; agreement computed by script.
-
-**Gate.** Suggested thresholds: test-retest kappa of at least 0.8, and rule-versus-human agreement
-of at least 90%. If the narrative-change pairs miss the same thresholds, that task stays out of
-Benchmark v0.
+**Gate.** Set before round 1. Suggested: lower bound of the 95% interval for kappa at least 0.7 on
+each attribute, and rule-against-human agreement at least 90%.
 
 ### WP5 — Sealed ledger
 
 **Research direction.** Bank a prospective data point before the outcome exists.
 
-**Plan.**
+**Plan.** Freeze the evaluation roster. Sample companies whose 2026 third-quarter press release
+gave guidance and whose next earnings release falls after the sealing date. Primary target: the
+direction of next quarter's guidance. Descriptive target: a hard event within six months, with the
+expected count stated. A fixed zero-shot prompt, pre-registered as EXP-0001.
 
-- Freeze the evaluation roster: Hugging Face repo and revision for local models, model ID for
-  commercial ones.
-- Sample: companies whose 2026 third-quarter press release gave numeric guidance and whose next
-  earnings release falls after the sealing date.
-- Targets: direction of next quarter's guidance; whether a hard event occurs within six months.
-- A fixed zero-shot prompt, registered as EXP-0001 and pre-registered first.
+**Guardrails.** Forecast contents stay on the external drive. The hash manifest is committed and
+then pushed or externally time-stamped.
 
-**Guardrails.** Forecast contents are stored on the external drive. Git gets the hash manifest
-only. Layout follows ResearchOS: seal first, reveal later.
-
-**Deliverables.** `research/ledger/` manifest; the EXP-0001 pre-registration.
-
-**Gate.** Manifest committed before 2027-01-10; every roster model has a version recorded.
+**Gate.** Manifest time-stamped before 2027-01-10; every roster model has a version recorded.
 
 ### WP6 — Research design v1.0
 
-**Research direction.** Turn the evidence from WP1 to WP5 into decisions.
-
-**Plan.** Write `research/design/research_design.md`: data sources and sample, Benchmark v0
-specification, splits, the design of the method comparison, endpoints and power per level, the
-pre-registered failure definition, point-in-time rules. Move the hard rules into
-`00_master_methodology.md`. Write `docs/proposal/v0.2.md`; v0.1 is not edited.
+**Plan.** Write `research/design/research_design.md` from WP1 to WP5. Write
+`docs/proposal/v0.2.md`; v0.1 is not edited.
 
 **Guardrails.** Every decision states its evidence and what result would overturn it.
 
 **Gate.** The benchmark specification is concrete enough to start labelling, and the owner signs
 off.
 
-### Suggested cadence
+## Design defaults, v2
 
-- Week of 2026-11-16: WP0 done; WP1 and WP2 started; roster frozen.
-- By end of November: first labelling round.
-- Mid-December: second labelling round; probes finished.
-- End of December: research design v1.0 to the owner.
-- Before 2027-01-10: zero-shot forecasts on the third-quarter sample sealed.
+Hypotheses until the research design confirms or replaces them.
 
-## Design defaults
-
-These are hypotheses, written down so the literature review and the data audit have something to
-aim at. Phase 0 confirms or replaces each one.
-
-| Decision | Default | What would overturn it |
+| Decision | Default | Changed in v2 |
 |---|---|---|
-| Text source | EDGAR: 8-K earnings press releases (Item 2.02, Exhibit 99.1), plus 10-Q and 10-K. Transcripts only as a private second layer | The transcript licence audit passes and quality is good |
-| Benchmark v0 | Guidance revision, three sub-tasks: extract guidance tuples; classify the change; minimal pairs in which only the numbers or only the wording were edited, so the label is known by construction. Includes a stratum of qualitative guidance such as "toward the low end of the range" | The census finds too few releases with guidance, or the literature already has a reusable benchmark of this kind |
-| Unit of analysis | A pair of outlook passages from one company's consecutive press releases. Whole documents only on a robustness subset | Probes show whole-document inference and training are comfortable |
-| Size | 500 to 800 gold test pairs across at least 400 companies. Training pairs labelled by rule, from earlier periods and other companies | The pilot's disagreement rate changes the power estimate |
-| Splits | Test documents postdate every roster model's cutoff (after 2026-06-30 today). Training is earlier and company-disjoint | A model with a later cutoff joins the roster |
-| Method comparison | Full factorial on Qwen3.5-4B and 9B: prompt, fine-tuning and tools at two levels each, retrieval at three (none, retrieved, correct passage supplied), 24 cells, every test item through every cell. Same development set and same number of development evaluations per method. Interactions on the logit scale and by difficulty stratum | The LoRA probe fails; then fine-tuning moves to a smaller model |
-| Goal C | Non-inferiority test of the best frozen local configuration against each commercial model, margin set in advance (suggested 5 points), with cost and latency per thousand items. DianJin-R1-7B as the "domain-trained by someone else" reference. The 4B re-run at 8-bit to bound the quantisation effect | None stated |
-| Endpoints | Primary: paired accuracy difference on the change class, clean documents only. Secondary: tuple F1, minimal-pair consistency, calibration, cost. Exploratory: association with hard events; Brier score of sealed forecasts | None stated |
-| Failure definition | The hard-event tier is fixed now as the four 8-K items. Other tiers are pre-registered before outcome data is seen | The literature offers a better operationalisation |
-| Reporting | Every result carries one contamination label: clean, bounded, contaminated or prospective | None stated |
+| Text source | EDGAR: 8-K earnings press releases (Item 2.02, Exhibit 99.1), plus 10-Q and 10-K. Transcripts only as a private second layer | No. The cost is stated: calls add information beyond the release |
+| Benchmark v0 | Guidance revision, three sub-tasks: extract guidance tuples; label the revision; minimal pairs with unedited controls | Label scheme revised; controls added |
+| Strata | Numeric against qualitative guidance; the company's updating routine; company size | New |
+| Unit of analysis | A pair of outlook passages from one company's consecutive releases; whole documents on a robustness subset | No. Whole documents are known to fit for inference |
+| Size | Set from the pilot's disagreement rate. Planning value 500 to 800 gold test pairs, valid if two systems disagree on at most 15% of items | Conditional now |
+| Splits | Test documents postdate every roster model's cutoff (after 2026-06-30 today). Training is earlier and company-disjoint | No |
+| Gold labels | Tuples entered by the owner, revision labels computed by rule, checked by the owner; test-retest on 100 pairs; an adjudicated sample of unmatched extractions | Gate and adjudication revised |
+| Baselines | Keyword outlook rules; pair similarity plus dictionary tone change; a FinBERT-class model; zero-shot local; zero-shot commercial | Two added |
+| Method comparison | Full factorial on Qwen2.5-7B-Instruct and Gemma 4 12B: prompt, fine-tuning and tools at two levels, retrieval at three (none, retrieved, correct passage supplied), 24 cells. Qwen3.5-4B, 9B and the commercial models run the 12 cells without fine-tuning. Same development set and evaluation count per method. The fine-tuned level is trained on its cell's prompt format | Base models changed; training format specified |
+| Analysis | Named confirmatory contrasts with Holm; item-level mixed logit for interactions, by stratum; clustered by company | Revised |
+| Goal C | Non-inferiority of the best frozen local configuration against each commercial model, on strata below the ceiling, margin and power stated in advance. DianJin-R1-7B as the domain-trained reference. One configuration re-run at 8-bit | Ceiling and power added |
+| Endpoints | Primary: paired accuracy difference on the revision label, clean documents only. Secondary: tuple F1, minimal-pair consistency and false-positive rate, calibration, cost. Exploratory: hard events, sealed Brier | False-positive rate added |
+| L2 | Extracted direction, numeric or qualitative, against the next quarter's as-filed figure, stratified by the size of the change, on the full sample | Anchor moved to the outcome |
+| Failure definition | Hard tier: four 8-K items by sub-item. Softer tiers: filing-anchored events; a fall in an as-filed profitability-and-leverage composite; twelve-month market-adjusted return including the delisting return. Pre-registered before outcome data is seen | Softer tiers defined |
+| Reporting | One contamination label per result; commercial models "clean (vendor-stated cutoff)" | Qualifier added |
 
 ## Later phases
 
 | Phase | Content | Gate to the next |
 |---|---|---|
 | Phase 0 | This roadmap | Research design v1.0 signed off by the owner |
-| Phase I | Guidance-revision benchmark and baselines: rules, a FinBERT-class model, zero-shot local, zero-shot commercial | Label agreement meets its threshold; the task separates systems; the same configuration re-run gives the same result |
-| Phase II | Factorial experiment and the Goal C non-inferiority test, with cost and latency recorded | Main effects and interactions have intervals; at least one configuration extracts well enough to scale up |
-| Phase III | Scale the best one or two configurations to the full sample; anchored L2 tests; L3 reported as exploratory | Every pre-registered test is reported, whatever its direction |
+| Phase I | Guidance-revision benchmark and baselines | Label agreement meets its gate; the task separates systems; the same configuration re-run gives the same result |
+| Phase II | Factorial experiment and the Goal C test, with cost and latency recorded | Main effects and interactions have intervals; at least one configuration extracts well enough to scale up |
+| Phase III | Scale the best one or two configurations to the full sample; anchored L2 tests with 125 to 250 random validation labels; L3 reported as exploratory | Every pre-registered test is reported, whatever its direction |
 | Every earnings season | Add a batch of post-cutoff items; seal a new round of forecasts | Ongoing |
 | Phase IV | Integration into ResearchOS | Outside this roadmap |
 
@@ -283,33 +244,25 @@ aim at. Phase 0 confirms or replaces each one.
 
 In order of urgency.
 
-1. **SEC EDGAR contact string (this week).** EDGAR's fair-access policy requires a contact email
-   or name in the request header. The data audit, the labelling pilot and the sealing all depend on
-   it.
-2. **Labelling time (first round by end of November).** 100 guidance pairs plus 30 narrative-change
-   pairs, about 8 to 9 hours a round, two rounds 14 days apart. The full benchmark is about 35 to
-   55 hours. Whether that is realistic sets the benchmark's size.
-3. **Repo visibility (before the first push).** It is public now. Private is suggested while
-   hypotheses and notes are in progress. If it stays public, hash manifests can still be committed
-   and forecast contents, gold test labels and licensed text stay outside.
-4. **Commercial API key on this machine (before sealing).** The headroom pilot and the commercial
-   part of the sealed forecasts need one.
-5. **Data access and budget.** Whether institutional data such as WRDS is available, or paid
-   sources for transcripts and delisting-aware prices are acceptable. This sets what the data audit
-   looks at.
+1. **SEC EDGAR contact string (week of 2026-11-16).** The data audit, the labelling pilot and the
+   sealing all wait on it.
+2. **Download of `mlx-community/Qwen2.5-7B-Instruct-4bit`.** About 5 GB, Apache-2.0. Without it the
+   factorial runs on Gemma 4 12B alone.
+3. **Labelling time.** 100 pairs, two rounds of about 7 hours, 14 days apart.
+4. **Repo visibility and time stamps (before 2027-01-10).** The repo is public and nothing has
+   been pushed. Sealed manifests need a push or an external time stamp.
+5. **Commercial API key on this machine.**
+6. **Data budget (not urgent).** Post-cutoff transcripts and delisting-aware daily prices are paid.
 
-## Links checked on 2026-11-12
+## Links
 
-- [Chronologically Consistent Large Language Models (He, Lv, Manela, Wu)](https://arxiv.org/html/2502.21206v3)
-- [Assessing Look-Ahead Bias in Stock Return Predictions Generated by GPT Sentiment Analysis (Glasserman, Lin)](https://arxiv.org/pdf/2309.17322)
-- [The Memorization Problem: Can We Trust LLMs' Economic Forecasts? (Lopez-Lira, Tang, Zhu)](https://arxiv.org/html/2504.14765v2)
-- [A Test of Lookahead Bias in LLM Forecasts (Gao, Jiang, Yan)](https://arxiv.org/html/2512.23847v1)
-- [MemGuard-Alpha](https://arxiv.org/pdf/2603.26797.pdf)
-- [Are ChatGPT and GPT-4 General-Purpose Solvers for Financial Text Analytics? (Li et al.)](https://arxiv.org/pdf/2305.05862)
-- [LLM as extractor, embedding as ruler (arXiv 2510.03195)](https://arxiv.org/html/2510.03195v5)
-- [Stance detection on 10-K and earnings call sentences (arXiv 2510.23464)](https://arxiv.org/abs/2510.23464v1)
-- [ACL 2026 industry track: SEC and earnings call KPI extraction sets](https://aclanthology.org/2026.acl-industry.100.pdf)
-- [kurry/sp500_earnings_transcripts](https://huggingface.co/datasets/kurry/sp500_earnings_transcripts/blob/f3ded372da8d18dc6ad98955c4558e34b5fe6d45/README.md)
-- [Qwen3.5-9B release information](https://artificialanalysis.ai/models/releases/qwen3-5-9b)
-- [Gemma 4 release coverage](https://thenextweb.com/news/google-gemma-4-open-models-apache-2-launch)
-- [Fine-Tuning on Mac: LoRA and QLoRA with MLX](https://insiderllm.com/guides/fine-tuning-mac-lora-mlx/)
+All 86 sources are in `research/literature/matrix.csv`. Links the plan cites directly:
+
+- [mlx-community/Qwen2.5-7B-Instruct-4bit](https://huggingface.co/mlx-community/Qwen2.5-7B-Instruct-4bit)
+- [Tang, Yao, Zarowin: Once Is Not Enough](https://www.stern.nyu.edu/sites/default/files/assets/documents/Michael%20Tang.pdf)
+- [FinanceBench](https://arxiv.org/abs/2311.11944)
+- [Finance Agent Benchmark](https://arxiv.org/abs/2508.00828)
+- [RAFT](https://arxiv.org/abs/2403.10131)
+- [Ovadia et al.: Fine-Tuning or Retrieval?](https://arxiv.org/abs/2312.05934)
+- [FinVerBench](https://arxiv.org/abs/2605.29586)
+- [Lopez-Lira, Tang: Can ChatGPT Forecast Stock Price Movements?](https://arxiv.org/abs/2304.07619)

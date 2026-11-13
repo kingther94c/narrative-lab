@@ -33,16 +33,19 @@ The reasoning behind the research rules is in
    filed, never as restated.
 2. **Clean tests only.** Test documents are dated after the knowledge cutoff of every model on the
    evaluation roster (after 2026-06-30 as of this writing). Training and development data are
-   earlier and come from different companies. Masking is not used: ResearchOS showed that large
-   caps stay identifiable after it.
+   earlier and come from different companies. Masking is not used: it removes the numbers that
+   are the label, and ResearchOS showed that large caps stay identifiable after it.
 3. **Every result carries a contamination label**: clean, bounded, contaminated or prospective.
 4. **Pre-register, then look.** A hypothesis gets a `PRE-REGISTRATION` entry in
    `experiment_registry.md`, committed before any outcome data is touched. The verdict cites that
-   commit. A refutation is a result.
+   commit. A refutation is a result. A local commit is not an independent time stamp:
+   registrations and sealed manifests are pushed or externally time-stamped, in the way the owner
+   decides.
 5. **The test set is opened once per frozen configuration.** Development happens on the
    development set, with the same number of evaluations for every method being compared.
 6. **No model on the evaluation roster touches gold test labels**, as annotator or as
-   pre-annotator. Labels come from numeric rules plus the owner's check.
+   pre-annotator. Tuples are entered by the owner; revision labels are computed by rule and
+   checked by the owner. A rule-based parser may propose tuples.
 7. **Evaluated models get no web access.** Their inputs come only from the frozen corpus.
 8. **Simple baselines first.** A rule-based baseline sets the bar before any model result is read.
 9. **Every number is traceable** to a script and a run record: the command, the model repo and
@@ -73,6 +76,8 @@ The reasoning behind the research rules is in
     the contact string the owner chooses. It is read from an environment variable and never
     written into the repo.
 18. **Change no system setting.**
+19. **At most three research agents in parallel.** Eight at once exhausted the usage allowance
+    on 2026-11-12.
 
 ## 4. Environment
 

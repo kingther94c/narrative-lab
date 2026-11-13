@@ -30,8 +30,10 @@ ResearchOS. It is recorded here so it is not tried again without a reason:
   `01_roadmap.md`.
 - **Why rejected:** "Every one of the 15 masks ended identifiable" after four masker rounds, and
   abstraction left eight of eight identifiable (first real run). Only a few small banks could be
-  hidden (`masking_results.json` in the small-bank run). Published work reports the same for a
-  fully masked earnings call transcript.
+  hidden (`masking_results.json` in the small-bank run). Published work finds 31 to 70% of
+  simply masked transcripts re-identified. Rewriting by an LLM lowers that to about 9% but
+  removes signal, and for guidance it removes the numbers, which are the label
+  (`../literature/streams/03_lookahead.md`).
 - **Scope of the rejection:** as a guarantee. Masking remains usable as a sensitivity analysis.
 - **Do not resurrect unless:** a masking method is shown to defeat a fresh guesser on large caps
   without removing the information the task needs.

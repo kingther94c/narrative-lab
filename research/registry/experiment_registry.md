@@ -30,9 +30,13 @@ can be regenerated.
 
 - **EXP-0000** — Feasibility probes: long-prompt inference and LoRA memory on this machine. An
   engineering measurement, so it has no hypothesis and no verdict; results go to
-  `research/design/feasibility.md`.
+  `research/design/feasibility.md`. Run 2026-11-12/13: inference fits whole documents; LoRA on
+  Qwen3.5 is limited to short sequences by its Gated DeltaNet layers.
 - **EXP-0001** — Sealed zero-shot forecasts on 2026 third-quarter earnings releases. To be
-  pre-registered and sealed before 2027-01-10.
+  pre-registered and sealed before 2027-01-10. Primary target: the direction of next quarter's
+  guidance. Descriptive target: a hard event within six months; the pre-registration states the
+  expected count (at 0.3 to 1.5% a year, 800 companies yield two to twelve bankruptcies). The
+  manifest needs a push or an external time stamp.
 
 ## Entries
 
