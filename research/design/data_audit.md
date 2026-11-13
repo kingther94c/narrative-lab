@@ -2,8 +2,9 @@
 
 **Status, 2026-11-13.** Work package 2 of Phase 0; the plan is in
 [`../registry/01_roadmap.md`](../registry/01_roadmap.md). Done: access set up and checked, the
-transcript audit, the hard-event census and the guidance census. Not started: fundamentals as
-filed, delisting-aware returns, consensus estimates, and a full count of guidance-bearing pairs.
+transcript audit, the hard-event census, the guidance census and the full count of
+guidance-bearing pairs. Not started: fundamentals as filed, delisting-aware returns, consensus
+estimates.
 
 Nothing pulled goes into git. Pulled data lives under
 `/Volumes/Seagate Backup Plus Drive/DATA/narrative_lab/edgar/`.
@@ -17,7 +18,7 @@ Nothing pulled goes into git. Pulled data lives under
 | Hard tier: Items 1.03, 2.06, 4.02 | Usable as counted, at roughly 1% of the universe a year each | 4 |
 | Hard tier: Item 3.01 | Not usable until split by text: far too frequent to be failures | 4 |
 | Guidance in earnings releases | Present in roughly 4 releases in 10 with numbers, about 1 in 12 with words only; rule-based detection needs work | 7 |
-| Pool for Benchmark v0 | Enough on current estimates: about 1,300 to 2,800 post-cutoff pairs so far, growing about 1,300 a season. Estimated, not yet counted | 7 |
+| Pool for Benchmark v0 | Enough if only the later release must postdate the cutoff (about 1,700 to 2,200 pairs with numeric guidance in both); borderline if both must (about 800 to 1,000), growing by about that much each season. Counted on all filers, corrected by a 30-item hand check | 8 |
 
 ## Access
 
@@ -212,7 +213,7 @@ Roulstone and Van Buskirk 2018 (`../literature/papers/bozanic-2018-other-forward
    Revision 2 of plan v2 made qualitative guidance a core stratum; the stratum should be redefined
    as qualitative statements anywhere, including modifiers inside numeric guidance ("toward the low
    end"), and its size counted before the test set is drawn.
-2. **The pool is large enough on current estimates.** 7,244 earnings 8-Ks from 3,915 companies were
+2. **The pool is large enough on current estimates** (superseded by the full count, section 8). 7,244 earnings 8-Ks from 3,915 companies were
    filed after the cutoff (section 4). At about 39%, roughly 2,800 carry numeric guidance. If both
    documents of a pair must postdate the cutoff, about 1,300 to 1,500 pairs exist so far (about 1.85
    releases per company in the window); if only the later one must, about 2,800. Each season adds
@@ -224,11 +225,95 @@ Roulstone and Van Buskirk 2018 (`../literature/papers/bozanic-2018-other-forward
    only the later one. The label depends on the later document, but the earlier one may be
    remembered.
 
+## 8. Full count of guidance pairs
+
+Script: `research/experiments/exp0003_guidance_pairs.py` (EXP-0003), run 2026-11-13.
+
+**What was counted.** Every earnings 8-K (Item 2.02) filed from 2026-07-01 to 2026-11-10, plus
+each of those companies' last earnings 8-K before the cutoff: 11,073 filings from 3,915 companies,
+fetched from EDGAR with 0 lasting errors (6 SEC 503s were retried). 120 filings have no press
+release exhibit. 79 companies were dropped as co-registrants: a subsidiary that files the same 8-K
+as its parent (an airline and its holding company, a utility and its parent). That leaves 10,836
+releases from 3,836 companies, 7,086 of them after the cutoff. A pair is two consecutive releases
+of one company with the later one after the cutoff.
+
+**Rules v2.** The three fixes from section 7: numbers inside an "Outlook" or "Guidance" section
+count without a guidance word; statements about periods already ended are dropped; expectations
+that are not results metrics are dropped. On the 49 dev releases of section 7 they agree with the
+hand labels on 43 (v1: 31). On a fresh hand check of 30 pre-cutoff releases not used to build them:
+
+| Hand label ↓ / rule flag → | Numeric | Qualitative only | None |
+|---|---|---|---|
+| Numeric | 10 | 0 | 0 |
+| Qualitative only | 1 | 4 | 1 |
+| None | 2 | 5 | 7 |
+
+So a `numeric` flag is right about 10 times in 13, a `qualitative_only` flag 4 times in 9, a
+`none` flag 7 times in 8. The rules still miss no numeric guidance in this check, but over-call
+words-only guidance. One miss (a "Guidance:" heading) was fixed after the check.
+
+**Raw flags and counts.**
+
+| | Releases or pairs | Numeric | Qualitative only | None |
+|---|---|---|---|---|
+| Releases after the cutoff, with text | 6,993 | 3,307 (47%) | 586 (8%) | 3,100 (44%) |
+| Last release before the cutoff | 3,723 | 1,739 (47%) | 309 (8%) | 1,675 (45%) |
+
+| Pairs | All pairs with text | Numeric in both | Guidance of any kind in both | Guidance in one only |
+|---|---|---|---|---|
+| Later release after the cutoff | 6,839 | 2,887 | 3,441 | 756 |
+| Both releases after the cutoff | 3,147 | 1,338 | 1,593 | 379 |
+
+By filer category, post-cutoff releases flagged numeric: large accelerated 59%, accelerated 48%,
+non-accelerated or smaller 30%.
+
+**Corrected for the rules' errors.** Each flag is replaced by the probability of each true label
+from its column of the hand-check table. For pairs, two bounds: errors independent between a
+company's two releases (lower), or errors that repeat across them because the releases share a
+template (upper: each pair counts the smaller of its two releases' probabilities, so raw numeric pairs
+times 10/13). The truth is likely nearer the upper bound. The 90%
+intervals in brackets come from resampling the 30-item check under independence and are wide.
+
+| | Estimate |
+|---|---|
+| Post-cutoff releases with numeric guidance | about 2,540 of 6,993, 36% (1,850 to 3,280) |
+| Post-cutoff releases with words-only guidance | about 900, 13% (460 to 1,910) |
+| Pairs, later release after the cutoff, numeric in both | 1,700 to 2,200 (independence interval 810 to 2,380) |
+| Pairs, both after the cutoff, numeric in both | 800 to 1,030 (independence interval 380 to 1,100) |
+| Pairs, both after the cutoff, guidance of any kind in both | 1,085 to 1,440 (independence interval 720 to 1,525) |
+
+**Caveats.**
+
+- The error rates come from 30 pre-cutoff releases read by Claude and are applied to post-cutoff
+  releases. The owner's own check, on a fresh sample, would replace them.
+- 81 numeric-numeric pairs are less than 60 days apart: pre-announcements and restated releases
+  are Item 2.02 filings too, so a pair is not always one quarter to the next.
+- "Guidance in one only" (initiated or dropped) is the least reliable count: under independence a
+  qualitative false positive on either side makes one, so the corrected figure (about 2,100 for
+  later-after pairs) is likely far too high; the raw 756 is closer.
+- Both-after pairs so far come from one transition only (second-quarter to third-quarter
+  releases). The fourth-quarter season (January to March 2027) carries annual guidance and its
+  initiations, so it will not look like this one.
+
+**What it means for the plan.**
+
+1. **If only the later release must postdate the cutoff, the pool is ample.** Some 1,700 to 2,200
+   pairs with numeric guidance in both, enough for the 785 pairs one comparison needs at a 25%
+   disagreement rate (plan v2, revision 5), with room for a development split.
+2. **If both must postdate it, the pool is borderline today.** About 800 to 1,000 such pairs exist;
+   each earnings season should add roughly as many again. Waiting one season (to about March 2027)
+   roughly doubles it.
+3. **The words-only stratum is still thin and the rules cannot measure it.** The rules over-call it
+   by about half, so its size needs hand labels (or the redefinition in section 7) before any test
+   set is drawn from it.
+4. The open decision from section 7 (one or both releases after the cutoff) now has numbers
+   attached; it is for the owner.
+
 ## 9. Go / no-go per candidate task
 
 | Task or outcome | Status |
 |---|---|
-| Guidance revision on earnings releases (Benchmark v0) | Go, on current estimates; full count pending |
+| Guidance revision on earnings releases (Benchmark v0) | Go: about 1,700 to 2,200 numeric pairs with the later release after the cutoff, 800 to 1,000 with both (section 8) |
 | Qualitative-only guidance as a stratum | Thin; redefine (section 7) |
 | Hard events: 1.03, 2.06, 4.02 | Go, as exploratory outcomes |
 | Hard events: 3.01 | No-go until split by text |
@@ -236,5 +321,6 @@ Roulstone and Van Buskirk 2018 (`../literature/papers/bozanic-2018-other-forward
 
 ## 10. Storage
 
-So far 1.5 GB (bulk submissions archive) and 19 MB (400 press releases) on the external drive.
+So far 1.5 GB (bulk submissions archive), 19 MB (400 census press releases), 573 MB (10,841
+releases for the full count) and 8 MB (targets, fetch log, flags, counts) on the external drive.
 

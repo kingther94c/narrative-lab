@@ -2,6 +2,20 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-13 — Full count of post-cutoff guidance pairs
+
+- **What:** EXP-0003 fetched every earnings release filed after the cutoff (to 2026-11-10) and
+  each company's last one before it, 11,073 filings, and counted pairs of consecutive releases with
+  keyword rules v2. Results in `research/design/data_audit.md` §8.
+- **Why:** the owner chose the full count over working on Item 3.01 first; WP2's gate is that
+  usable pairs are counted, not estimated.
+- **Evidence:** about 1,700 to 2,200 pairs with numeric guidance in both releases if only the later
+  release must postdate the cutoff; 800 to 1,000 if both must. The EXP-0002 extrapolation (1,300 to
+  2,800) was in range. Rules v2 over-call words-only guidance by about half, so that stratum still
+  needs hand labels.
+- **Assets affected:** none built yet. Open decision 7 added to the roadmap (one or both releases
+  after the cutoff).
+
 ## 2026-11-13 — SEC EDGAR access and first censuses
 
 - **What:** edgartools 5.62.1 installed in the conda env `nlab` (pinned in

@@ -15,7 +15,7 @@ plan differ, the approved plan wins until `changelog.md` records an amendment.
 |---|---|
 | WP0 Repo scaffold | Done 2026-11-12 |
 | WP1 Literature review | First pass done 2026-11-13: 86 items triaged, 22 deep notes, `matrix.csv`, `gaps.md`. Closed unless a design decision reopens it. One follow-up: de Kok 2025 needs a full read by someone with journal access |
-| WP2 Data audit | Access set up with edgartools on 2026-11-13. Done: transcript audit, hard-event census, guidance census (EXP-0002, `research/design/data_audit.md`). Open: full count of guidance-bearing pairs with improved rules, Item 3.01 split by text, fundamentals as filed, delisting-aware returns, consensus |
+| WP2 Data audit | Access set up with edgartools on 2026-11-13. Done: transcript audit, hard-event census, guidance census (EXP-0002), full count of guidance pairs (EXP-0003), all in `research/design/data_audit.md`. Open: Item 3.01 split by text, fundamentals as filed, delisting-aware returns, consensus |
 | WP3 Feasibility probes | Probes 1 and 2 done as EXP-0000 (`research/design/feasibility.md`). Remaining probes wait on WP2 samples, a download decision and an API key |
 | WP4 Labelling pilot | Codebook v1 drafted (`research/design/labeling_codebook.md`). Labelling waits on WP2 samples and the owner's time |
 | WP5 Sealed ledger | Waits on WP2 and the visibility decision. Deadline 2027-01-10 |
@@ -47,6 +47,7 @@ fresh batch of clean, post-cutoff items every earnings season.
 | LoRA on Qwen3.5 fits only 512 tokens (4B) or 256 (9B) within 12 GiB; Gemma 4 12B reaches 2,048 and DianJin-R1-7B 4,096 | Empirical finding (EXP-0000) | `research/design/feasibility.md` §2 |
 | The Hugging Face transcript set has no credible licence, ends in May 2025 and lacks failed companies | Verified from its card and viewer | `research/design/data_audit.md` §2 |
 | The plan's sample-size arithmetic holds if two systems disagree on at most 15% of items | Re-derived | `research/literature/streams/07_statistics.md` |
+| Post-cutoff pairs of consecutive earnings releases with numeric guidance in both: about 1,700 to 2,200 if only the later release postdates the cutoff, 800 to 1,000 if both do (as of 2026-11-10) | Counted on all filers; corrected by a 30-item hand check | `research/design/data_audit.md` §8 |
 
 What was known before Phase 0 (ResearchOS results, local model measurements, storage, the public
 GitHub repo) is in the v1 plan and in `feature_evidence.md`.
@@ -253,6 +254,9 @@ In order of urgency.
    been pushed. Sealed manifests need a push or an external time stamp.
 5. **Commercial API key on this machine.**
 6. **Data budget (not urgent).** Post-cutoff transcripts and delisting-aware daily prices are paid.
+7. **Must both releases of a test pair postdate the cutoff?** If only the later one, about 1,700
+   to 2,200 numeric pairs exist now; if both, 800 to 1,000, about doubling by March 2027. The label
+   depends on the later release, but the earlier one may be remembered. `data_audit.md` §8.
 
 ## Links
 

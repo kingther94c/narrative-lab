@@ -41,6 +41,10 @@ can be regenerated.
   the bulk submissions archive, and a rule-based guidance census of 400 releases from 50
   companies. An engineering measurement with no hypothesis and no verdict; results in
   `research/design/data_audit.md` §4 and §7. Run 2026-11-13.
+- **EXP-0003** — Full count of post-cutoff guidance pairs: every earnings 8-K filed after the
+  cutoff (to 2026-11-10) and each company's last one before it, flagged by keyword rules v2 and
+  corrected by a 30-item hand check of pre-cutoff releases. An engineering measurement with no
+  hypothesis and no verdict; results in `research/design/data_audit.md` §8. Run 2026-11-13.
 
 ## Entries
 
