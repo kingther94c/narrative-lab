@@ -15,7 +15,7 @@ plan differ, the approved plan wins until `changelog.md` records an amendment.
 |---|---|
 | WP0 Repo scaffold | Done 2026-11-12 |
 | WP1 Literature review | First pass done 2026-11-13: 86 items triaged, 22 deep notes, `matrix.csv`, `gaps.md`. Closed unless a design decision reopens it. One follow-up: de Kok 2025 needs a full read by someone with journal access |
-| WP2 Data audit | Transcript part done (`research/design/data_audit.md` §2). The rest waits on the SEC contact string |
+| WP2 Data audit | Access set up with edgartools on 2026-11-13. Done: transcript audit, hard-event census, guidance census (EXP-0002, `research/design/data_audit.md`). Open: full count of guidance-bearing pairs with improved rules, Item 3.01 split by text, fundamentals as filed, delisting-aware returns, consensus |
 | WP3 Feasibility probes | Probes 1 and 2 done as EXP-0000 (`research/design/feasibility.md`). Remaining probes wait on WP2 samples, a download decision and an API key |
 | WP4 Labelling pilot | Codebook v1 drafted (`research/design/labeling_codebook.md`). Labelling waits on WP2 samples and the owner's time |
 | WP5 Sealed ledger | Waits on WP2 and the visibility decision. Deadline 2027-01-10 |
@@ -244,8 +244,8 @@ Hypotheses until the research design confirms or replaces them.
 
 In order of urgency.
 
-1. **SEC EDGAR contact string (week of 2026-11-16).** The data audit, the labelling pilot and the
-   sealing all wait on it.
+1. ~~**SEC EDGAR contact string.**~~ Settled 2026-11-13: stored as `EDGAR_IDENTITY` in the conda
+   env `nlab`, outside the repo.
 2. **Download of `mlx-community/Qwen2.5-7B-Instruct-4bit`.** About 5 GB, Apache-2.0. Without it the
    factorial runs on Gemma 4 12B alone.
 3. **Labelling time.** 100 pairs, two rounds of about 7 hours, 14 days apart.

@@ -37,6 +37,10 @@ can be regenerated.
   guidance. Descriptive target: a hard event within six months; the pre-registration states the
   expected count (at 0.3 to 1.5% a year, 800 companies yield two to twelve bankruptcies). The
   manifest needs a push or an external time stamp.
+- **EXP-0002** — SEC EDGAR censuses for the data audit: hard events and earnings releases from
+  the bulk submissions archive, and a rule-based guidance census of 400 releases from 50
+  companies. An engineering measurement with no hypothesis and no verdict; results in
+  `research/design/data_audit.md` §4 and §7. Run 2026-11-13.
 
 ## Entries
 

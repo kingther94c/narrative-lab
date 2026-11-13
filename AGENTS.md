@@ -81,9 +81,20 @@ The reasoning behind the research rules is in
 
 ## 4. Environment
 
-- Until the project gets its own environment in Phase I, use the conda env `py313` (Python 3.13,
-  arm64, `mlx_lm` 0.32.2): `conda run --no-capture-output -n py313 python ...`. Never a bare
-  `python3`, which is a different interpreter on this machine.
+- Anything that runs a model uses the conda env `py313` (Python 3.13, arm64, `mlx_lm` 0.32.2)
+  until the project gets its own environment in Phase I:
+  `conda run --no-capture-output -n py313 python ...`. Never a bare `python3`, which is a
+  different interpreter on this machine.
+- SEC EDGAR access uses `edgartools`, pinned in `requirements-nlab.txt`, in its own conda env
+  `nlab`, so that `py313` stays as `learning_ai` set it up:
+  `conda run --no-capture-output -n nlab python ...`. Recreate it with
+  `conda create -n nlab -c conda-forge python=3.13 pip -y` and
+  `conda run -n nlab python -m pip install -r requirements-nlab.txt`.
+- The contact string SEC requires is read from the `EDGAR_IDENTITY` environment variable and is
+  never written into the repo. It is set as a conda env variable of `nlab`
+  (`conda env config vars list -n nlab`), so `conda run -n nlab` picks it up. Set `EDGAR_LOCAL_DATA_DIR` to
+  `/Volumes/Seagate Backup Plus Drive/DATA/narrative_lab/edgar` so nothing the library caches
+  lands on the internal disk.
 - Checkpoints already on the external drive: `mlx-community/Qwen3.5-4B-MLX-4bit`,
   `mlx-community/Qwen3.5-9B-MLX-4bit`, `mlx-community/gemma-4-12B-it-4bit`, `DianJin/DianJin-R1-7B`
   (4-bit, quantised locally), `mlx-community/gpt-oss-20b-MXFP4-Q8`.

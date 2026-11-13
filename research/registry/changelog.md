@@ -2,6 +2,20 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-13 — SEC EDGAR access and first censuses
+
+- **What:** edgartools 5.62.1 installed in the conda env `nlab` (pinned in
+  `requirements-nlab.txt`); the owner's SEC identity set there as an environment variable.
+  EXP-0002 ran the hard-event census and the guidance census; results in
+  `research/design/data_audit.md`.
+- **Why:** the owner chose edgartools as the access route and supplied the identity.
+- **Evidence:** Item 3.01 runs at 14 to 17% of the earnings-release universe a year, so it is not a
+  failure event until split by text (that most are curable deficiency notices is an inference). Releases with guidance in words only are about 8%, so the
+  qualitative stratum of plan v2 is thin and needs redefining. The pool of post-cutoff guidance
+  pairs is estimated at 1,300 to 2,800 so far.
+- **Assets affected:** none built yet. Plan v2's revision 2 (qualitative stratum) and revision 7
+  (hard tier) need amending in the research design.
+
 ## 2026-11-13 — Plan revised to v2 after the literature review, probes and transcript audit
 
 - **What:** roadmap rewritten as v2 from the plan the owner approved on 2026-11-13

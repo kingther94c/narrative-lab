@@ -1,0 +1,4 @@
+# Data-access environment for narrative-lab (conda env `nlab`, Python 3.13).
+# Pinned on 2026-11-13 to the latest release that was at least two weeks old.
+# 6.x (2026-11-09 onward) moves to a new HTTP client; revisit once it has settled.
+edgartools==5.62.1
