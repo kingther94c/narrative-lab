@@ -34,7 +34,8 @@ change.
 - The evaluation roster records, for each model, the repo and revision (open weights) or the model
   ID (commercial), the release date, and the knowledge cutoff the vendor states.
 - A vendor's stated cutoff is not exact, and recall fades well before it. Use a buffer.
-- **Commercial models** (owner's decision, 2026-11-14): Claude Opus 5.5 (`claude-opus-5-5`) and
+- **Commercial models** (owner's decision, 2026-11-14; set aside for now the same day, so nothing
+  below runs until the owner reopens it): Claude Opus 5.5 (`claude-opus-5-5`) and
   Claude Sonnet 5.5 (`claude-sonnet-5-5`), both with a stated reliable-knowledge and training-data
   cutoff of June 2026. They are run as Claude Code subagents from the no-tool definitions in
   `.claude/agents/`: no tools, no CLAUDE.md, a fixed two-line system prompt, effort pinned at

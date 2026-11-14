@@ -2,6 +2,17 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-14 — Commercial part set aside for now
+
+- **What:** goal C and every commercial-model run are deferred. Phase 0 (headroom pilot,
+  memorisation probe, sealed forecasts) runs local models and baselines only. The no-tool agent
+  definitions and the rules for them stay in place, unverified, for when the owner reopens it.
+- **Why:** the owner's decision.
+- **Evidence:** none needed; a scope choice.
+- **Assets affected:** roadmap WP3 items 2 and 5, design default "Goal C", methodology §2. The
+  rule that Claude does not label or read post-cutoff test items stays, since Claude may join the
+  roster later.
+
 ## 2026-11-14 — Commercial models: Claude Opus 5.5 and Sonnet 5.5 as no-tool subagents
 
 - **What:** the commercial side of the roster is Claude Opus 5.5 and Claude Sonnet 5.5, run as
