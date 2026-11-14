@@ -49,6 +49,13 @@ Every reported result carries exactly one.
 To choose between "bounded" and "contaminated", ask whether an analyst's answer would change with
 knowledge of what happened next. If it would, the task is not future-invariant.
 
+**Pairs.** A document pair is clean when its later document postdates every roster model's cutoff;
+the earlier one may predate it (owner's decision, 2026-11-14). The revision label is fixed by the
+later document, which no model can have seen, but the earlier one may be remembered. So every
+result on pairs is also reported on the subset where both documents postdate the cutoff, and the
+item-level memorisation regression (closed-book recall of the earlier document against open-book
+accuracy) is run on the pairs whose earlier document predates it.
+
 Masking is not a route to "clean". Simple masking leaves 31 to 70% of transcripts re-identifiable
 (and all 15 large-cap cases in ResearchOS). Rewriting by an LLM lowers that to about 9% but removes
 signal, and for guidance it removes the numbers, which are the label.
@@ -56,7 +63,7 @@ signal, and for guidance it removes the numbers, which are the label.
 ## 4. Splits
 
 - Test: documents dated after every roster model's cutoff. As of 2026-11-13 that is after
-  2026-06-30.
+  2026-06-30. For a pair, the later document must be; the earlier may not be (§3).
 - Training and development: earlier documents, from companies that do not appear in the test set.
 - Adding a model with a later cutoff to the roster moves the test boundary for that model's
   results.

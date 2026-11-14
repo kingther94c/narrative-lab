@@ -18,7 +18,7 @@ Nothing pulled goes into git. Pulled data lives under
 | Hard tier: Items 1.03, 2.06, 4.02 | Usable as counted, at roughly 1% of the universe a year each | 4 |
 | Hard tier: Item 3.01 | Not usable until split by text: far too frequent to be failures | 4 |
 | Guidance in earnings releases | Present in roughly 4 releases in 10 with numbers, about 1 in 12 with words only; rule-based detection needs work | 7 |
-| Pool for Benchmark v0 | Enough if only the later release must postdate the cutoff (about 1,700 to 2,200 pairs with numeric guidance in both); borderline if both must (about 800 to 1,000), growing by about that much each season. Counted on all filers, corrected by a 30-item hand check | 8 |
+| Pool for Benchmark v0 | Enough: the owner settled on 2026-11-14 that only the later release must postdate the cutoff, which gives about 1,700 to 2,200 pairs with numeric guidance in both. The both-after subset, reported alongside, has about 800 to 1,000 and grows by about that much each season. Counted on all filers, corrected by a 30-item hand check | 8 |
 
 ## Access
 
@@ -221,8 +221,8 @@ Roulstone and Van Buskirk 2018 (`../literature/papers/bozanic-2018-other-forward
 3. **The rules need three fixes before the full count**: read numbers inside an outlook section even
    without a guidance word; drop references to finished periods; drop expectations that are not
    results (closings, trials, savings targets, award targets).
-4. **A design decision is needed**: whether a test pair needs both documents after the cutoff, or
-   only the later one. The label depends on the later document, but the earlier one may be
+4. **A design decision is needed** (settled 2026-11-14: only the later one; section 8): whether a
+   test pair needs both documents after the cutoff, or only the later one. The label depends on the later document, but the earlier one may be
    remembered.
 
 ## 8. Full count of guidance pairs
@@ -306,8 +306,9 @@ intervals in brackets come from resampling the 30-item check under independence 
 3. **The words-only stratum is still thin and the rules cannot measure it.** The rules over-call it
    by about half, so its size needs hand labels (or the redefinition in section 7) before any test
    set is drawn from it.
-4. The open decision from section 7 (one or both releases after the cutoff) now has numbers
-   attached; it is for the owner.
+4. **Decision, 2026-11-14.** The owner chose to require only the later release after the cutoff.
+   Results are also reported on the both-after subset, and the earlier release's memorisation is
+   checked item by item (`../registry/00_master_methodology.md` §3).
 
 ## 9. Go / no-go per candidate task
 

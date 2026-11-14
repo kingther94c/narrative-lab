@@ -2,6 +2,17 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-14 — Pair rule for clean test documents
+
+- **What:** a test pair is clean when its later release postdates every roster model's cutoff; the
+  earlier release may predate it. Every pair result is also reported on the subset where both
+  postdate it, and the earlier release's memorisation is checked item by item.
+- **Why:** the owner's decision (roadmap open decision 7).
+- **Evidence:** `research/design/data_audit.md` §8: about 1,700 to 2,200 numeric pairs under this
+  rule against 800 to 1,000 if both releases had to postdate the cutoff.
+- **Assets affected:** `00_master_methodology.md` (contamination labels), roadmap design defaults
+  (splits). EXP-0001 and the test-set draw follow this rule.
+
 ## 2026-11-13 — Full count of post-cutoff guidance pairs
 
 - **What:** EXP-0003 fetched every earnings release filed after the cutoff (to 2026-11-10) and

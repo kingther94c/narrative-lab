@@ -219,7 +219,7 @@ Hypotheses until the research design confirms or replaces them.
 | Strata | Numeric against qualitative guidance; the company's updating routine; company size | New |
 | Unit of analysis | A pair of outlook passages from one company's consecutive releases; whole documents on a robustness subset | No. Whole documents are known to fit for inference |
 | Size | Set from the pilot's disagreement rate. Planning value 500 to 800 gold test pairs, valid if two systems disagree on at most 15% of items | Conditional now |
-| Splits | Test documents postdate every roster model's cutoff (after 2026-06-30 today). Training is earlier and company-disjoint | No |
+| Splits | Test documents postdate every roster model's cutoff (after 2026-06-30 today); for a pair, the later document must, the earlier may not (both-after subset reported alongside). Training is earlier and company-disjoint | Pair rule settled 2026-11-14 |
 | Gold labels | Tuples entered by the owner, revision labels computed by rule, checked by the owner; test-retest on 100 pairs; an adjudicated sample of unmatched extractions | Gate and adjudication revised |
 | Baselines | Keyword outlook rules; pair similarity plus dictionary tone change; a FinBERT-class model; zero-shot local; zero-shot commercial | Two added |
 | Method comparison | Full factorial on Qwen2.5-7B-Instruct and Gemma 4 12B: prompt, fine-tuning and tools at two levels, retrieval at three (none, retrieved, correct passage supplied), 24 cells. Qwen3.5-4B, 9B and the commercial models run the 12 cells without fine-tuning. Same development set and evaluation count per method. The fine-tuned level is trained on its cell's prompt format | Base models changed; training format specified |
@@ -254,9 +254,10 @@ In order of urgency.
    been pushed. Sealed manifests need a push or an external time stamp.
 5. **Commercial API key on this machine.**
 6. **Data budget (not urgent).** Post-cutoff transcripts and delisting-aware daily prices are paid.
-7. **Must both releases of a test pair postdate the cutoff?** If only the later one, about 1,700
-   to 2,200 numeric pairs exist now; if both, 800 to 1,000, about doubling by March 2027. The label
-   depends on the later release, but the earlier one may be remembered. `data_audit.md` §8.
+7. ~~**Must both releases of a test pair postdate the cutoff?**~~ Settled 2026-11-14: only the
+   later one. About 1,700 to 2,200 numeric pairs exist now. Every pair result is also reported on
+   the both-after subset (800 to 1,000 pairs now), and the earlier release's memorisation is
+   checked; `00_master_methodology.md` §3, `data_audit.md` §8.
 
 ## Links
 
