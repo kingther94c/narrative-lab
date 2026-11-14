@@ -34,6 +34,12 @@ change.
 - The evaluation roster records, for each model, the repo and revision (open weights) or the model
   ID (commercial), the release date, and the knowledge cutoff the vendor states.
 - A vendor's stated cutoff is not exact, and recall fades well before it. Use a buffer.
+- **Commercial models** (owner's decision, 2026-11-14): Claude Opus 5.5 (`claude-opus-5-5`) and
+  Claude Sonnet 5.5 (`claude-sonnet-5-5`), both with a stated reliable-knowledge and training-data
+  cutoff of June 2026. They are run as Claude Code subagents from the no-tool definitions in
+  `.claude/agents/`: no tools, no CLAUDE.md, a fixed two-line system prompt, effort pinned at
+  `high`. Each call is a fresh subagent with one item and no gold. Results are labelled with the
+  model ID and "Claude Code subagent, no tools", since the harness differs from a bare API call.
 
 ## 3. Contamination labels
 
@@ -123,7 +129,7 @@ externally time-stamped, in the way the owner decides.
 
 - Give only the company and the fiscal quarter. Ask whether guidance was raised, lowered,
   maintained or "unknown"; a second variant asks for the numeric range.
-- Record answer-token probabilities for local models and repeated samples for commercial ones.
+- Record answer-token probabilities for local models and repeated samples for the Claude models.
 - Sample quarters from at least three years before the cutoff to after it, stratified by company
   size. Quarters next to the cutoff show no gap even in a contaminated model.
 - Score against a persistence baseline, since guidance changes slowly.
@@ -135,5 +141,7 @@ externally time-stamped, in the way the owner decides.
 - That masking, open weights or point-in-time retrieval remove look-ahead.
 - That results on pre-cutoff documents measure reading and not recall.
 - That a commercial model is leakage-free.
+- That goal C's result extends beyond Claude. Only one vendor is on the roster.
+- That the subagent results equal bare API results. They run through the Claude Code harness.
 - That a subset of companies a model failed to recognise is representative. It skews to obscure
   firms.

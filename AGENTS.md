@@ -46,7 +46,10 @@ The reasoning behind the research rules is in
 6. **No model on the evaluation roster touches gold test labels**, as annotator or as
    pre-annotator. Tuples are entered by the owner; revision labels are computed by rule and
    checked by the owner. A rule-based parser may propose tuples.
-7. **Evaluated models get no web access.** Their inputs come only from the frozen corpus.
+7. **Evaluated models get no web access.** Their inputs come only from the frozen corpus. The
+   commercial models (Claude Opus 5.5 and Sonnet 5.5) are called only through the no-tool agent
+   definitions in `.claude/agents/roster-claude-*.md`, as fresh subagents (never forks), one item per
+   call, with no gold labels in the message; the experiment script logs every raw output.
 8. **Simple baselines first.** A rule-based baseline sets the bar before any model result is read.
 9. **Every number is traceable** to a script and a run record: the command, the model repo and
    revision or the commercial model ID, and the date. Keep the raw request and response of every

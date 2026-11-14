@@ -153,12 +153,14 @@ design assumes it.
 
 1. LoRA on Qwen2.5-7B-Instruct at 1k, 2k and 4k tokens, once downloaded.
 2. Headroom pilot on 100 document pairs, starting with the qualitative-guidance stratum: keyword
-   rules, pair similarity plus dictionary tone change, Qwen3.5-4B and 9B, Gemma 4 12B, DianJin, a
-   commercial model. Pass conditions go into the registry before the run. It also gives the
+   rules, pair similarity plus dictionary tone change, Qwen3.5-4B and 9B, Gemma 4 12B, DianJin,
+   Claude Opus 5.5 and Sonnet 5.5 (no-tool subagents). Pass conditions go into the registry before the run. It also gives the
    disagreement rate that sizes the test set.
 3. Memorisation probe, as redesigned in `00_master_methodology.md` §9.
 4. Structured-output compliance, verbatim hit rate of evidence quotes, tool-call reliability.
-5. API cost per item for the commercial part.
+5. Usage per item for the Claude part, and whether the full run fits the owner's subscription or
+   needs a scripted path. First check, in a new session: the two no-tool agent definitions load,
+   and the subagent reports no tools.
 
 **Guardrails.** One MLX job at a time, within 12 GiB. No model is downloaded without the owner's
 say-so. No more than three research agents in parallel: eight at once exhausted the usage
@@ -224,7 +226,7 @@ Hypotheses until the research design confirms or replaces them.
 | Baselines | Keyword outlook rules; pair similarity plus dictionary tone change; a FinBERT-class model; zero-shot local; zero-shot commercial | Two added |
 | Method comparison | Full factorial on Qwen2.5-7B-Instruct and Gemma 4 12B: prompt, fine-tuning and tools at two levels, retrieval at three (none, retrieved, correct passage supplied), 24 cells. Qwen3.5-4B, 9B and the commercial models run the 12 cells without fine-tuning. Same development set and evaluation count per method. The fine-tuned level is trained on its cell's prompt format | Base models changed; training format specified |
 | Analysis | Named confirmatory contrasts with Holm; item-level mixed logit for interactions, by stratum; clustered by company | Revised |
-| Goal C | Non-inferiority of the best frozen local configuration against each commercial model, on strata below the ceiling, margin and power stated in advance. DianJin-R1-7B as the domain-trained reference. One configuration re-run at 8-bit | Ceiling and power added |
+| Goal C | Non-inferiority of the best frozen local configuration against Claude Opus 5.5 and Sonnet 5.5 (no-tool subagents; the claim is about Claude only), on strata below the ceiling, margin and power stated in advance. DianJin-R1-7B as the domain-trained reference. One configuration re-run at 8-bit | Ceiling and power added |
 | Endpoints | Primary: paired accuracy difference on the revision label, clean documents only. Secondary: tuple F1, minimal-pair consistency and false-positive rate, calibration, cost. Exploratory: hard events, sealed Brier | False-positive rate added |
 | L2 | Extracted direction, numeric or qualitative, against the next quarter's as-filed figure, stratified by the size of the change, on the full sample | Anchor moved to the outcome |
 | Failure definition | Hard tier: four 8-K items by sub-item. Softer tiers: filing-anchored events; a fall in an as-filed profitability-and-leverage composite; twelve-month market-adjusted return including the delisting return. Pre-registered before outcome data is seen | Softer tiers defined |
@@ -252,7 +254,9 @@ In order of urgency.
 3. **Labelling time.** 100 pairs, two rounds of about 7 hours, 14 days apart.
 4. **Repo visibility and time stamps (before 2027-01-10).** The repo is public and nothing has
    been pushed. Sealed manifests need a push or an external time stamp.
-5. **Commercial API key on this machine.**
+5. ~~**Commercial API key on this machine.**~~ Settled 2026-11-14: no key. The commercial models
+   are Claude Opus 5.5 and Sonnet 5.5, run as no-tool Claude Code subagents
+   (`.claude/agents/roster-claude-*.md`). Goal C's claim is limited to Claude.
 6. **Data budget (not urgent).** Post-cutoff transcripts and delisting-aware daily prices are paid.
 7. ~~**Must both releases of a test pair postdate the cutoff?**~~ Settled 2026-11-14: only the
    later one. About 1,700 to 2,200 numeric pairs exist now. Every pair result is also reported on

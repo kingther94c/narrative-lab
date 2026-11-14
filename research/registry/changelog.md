@@ -2,6 +2,24 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-14 — Commercial models: Claude Opus 5.5 and Sonnet 5.5 as no-tool subagents
+
+- **What:** the commercial side of the roster is Claude Opus 5.5 and Claude Sonnet 5.5, run as
+  Claude Code subagents from two no-tool agent definitions in `.claude/agents/` (model ID pinned,
+  effort `high`, CLAUDE.md omitted, every tool denied, a two-line system prompt). AGENTS.md rule 7,
+  `00_master_methodology.md` §2 and §10, and the roadmap updated.
+- **Why:** the owner's decision; it replaces the API key (open decision 5).
+- **Evidence:** the Claude models overview lists a June 2026 reliable-knowledge and training-data
+  cutoff for both, inside the 2026-06-30 boundary. The Claude Code subagent docs say a custom
+  subagent gets only its own system prompt, can pin a full model ID, can skip CLAUDE.md, and loses
+  any tool listed in `disallowedTools`. A scan of small open-weight releases since June found none
+  that beats the local roster within this machine's limits; releases after the cutoff would move
+  the test boundary, so none was added.
+- **Not yet verified:** that the definitions load and the subagent really has no tools. Agent
+  definitions load at session start, so the check runs first in the next session.
+- **Assets affected:** goal C is limited to Claude. The scale of the full run against the owner's
+  usage limits is open (WP3 item 5).
+
 ## 2026-11-14 — Pair rule for clean test documents
 
 - **What:** a test pair is clean when its later release postdates every roster model's cutoff; the
