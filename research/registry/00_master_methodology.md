@@ -129,8 +129,11 @@ An experiment's hypothesis, sample, criteria with numeric thresholds, and random
 into `experiment_registry.md` and committed before the run. The verdict cites that commit. A
 refutation is a publishable outcome.
 
-A local commit is not an independent time stamp. Registrations and sealed manifests are pushed or
-externally time-stamped, in the way the owner decides.
+A local commit is not an independent time stamp. Registrations and sealed manifests are pushed to
+the public `origin` before the run or the reveal. GitHub's record of the push, not the
+self-reported commit date, is the time stamp. Since the owner can rewrite history, that is a
+third-party record but not a tamper-proof one. Whether sealed manifests also get a second,
+external stamp is open (roadmap decision 4).
 
 ## 9. Memorisation probe
 

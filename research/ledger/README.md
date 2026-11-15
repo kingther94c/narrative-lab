@@ -10,7 +10,8 @@ A manifest is a JSON Lines file, one line per sealed item:
  "input_sha256": "...", "forecast_sha256": "...", "sealed_at": "YYYY-MM-DDTHH:MM:SSZ"}
 ```
 
-The commit that adds a manifest is the timestamp. An outcome is opened only after its manifest is
-committed, and the reveal is recorded in the experiment's verdict.
+The push of the commit that adds a manifest is the time stamp: GitHub's record of the push, not
+the commit date. An outcome is opened only after its manifest is pushed, and the reveal is
+recorded in the experiment's verdict.
 
 Nothing is sealed yet.

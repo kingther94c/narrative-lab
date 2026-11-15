@@ -18,10 +18,12 @@ plan differ, the approved plan wins until `changelog.md` records an amendment.
 | WP2 Data audit | Access set up with edgartools on 2026-11-13. Done: transcript audit, hard-event census, guidance census (EXP-0002), full count of guidance pairs (EXP-0003), all in `research/design/data_audit.md`. Open: Item 3.01 split by text, fundamentals as filed, delisting-aware returns, consensus |
 | WP3 Feasibility probes | Probes 1 and 2 done as EXP-0000 (`research/design/feasibility.md`). Remaining probes wait on WP2 samples, a download decision and an API key |
 | WP4 Labelling pilot | Codebook v1 drafted (`research/design/labeling_codebook.md`). Labelling waits on WP2 samples and the owner's time |
-| WP5 Sealed ledger | Waits on WP2 and the visibility decision. Deadline 2027-01-10 |
+| WP5 Sealed ledger | Waits on WP2. Deadline 2027-01-10 |
+| Sub-study S1 | Compressing small models for an earnings exam. Draft v2 in `research/design/substudy_s1_distill_prune.md`; downloads done, company split v1 fixed (EXP-0004). Exam build next; GPU-heavy work after the EXP-0001 sealing |
 | WP6 Research design v1.0 | Waits for WP1 to WP5 |
 
-Nothing has been pushed.
+The repo is public and `main` has been pushed to `origin` since 2026-11-15. Every finished study
+is reported under `reports/`, with instructions to reproduce it.
 
 ## North star
 
@@ -252,8 +254,14 @@ In order of urgency.
 2. **Download of `mlx-community/Qwen2.5-7B-Instruct-4bit`.** About 5 GB, Apache-2.0. Without it the
    factorial runs on Gemma 4 12B alone.
 3. **Labelling time.** 100 pairs, two rounds of about 7 hours, 14 days apart.
-4. **Repo visibility and time stamps (before 2027-01-10).** The repo is public and nothing has
-   been pushed. Sealed manifests need a push or an external time stamp.
+4. **Time stamps (before 2027-01-10).** ~~Repo visibility~~: settled 2026-11-15, public and
+   pushed. GitHub's push record now time-stamps registrations and manifests. Still open: whether
+   sealed manifests also get a second, external stamp that does not depend on the owner's own
+   repository, such as an OpenTimestamps proof committed beside the manifest.
+8. **Gold test labels and reproduction.** Gold test labels stay out of git, so that published
+   items do not become training data. Then an outside reader cannot re-score a test run. Options:
+   publish only hashes; publish a window's gold once every model evaluated on it is superseded;
+   or give it out on request. Needed before the first study report.
 5. ~~**Commercial API key on this machine.**~~ Settled 2026-11-14: no key. The commercial models
    are Claude Opus 5.5 and Sonnet 5.5, run as no-tool Claude Code subagents
    (`.claude/agents/roster-claude-*.md`). Goal C's claim is limited to Claude. On the same day the

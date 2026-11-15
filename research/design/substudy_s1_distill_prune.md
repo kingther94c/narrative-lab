@@ -185,6 +185,11 @@ one-off memory exception for its calibration pass, around 12.4 GiB.
 - Results reported by section (B1, B2), by seen and unseen templates, by filer size, and per rung.
 - Every number traceable to a script, the model repo and revision, and the raw request and
   response.
+- **Deliverable:** a report under `reports/` following `reports/README.md`. It includes the
+  exam's input manifest (accession numbers and hashes, so a reader can re-fetch the releases from
+  EDGAR), the committed exam generator, every model revision, and the commands from fetching to
+  scoring. Gold test answers come from public filings by rule, so the generator can rebuild them.
+  Whether the test answers are also published follows roadmap decision 8.
 
 ## 6. Leakage
 

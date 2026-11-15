@@ -12,7 +12,11 @@ alpha.
 ## Status
 
 **Phase 0: literature review and research design**, started 2026-11-12. No benchmark exists yet
-and no model has been trained.
+and no model has been trained. A sub-study on compressing small models for an earnings exam
+(S1) is being set up.
+
+The repository runs a series of studies. Each finished study is reported under
+[`reports/`](reports/README.md), with instructions to reproduce it.
 
 Start at [`research/registry/01_roadmap.md`](research/registry/01_roadmap.md).
 
@@ -27,6 +31,7 @@ Start at [`research/registry/01_roadmap.md`](research/registry/01_roadmap.md).
 | `research/design/` | Data audit, feasibility measurements, labelling codebook, research design |
 | `research/ledger/` | Hash manifests of sealed forecasts |
 | `research/experiments/` | Numbered experiment scripts, frozen once run |
+| `reports/` | One folder per finished study: findings and how to reproduce them |
 
 Data, model checkpoints, run outputs, licensed text and gold test labels live outside the repo.
 [`AGENTS.md`](AGENTS.md) has the house rules.

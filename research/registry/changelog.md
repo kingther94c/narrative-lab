@@ -2,6 +2,24 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-15 — Repo public and pushed; studies reported with reproduction instructions
+
+- **What:** `main` was pushed to the public `origin` (first push, at `8bef4f1`), after a scan
+  that found no secrets or licensed text. AGENTS.md rule 13 now says the repo is public and is
+  the programme's record; pushes happen only when the owner asks. Rule 4, methodology §8 and the
+  ledger README now treat GitHub's push record, not the commit date, as the time stamp. A new
+  `reports/` folder sets the format for study reports: findings, what they do not show, and a
+  step-by-step guide to reproducing them, with inputs listed by public ID and hash. The README,
+  the roadmap (with an S1 row in the status table) and the S1 draft point to it.
+- **Why:** the owner confirmed the repo is public and asked for the push. The owner also said
+  the repo will host a series of studies, whose results must be reported with instructions for
+  reproducing them.
+- **Evidence:** none needed; scope decisions.
+- **Assets affected:** roadmap decision 4 narrows to whether sealed manifests need a second,
+  external stamp. New decision 8: gold test labels stay out of git, so an outside reader cannot
+  re-score a test run; how to square that with reproduction must be settled before the first
+  report. Commit author metadata carries the owner's own git e-mail address; it is now public.
+
 ## 2026-11-15 — Company split v1 fixed
 
 - **What:** `research/experiments/split_v1.py` assigns every company by a salted SHA-256 of its

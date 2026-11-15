@@ -17,6 +17,7 @@ open, which work packages are in flight, and which decisions are waiting on the 
 | Paper notes, evidence matrix, gap analysis | `research/literature/` |
 | Data audit, feasibility numbers, labelling codebook, research design | `research/design/` |
 | Hash manifests of sealed forecasts | `research/ledger/` |
+| Reports of finished studies: findings and how to reproduce them | `reports/<study>/` |
 | Experiment scripts (`expNNNN_*.py`), frozen once run | `research/experiments/` |
 | Corpus, gold labels, sealed forecast contents, run outputs, adapters | `/Volumes/Seagate Backup Plus Drive/DATA/narrative_lab/`, outside git, created on first use |
 | Model checkpoints | `/Volumes/Seagate Backup Plus Drive/DATA/huggingface`, shared with `learning_ai` |
@@ -39,8 +40,9 @@ The reasoning behind the research rules is in
 4. **Pre-register, then look.** A hypothesis gets a `PRE-REGISTRATION` entry in
    `experiment_registry.md`, committed before any outcome data is touched. The verdict cites that
    commit. A refutation is a result. A local commit is not an independent time stamp:
-   registrations and sealed manifests are pushed or externally time-stamped, in the way the owner
-   decides.
+   registrations and sealed manifests are pushed to the public `origin` before the run or the
+   reveal. GitHub's record of the push, not the commit date, is the time stamp. Whether sealed
+   manifests also get a second, external stamp is still open (roadmap decision 4).
 5. **The test set is opened once per frozen configuration.** Development happens on the
    development set, with the same number of evaluations for every method being compared.
 6. **No model on the evaluation roster touches gold test labels**, as annotator or as
@@ -63,8 +65,11 @@ The reasoning behind the research rules is in
 12. **Nothing licensed, gold or secret goes into git.** That covers third-party text such as
     transcripts and vendor data, gold test labels, the contents of sealed forecasts, API keys and
     contact strings. Hash manifests are fine.
-13. **Do not push** until the owner has decided the repo's visibility. `origin` is public as of
-    2026-11-12.
+13. **The repo is public and is the programme's record.** The owner confirmed this on 2026-11-15,
+    and `main` is pushed to `origin`. Everything committed is published, so check rule 12 before
+    every commit. Push only when the owner asks. Every finished study gets a report under
+    `reports/<study>/`, with its findings and instructions to reproduce them, as
+    `reports/README.md` sets out.
 14. **Commit only when the owner asks.** Experiment scripts are frozen once run: fix forward in a
     new numbered script.
 15. **English by default** for documents, comments and commit messages. The owner's own Chinese
