@@ -310,6 +310,31 @@ intervals in brackets come from resampling the 30-item check under independence 
    Results are also reported on the both-after subset, and the earlier release's memorisation is
    checked item by item (`../registry/00_master_methodology.md` §3).
 
+## 8a. Company split v1 applied (EXP-0004)
+
+Script: `research/experiments/exp0004_company_split.py`, run 2026-11-15, applying the frozen
+`split_v1.py` (salted SHA-256 of the CIK; 60% test, 10% development, 30% training; co-registrants
+grouped under their smallest CIK). Inputs are EXP-0003's targets and rule flags only. The
+per-company assignment is on the external drive under `narrative_lab/splits/`.
+
+| | Test | Development | Training |
+|---|---|---|---|
+| Companies (3,915; 79 linked to a co-registrant) | 2,356 (60.2%) | 399 (10.2%) | 1,160 (29.6%) |
+| Large accelerated | 1,174 | 197 | 598 |
+| Accelerated | 248 | 42 | 135 |
+| Non-accelerated or smaller | 738 | 126 | 337 |
+| Size unknown | 196 | 34 | 90 |
+| Post-cutoff releases | 4,265 | 718 | 2,103 |
+| Numeric in both, later release after the cutoff (raw flags) | 1,737 | 279 | 871 |
+| Numeric in both, both after the cutoff (raw flags) | 801 | 131 | 406 |
+
+The raw counts are rule flags. Scaled by the §8 correction, the test side holds about 1,020 to
+1,320 numeric pairs with the later release after the cutoff, and about 480 to 620 with both after.
+The first range is above the 785 pairs one comparison needs at 25% disagreement. The both-after
+subset reaches that only after another season. The 718 post-cutoff releases of development
+companies are a clean development set, for S1 and for the headroom pilot. The post-cutoff releases
+of training companies are not used as test items.
+
 ## 9. Go / no-go per candidate task
 
 | Task or outcome | Status |

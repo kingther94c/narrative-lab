@@ -72,6 +72,12 @@ signal, and for guidance it removes the numbers, which are the label.
 - Test: documents dated after every roster model's cutoff. As of 2026-11-13 that is after
   2026-06-30. For a pair, the later document must be; the earlier may not be (§3).
 - Training and development: earlier documents, from companies that do not appear in the test set.
+- **Which companies are which is fixed by company split v1** (`research/experiments/split_v1.py`,
+  owner's decision 2026-11-15). A salted SHA-256 of the CIK puts 60% of companies in test, 10% in
+  development and 30% in training. Co-registrants that share a filing go together. The split
+  depends on nothing observed about a company, covers companies that file for the first time
+  later, and is frozen; a change is a new version. Post-cutoff releases of development companies
+  form a clean development set. Census on the EXP-0003 universe: EXP-0004.
 - Adding a model with a later cutoff to the roster moves the test boundary for that model's
   results.
 

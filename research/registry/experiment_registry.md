@@ -45,6 +45,9 @@ can be regenerated.
   cutoff (to 2026-11-10) and each company's last one before it, flagged by keyword rules v2 and
   corrected by a 30-item hand check of pre-cutoff releases. An engineering measurement with no
   hypothesis and no verdict; results in `research/design/data_audit.md` §8. Run 2026-11-13.
+- **EXP-0004** — Census of company split v1 (`split_v1.py`) on the EXP-0003 universe. It uses
+  filing metadata and rule flags only. An engineering measurement with no hypothesis and no
+  verdict; results in `research/design/data_audit.md` §8a. Run 2026-11-15.
 
 ## Entries
 

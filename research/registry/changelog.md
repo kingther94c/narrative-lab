@@ -2,6 +2,39 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-15 — Company split v1 fixed
+
+- **What:** `research/experiments/split_v1.py` assigns every company by a salted SHA-256 of its
+  CIK: 60% test, 10% development, 30% training. Co-registrants are grouped under their smallest
+  CIK. It is frozen and shared by Benchmark v0 and sub-study S1. Methodology §4, the roadmap's
+  splits default and the S1 draft cite it.
+- **Why:** the owner's decision to fix the split now with a CIK hash. The 60% test share was
+  proposed by Claude, against the 50% example given when the owner was asked: clean test pairs
+  are the scarce resource, while training draws on years of earlier releases. The share is fixed
+  only from today. Nothing has used it yet, so a different share now would cost nothing.
+- **Evidence:** EXP-0004 (`data_audit.md` §8a): 2,356 / 399 / 1,160 companies, balanced by filer
+  size. About 1,020 to 1,320 corrected numeric test pairs with the later release after the
+  cutoff, and 480 to 620 with both after.
+- **Assets affected:** every future sample draws through split v1. The both-after test subset
+  falls short of 785 pairs until the next season.
+
+## 2026-11-14 — Sub-study S1 drafted; its downloads and EDGAR pulls approved
+
+- **What:** `research/design/substudy_s1_distill_prune.md` (draft v2) plans a sub-study on
+  compressing small models for an earnings exam. It covers distillation down the Qwen3.5 ladder
+  (9B → 4B → 0.8B), structured pruning of the 4B to about 2B, and expert pruning of a small MoE.
+  It is scored on an auto-graded exam built from 8-K releases with rule-and-XBRL gold. Approved
+  and started: `mlx-community/Qwen3.5-2B-MLX-4bit`, `mlx-community/OLMoE-1B-7B-0125-Instruct-4bit`,
+  one C4 validation shard, and SEC's bulk `companyfacts.zip`, all on the external drive.
+- **Why:** the owner's request to start the sub-study, to work from small models, and approval of
+  the downloads ("全部批准").
+- **Evidence:** S1-a.2 found the Qwen3.5 tokenizers give identical ids, so logit distillation is
+  possible. Their chat templates default to opposite thinking modes, so every run sets thinking
+  explicitly.
+- **Assets affected:** none of the main programme's. S1 must not use Benchmark v0 test gold. Its
+  GPU-heavy work waits for the EXP-0001 sealing. The plan is not frozen, and no S1 experiment is
+  pre-registered.
+
 ## 2026-11-14 — Commercial part set aside for now
 
 - **What:** goal C and every commercial-model run are deferred. Phase 0 (headroom pilot,
