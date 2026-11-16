@@ -2,6 +2,19 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-15 — Sub-study S1 plan frozen; EarningsExam v0 built (EXP-0005)
+
+- **What:** the S1 plan v2 is approved and copied verbatim to
+  `docs/plans/2026-11-15_substudy_s1_plan.md`. It carries three defaults the owner accepted.
+  Thinking is off in trained arms and both modes are measured in S1-b. B3 guidance reading is
+  left out of v0. S1 may use the MLX machine until 2026-12-15, after which WP5 has priority until
+  EXP-0001 is sealed. EXP-0005 built the exam: 4,420 train, 4,392 development and 18,618 test items.
+- **Why:** the owner's "Freeze and start".
+- **Evidence:** `research/design/feasibility.md` §5. 30 of 30 hand-checked train and development
+  golds are right. Test items were not read.
+- **Assets affected:** the S1 design document is now the frozen plan; later changes come here.
+  Next are the S1-a probes and the S1-b pre-registration.
+
 ## 2026-11-15 — Repo public and pushed; studies reported with reproduction instructions
 
 - **What:** `main` was pushed to the public `origin` (first push, at `8bef4f1`), after a scan

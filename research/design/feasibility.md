@@ -157,3 +157,41 @@ hours on Qwen3.5-4B at 512 tokens with 16 layers.
 4. Memorisation probe
 5. Structured output, evidence quotes, tool calls
 6. API budget for the commercial part
+
+## 5. Sub-study S1: EarningsExam v0 yield (EXP-0005)
+
+Script: `research/experiments/exp0005_earnings_exam.py`, run 2026-11-15 (plan:
+`docs/plans/2026-11-15_substudy_s1_plan.md` §3). It reads the releases EXP-0003 fetched and SEC's
+`companyfacts.zip` of 2026-11-14. An item is kept only when two sources agree: the XBRL value for
+the period (first filed in a 10-Q or 10-K from 3 days before to 75 days after the release), and
+the same figure in a release table row whose label names the metric, at the table's stated scale.
+Gold is the figure as displayed. Tolerance is half a unit of its last displayed digit, 0.15
+percentage points for percentages, and half a cent for EPS changes. Excerpts are capped at 400
+Qwen3.5 tokens; contact lines (e-mail addresses, phone numbers) are removed.
+
+| Side | Releases used | Releases with items | Items | Companies | Excerpt tokens, median / max |
+|---|---|---|---|---|---|
+| Train (pre-cutoff, training companies) | 1,118 | 951 | 4,420 | 951 | 365 / 400 |
+| Development (development companies) | 1,101 | 930 | 4,392 | 355 | 366 / 400 |
+| Test (post-cutoff, test companies) | 4,265 | 3,463 | 18,618 | 1,989 | 372 / 400 |
+
+Why releases gave no items, on the test side: no verified figure 551, no XBRL period 188 (many of
+them November releases whose 10-Q was not yet in the snapshot), no company facts 39, excerpt over
+budget 24. About a quarter of B1 items (3,041 of 11,753 on the test side) ask for a different
+scale from the table's, for example a table in thousands and an answer in millions. Templates are
+held out for the test side: gross profit and the gross margin built on it, the net-margin item,
+and the second phrasing. Items using any of them make up 10,309 of the 18,618 test items.
+
+**Hand check.** Empirical finding: 30 items, 15 development and 15 training, drawn at random
+(seeds 11 and 12), were checked against their excerpts by Claude. All 30 golds are right. That
+covers each B1 metric on the train and development sides and each B2 item except the held-out
+ones. Seen in the check: GAAP rows standing beside adjusted rows, "attributable" net income beside
+total net income, a segment table whose consolidated figure is the last column, and an EPS of
+0.00. Test items were not read (changelog, 2026-11-14). Two defects were found and fixed before
+this run, on training and development items: excerpts running into the next table, and a
+contact e-mail line picked up as a title.
+
+**What it means.** The test pool is about twelve times the planned 1,500 items, so the test set
+can be drawn stratified by section, template and filer size, at most a few items per company.
+Training has about 4,400 items for arms of about 1,000. S1-b can start once its pre-registration
+is written.

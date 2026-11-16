@@ -48,6 +48,10 @@ can be regenerated.
 - **EXP-0004** — Census of company split v1 (`split_v1.py`) on the EXP-0003 universe. It uses
   filing metadata and rule flags only. An engineering measurement with no hypothesis and no
   verdict; results in `research/design/data_audit.md` §8a. Run 2026-11-15.
+- **EXP-0005** — EarningsExam v0 generator for sub-study S1 (step S1-a.1): auto-graded B1 lookup and
+  B2 computation items from 8-K releases, with gold confirmed by XBRL company facts. An engineering
+  measurement with no hypothesis and no verdict; results in `research/design/feasibility.md` §5.
+  Run 2026-11-15.
 
 ## Entries
 

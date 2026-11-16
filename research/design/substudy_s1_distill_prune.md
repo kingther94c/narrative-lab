@@ -1,10 +1,9 @@
 # Sub-study S1: compressing small models for an earnings exam
 
-**Status: DRAFT v2, 2026-11-14. The owner approved the downloads and EDGAR pulls of §8 the same
-day ("全部批准"). The plan itself is not yet frozen, and nothing is pre-registered.**
-Once approved, the plan is copied verbatim into `docs/plans/` and the experiments below get
-`PRE-REGISTRATION` entries in `research/registry/experiment_registry.md` before any outcome data
-is touched.
+**Status: APPROVED v2, frozen 2026-11-15 ("Freeze and start").** The approved text is kept
+verbatim in `docs/plans/2026-11-15_substudy_s1_plan.md`. From here on, changes go through
+`research/registry/changelog.md`. The experiments below get `PRE-REGISTRATION` entries in
+`research/registry/experiment_registry.md` before any outcome data is touched.
 
 The owner's requests (2026-11-14, verbatim):
 
@@ -67,7 +66,7 @@ measures what is given up.
 |---|---|---|---|---|
 | **B1 Lookup** | An excerpt of an 8-K earnings release (Exhibit 99.1) and a question asking for one reported figure: revenue, GAAP or adjusted EPS, net income, a segment figure, for a stated period | Two sources must agree: a rule parser reading the release's table, and the as-first-filed XBRL value in the 10-Q or 10-K for the same period. Disagreements are dropped and counted | Clean when the release postdates every model's cutoff | Primary |
 | **B2 Computation** | The same excerpts; growth rates, margins, per-share arithmetic, scale and units ("in thousands"), GAAP against non-GAAP | Computed by rule from B1-verified figures | As B1 | Primary |
-| **B3 Guidance reading** (optional) | An outlook passage; extract the range for a named metric and period | Rule parser v2 proposes; owner checks | As B1 | Secondary, only if the owner has the time |
+| ~~**B3 Guidance reading**~~ | Not in v0 (owner, 2026-11-15): the owner's labelling time goes to WP4 | | | |
 | **A Off-target** | FinQA, CFA-Easy, FinanceIQ (Chinese professional exams) through the existing `learnai/finbench` harness | The datasets' own answers | Contaminated: public and pre-cutoff. Used only to measure change from each model's own baseline | What is given up |
 
 Design rules:
@@ -85,6 +84,9 @@ Design rules:
    the LoRA limits of the Qwen3.5 rungs. Whether 0.8B allows longer is measured in S1-a.
 5. **Answers go in `\boxed{}`**, graded by the existing tolerant numeric grader. How invalid
    output is scored is fixed before any run.
+5a. **Thinking mode is always set explicitly** (S1-a.2 found opposite defaults). Trained arms run
+   every Qwen3.5 rung with thinking off, prompted for brief reasoning and then the boxed answer,
+   because Qwen3.5-4B LoRA fits only 512 tokens. S1-b measures both modes (owner, 2026-11-15).
 6. **Planned test size: about 1,500 B items from at least 400 companies.** With 15% disagreement
    between two systems, 1,000 paired items detect about 3.3 points at 80% power. Intervals are
    clustered by company.
@@ -217,9 +219,10 @@ one-off memory exception for its calibration pass, around 12.4 GiB.
 
 So about 80 to 125 GPU hours, against 120 to 180 in v1, with more seeds. With one MLX job at a
 time, that is one and a half to three weeks of the machine. WP5 (sealing before 2027-01-10) and
-the WP3 headroom pilot come first. **Proposed order:** exam build and the S1-a probes now; S1-b
-when the machine is free between WP3 runs; the trained arms after EXP-0001 is sealed, from
-mid-January 2027.
+the WP3 headroom pilot come first. **Order (owner, 2026-11-15):** the exam build and S1-a start
+now. S1 may use the MLX machine until 2026-12-15, while the WP3 pilot waits for its samples.
+From 2026-12-15, WP5 has priority until EXP-0001 is sealed. S1 work not done by then resumes
+after the sealing.
 
 ## 8. Decisions for the owner
 
@@ -233,10 +236,10 @@ mid-January 2027.
 3. **Commercial ceiling: deferred.** The commercial part is set aside for now (changelog,
    2026-11-14). S1 needs no commercial model; the ceiling would only show how far the ladder is
    from a frontier model on this exam.
-4. **Priority.** Trained arms after the EXP-0001 sealing (proposed), or earlier at the cost of
-   the WP3 pilot.
-5. **B3 guidance reading:** include it, at about 200 owner-checked items, or leave it out. It
-   competes with WP4 labelling time.
+4. ~~**Priority.**~~ Settled 2026-11-15: S1 may use the machine until 2026-12-15; WP5 first
+   after that (§7).
+5. ~~**B3 guidance reading.**~~ Settled 2026-11-15: not in v0.
+6. ~~**Thinking mode.**~~ Settled 2026-11-15: off in trained arms, both modes in S1-b (§3 rule 5a).
 
 ## 9. What would change this plan
 
