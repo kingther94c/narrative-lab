@@ -200,6 +200,43 @@ can be drawn stratified by section, template and filer size, at most a few items
 Training has about 4,400 items for arms of about 1,000. S1-b can start once its pre-registration
 is written.
 
+## 5a. EarningsExam v0.1 (EXP-0008)
+
+Script: `research/experiments/exp0008_earnings_exam_v0_1.py`, run 2026-11-17. **Defect in v0.**
+When an excerpt was over budget, v0 kept the first 8 raw lines of the table header, blank lines
+included, and could drop the line naming each column's period. A smoke test for EXP-0007 met an
+item with two unlabelled columns and the gold in the second (nCino, prior year shown first). A
+rough count found no period label above the data in about 19% of v0 development items; for 0.7%
+the gold was not in the first column, so the item could not be answered.
+
+**Fix.** v0.1 imports v0 unchanged and replaces only the excerpt rule. It finds the nearest line
+above the needed rows carrying a period label (a year, a quarter label such as 3Q26, or FY26) for
+each of the row's first two columns, keeps it and up to two heading lines above it whatever else
+is elided, and drops the item if there is none within 60 lines. Gold, tolerance, templates and
+item ids are v0's.
+
+| Side | v0 items | v0.1 items | v0.1 companies | Excerpt tokens, median / max |
+|---|---|---|---|---|
+| Train | 4,420 | 3,805 | 861 | 370 / 400 |
+| Development | 4,392 | 3,896 | 331 | 371 / 400 |
+| Test | 18,618 | 15,739 | 1,817 | not read |
+
+Items dropped by the new rule: no column heading 800 (train and development) and 2,045 (test);
+over budget once the heading is kept 693 and 4,009. Releases giving no item because every excerpt
+was too long: 94 train, 359 test. On the test side 8,719 items use held-out templates and 2,672 B1
+items need a scale conversion. Every v0.1 development item has a heading line (count only).
+
+**Hand check.** Empirical finding: 16 development items (seed 41), 10 drawn from the 715 whose v0
+excerpt had no heading and 6 at random, checked by Claude against their excerpts. All 16 golds are
+right and every excerpt shows which column is which period, including prior-year-first tables,
+quarter labels (3Q26, 2Q26, 3Q25) and multi-line headings. Seen again: "net income" beside "net
+income attributable to common stockholders" (gold is the first, as XBRL's `NetIncomeLoss`), a
+known ambiguity left as it is. Test items were not read.
+
+**What it means.** v0.1 supersedes v0 for S1; v0 stays on the drive. The test pool, about ten
+times the planned 1,500 items, is still ample. EXP-0007 was amended before its run to draw from
+v0.1.
+
 ## 6. Sub-study S1: compression probes (EXP-0006)
 
 Script: `research/experiments/exp0006_s1a_compression_probes.py`, run 2026-11-16 (plan §4, S1-a.3

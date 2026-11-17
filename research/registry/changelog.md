@@ -2,6 +2,39 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-17 — EarningsExam v0.1 (EXP-0008); EXP-0007 amended to use it
+
+- **What:** EXP-0008 rebuilds the exam with the v0 generator and one changed rule: an excerpt
+  always keeps the table's column-heading line, and an item without one is dropped. 3,805 train,
+  3,896 development and 15,739 test items. The EXP-0007 pre-registration is amended before its run:
+  its 600 items are drawn from v0.1 development items, by the same rules (318 companies). The v0
+  draw is archived, unused. Nothing else in EXP-0007 changes.
+- **Why:** the owner's "Fix first, then run": S1 first measures the models on correct items.
+  Deliberately noisy or defective items are a possible later sub-study, not part of S1 (owner,
+  2026-11-17).
+- **Evidence:** `research/design/feasibility.md` §5a; 16 of 16 hand-checked development golds
+  right, 10 of them items whose v0 excerpt had lost its heading.
+- **Assets affected:** v0.1 supersedes v0 for S1 (S1-b, and the S1-c test draw and training items).
+  v0 stays on the drive.
+
+## 2026-11-17 — EXP-0007 held before its run: excerpts can lose their column headings
+
+- **What:** a smoke test of the EXP-0007 script, on pre-cutoff development items outside the
+  draw, found an EarningsExam v0 item whose excerpt shows two unlabelled columns: the elision
+  removed the line naming the periods, and the gold sits in the second column. A rough count
+  (a year, month or quarter label above the first data row): about 19% of development items have
+  none, 13% of B1 and 6% of B2. For most the gold is in the first column, so a model can answer
+  by the usual layout. For 29 development B1 items (0.7%) it is not, and the item cannot be
+  answered. Training items are alike. The 30-item hand check of EXP-0005 did not meet such a case.
+- **Why:** found by Claude while checking the scoring path.
+- **Evidence:** the smoke item `nCino, Inc.`, net income for the quarter to 2026-04-30, gold
+  13.641 (XBRL agrees), excerpt with no period line. The count is a heuristic, not yet checked
+  by hand.
+- **Assets affected:** EXP-0007 is pre-registered and its draw made, but no model has seen a
+  drawn item. The run waits for the owner: run it as registered, or fix the generator forward
+  (a new script that always keeps the column-heading lines) and amend the pre-registration's
+  sample before the run.
+
 ## 2026-11-17 — S1-b pre-registered (EXP-0007)
 
 - **What:** the pre-registration for the S1 headroom run, in the experiment registry. It covers

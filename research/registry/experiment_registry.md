@@ -57,6 +57,10 @@ can be regenerated.
   Qwen3.5-0.8B and the pruned 4B. Calibration and evaluation text is training-side exam excerpts
   only. An engineering measurement with no hypothesis and no verdict; results in
   `research/design/feasibility.md` §6. Run 2026-11-16.
+- **EXP-0008** — EarningsExam v0.1: the EXP-0005 generator with an excerpt rule that always
+  keeps the table's column-heading line, and drops an item when no such line is found. Fixes
+  forward the v0 defect found while preparing EXP-0007. An engineering measurement with no
+  hypothesis and no verdict; results in `research/design/feasibility.md` §5a. Run 2026-11-17.
 
 ## Entries
 
@@ -64,7 +68,10 @@ can be regenerated.
 
 ### PRE-REGISTRATION
 - **Status:** approved by the owner 2026-11-17 ("Approve, commit, run"). Committed and pushed
-  before any model saw a sampled item. Not yet run.
+  before any model saw a sampled item. **Amended 2026-11-17, before the run** (owner: "Fix first,
+  then run"): items come from EarningsExam v0.1 (EXP-0008) instead of v0, because v0 excerpts
+  could lose the line naming each column's period. Only the item source, the pool and the draw
+  change; every other rule stands. The v0 draw is archived on the drive, unused. Not yet run.
 - **Claim under test:** descriptive, not a hypothesis (plan §4, S1-b). How each rung of the S1
   ladder scores zero-shot on B1 lookup and B2 computation; whether the gaps between rungs leave
   anything to distil; and the disagreement rates that size the S1 test set.
@@ -74,18 +81,20 @@ can be regenerated.
   and may separate the rungs more than the arithmetic does. Thinking may help the small rungs
   more than the large ones, or not at all on items this short.
 - **Sample and scope, fixed here before looking:**
-  1. Development items of EXP-0005 (`items_dev.jsonl`) from releases accepted after
-     2026-06-30: 2,814 items from 350 companies and 597 releases. All seen templates, first
-     phrasing (held-out templates exist only on the test side).
+  1. Development items of EarningsExam v0.1 (EXP-0008, `exam_v0_1/items_dev.jsonl`) from
+     releases accepted after 2026-06-30: 2,496 items from 324 companies and 553 releases. All
+     seen templates, first phrasing (held-out templates exist only on the test side). (Before the
+     amendment: EXP-0005, 2,814 items from 350 companies.)
   2. Draw of 600 items. B1: 90 each of revenue, operating income, net income and diluted EPS.
      B2: 80 each of revenue growth, operating margin and EPS change. Items are ordered by
      SHA-256 of `"exp0007:" + id` and taken in that order, template by template in round
      robin. An item is skipped if its company already has 2 items in the draw, or its release
      already has an item of the same section. If a template runs out, the rest of its quota goes
-     to the other templates of its section in the same order. A count-only dry run on
-     2026-11-17 (templates, companies and releases; no model run) fills every quota except
-     operating margin, which reaches 78. Its last 2 places go to the other B2 templates; 330
-     companies in all. The draw is written to the drive,
+     to the other templates of its section in the same order. The amended draw (2026-11-17, no
+     model run): B1 revenue 89, operating income 88, net income 92, diluted EPS 91; B2 revenue
+     growth 87, operating margin 66, EPS change 87; 318 companies; SHA-256 of the ids in draw
+     order `0ee6dbfd29a3f6a10bcb459a2ea20389830ddc76b22a6e0e30b5749d77a6c570`. The draw is
+     written to the drive,
      with its item ids hashed into the registry entry's verdict.
   3. The first 300 items of the draw, in draw order, form the thinking subset.
 - **Method and baseline:**
