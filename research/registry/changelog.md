@@ -2,6 +2,19 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-17 — S1-b pre-registered (EXP-0007)
+
+- **What:** the pre-registration for the S1 headroom run, in the experiment registry. It covers
+  600 post-cutoff development items (B1 360, B2 240, at most 2 per company), five models with
+  thinking off and the four Qwen3.5 models with thinking on for 300 of them, the forced-answer cue
+  at the cap, and scoring by each item's own tolerance. Gates: the 5-point distillation gate per
+  S1-c pair, and ceiling and floor per section. Also the formula that sizes the S1 test set, and
+  answer lengths to inform the training excerpt cap.
+- **Why:** the owner's "Commit, push, draft", then "Approve, commit, run".
+- **Evidence:** plan §3 to §5, feasibility §6, learning_ai `FINANCE_MODEL_SELECTION.md` §8.1.
+- **Assets affected:** binding for the S1-b run; S1-c's pairs, sections and test size follow its
+  gates.
+
 ## 2026-11-16 — S1-a compression probes (EXP-0006)
 
 - **What:** EXP-0006 tested the operations S1-c to S1-e rely on. Layer removal on Qwen3.5-4B
