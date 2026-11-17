@@ -146,7 +146,11 @@ hours on Qwen3.5-4B at 512 tokens with 16 layers.
 ## 4. Known defects of this run
 
 - The script's training callback captured no per-step speeds, so `s_per_step` is empty in
-  `results.jsonl`. The figures above come from the run logs.
+  `results.jsonl`. The figures above come from the run logs. Cause, found on 2026-11-16 in
+  EXP-0006: `mlx_lm.lora.run` (0.32.2) replaces the callback it is given with the reporting
+  callbacks of its `report_to` setting, which is empty. So the script's check that abandons a
+  run past 15 GiB never ran either; only MLX's 12 GiB memory limit applied. Peaks were still
+  measured after each run, so the table stands.
 - The LoRA series go beyond what the plan listed (shorter lengths, a 4-layer series, two
   comparison models). The first trial's crash is the reason; the script's docstring records it.
 - DianJin-R1-7B has no Hugging Face revision recorded, because the 4-bit copy was made locally.
@@ -195,3 +199,93 @@ contact e-mail line picked up as a title.
 can be drawn stratified by section, template and filer size, at most a few items per company.
 Training has about 4,400 items for arms of about 1,000. S1-b can start once its pre-registration
 is written.
+
+## 6. Sub-study S1: compression probes (EXP-0006)
+
+Script: `research/experiments/exp0006_s1a_compression_probes.py`, run 2026-11-16 (plan §4, S1-a.3
+to S1-a.5). mlx 0.32.4, mlx_lm 0.32.2. Calibration text is 64 training-side exam excerpts and
+evaluation text another 32, one per release. The losses below are a check that pruning did
+something sensible, not a comparison of methods: no healing, a tiny sample, and text the models
+may have seen.
+
+**Layer removal on Qwen3.5-4B (S1-a.4).** Empirical finding. Qwen3.5 repeats a block of three
+Gated DeltaNet layers and one full-attention layer; stock mlx_lm decides each layer's kind from
+its index, so a checkpoint loads only if whole blocks are removed. Blocks were scored by block
+influence, 1 − cos(input, output), averaged over tokens; the first and last blocks were never
+removed.
+
+| Model | Layers | Parameters (mlx_lm count) | On disk | Evaluation loss (nats/token) | Sample answer |
+|---|---|---|---|---|---|
+| Unpruned | 32 | 4.21 B | 2.83 GiB (with vision tower) | 1.397 | Coherent |
+| Blocks 3 and 6 removed | 24 | 3.31 B | 1.74 GiB | 2.277 | Coherent |
+| Blocks 2, 3, 5 and 6 removed | 16 | 2.42 B | 1.27 GiB | 3.176 | Repeats a phrase |
+
+Block influence by block: 0.94, 0.31, 0.25, 0.22, 0.34, 0.26, 0.23, 0.48. Scoring took 20 s.
+Every pruned model saved and reloaded with stock mlx_lm and gave the same loss after reloading.
+Cached decoding matched a full forward on the argmax at all 8 checked steps, with logit gaps
+(0.19 to 0.22) no larger than the unpruned model's own (0.33). Removing a single DeltaNet layer
+works in memory once the model's two cached mask indices are corrected; with the stock indices
+cached decoding fails. Such a model cannot be written as a stock checkpoint. Peak 5.0 GiB.
+
+So S1-d removes whole blocks, about 0.11 B parameters each, unless a loader that reads
+`layer_types` is written. The stock 4B and 2B checkpoints carry a vision tower and the pruned
+ones do not, so S1-d compares resident memory and text parameters, not file sizes. The 16-layer
+model's degenerate sample shows why healing is part of the recipe.
+
+**Expert removal on OLMoE-1B-7B (S1-a.5).** Empirical finding. On the calibration excerpts every
+expert in every layer was routed to at least once. Slicing the router rows and the stacked expert
+tensors (weights, scales, biases) to the top 32 experts per layer by REAP gives a stock checkpoint
+of 1.94 GiB against 3.63 GiB, resident 2.45 GiB. Checked against the unpruned model with the
+removed experts' router logits set to minus infinity, which is the same function: the first MoE
+block's output is identical (difference 0), the evaluation loss is identical to four decimals
+(3.0467), and over 2,711 tokens the next-token argmax agrees on 2,684 (99.0%). The rest is
+half-precision rounding carried through 16 layers: a separate scratch check with a random mask
+found the same experts chosen for all 352 tokens and a largest difference of 7.6e-6. The reloaded
+checkpoint gives the same numbers. Peak 4.9 GiB.
+
+Evaluation loss with experts masked; the unpruned model's is 2.335:
+
+| Experts removed | REAP | Routing frequency | Random |
+|---|---|---|---|
+| 25% | 2.398 | 2.346 | 3.079 |
+| 50% | 3.047 | 2.786 | 5.264 |
+
+Both criteria beat random by far. Removing a quarter of the experts by routing frequency costs
+almost nothing here (2.346 against 2.335), and frequency beats REAP at both ratios on this tiny,
+unhealed check. S1-e compares them properly.
+
+**Fine-tuning memory (S1-a.3).** Empirical finding. Batch 1, gradient checkpointing, 10 steps,
+every example at full length; LoRA rank 8 on all layers; full fine-tuning trains every
+transformer layer with the embeddings frozen.
+
+| Model | Kind | 512 tokens: peak GiB, s/step | 1,024 tokens |
+|---|---|---|---|
+| Qwen3.5-0.8B | LoRA, 24 layers | 5.42, 6.17 | 14.80 GiB, 17.35 s/step: over budget |
+| Qwen3.5-0.8B | Full | 7.17, 6.24 | 14.45 GiB, 16.98 s/step: over budget |
+| 4B, 4 blocks removed (16 layers) | LoRA, 16 layers | 9.25, 7.18 | Metal out of memory at about 25 GiB |
+| 4B, 2 blocks removed (24 layers) | LoRA, 24 layers | 9.78, 10.69 | Metal out of memory at about 25 GiB |
+
+The 2,048 and 4,096 runs were skipped once 1,024 failed. The two crashes happened before the
+first step reported, so the script's 15 GiB abort could not act; MLX's memory limit is not a hard
+cap. The first attempt at this series found that `mlx_lm.lora.run` drops the callback it is given
+(section 4); the script calls `train_model` directly.
+
+**Room for an answer.** Empirical finding. With the prompt as S1 asks it (excerpt, question,
+boxed-answer instruction, thinking off), training prompts run 439 tokens at the median, 469 at the
+90th percentile and 491 at most. Share of the 4,420 training items that fit in 512 tokens with an
+answer of 32 / 64 / 96 / 128 tokens: 98.1% / 58.3% / 40.9% / 31.7%.
+
+**What it means.**
+
+1. The operations S1-d and S1-e need work on this machine with stock mlx_lm: removing whole
+   blocks, slicing experts, saving and reloading, and healing at 512 tokens.
+2. Every Qwen3.5 rung trains at 512 tokens and no more. The 0.8B is no better than the 4B: on
+   these layers memory follows sequence length and depth, not width. Full fine-tuning of the 0.8B
+   fits at 512, so S1-c can use it.
+3. The healing fits, so the plan's fallback (switching the ladder to Qwen3) is not triggered.
+4. **The plan's rule 4 does not hold as written.** A 400-token excerpt leaves about 70 tokens for
+   the answer. That is enough for a boxed answer (D1) but not for the worked answers of D2 and D3.
+   Before S1-c is pre-registered the owner chooses: a shorter excerpt cap for training items
+   (about 300 tokens would leave roughly 150; not yet measured), worked answers capped near 64
+   tokens, or both.
+   Test items can keep 400 tokens, since inference is not limited.

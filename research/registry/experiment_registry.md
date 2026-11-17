@@ -52,6 +52,11 @@ can be regenerated.
   B2 computation items from 8-K releases, with gold confirmed by XBRL company facts. An engineering
   measurement with no hypothesis and no verdict; results in `research/design/feasibility.md` §5.
   Run 2026-11-15.
+- **EXP-0006** — S1-a probes for sub-study S1 (steps S1-a.3 to S1-a.5): removing 4-layer blocks
+  from Qwen3.5-4B, slicing experts out of OLMoE-1B-7B, and LoRA and full fine-tuning memory for
+  Qwen3.5-0.8B and the pruned 4B. Calibration and evaluation text is training-side exam excerpts
+  only. An engineering measurement with no hypothesis and no verdict; results in
+  `research/design/feasibility.md` §6. Run 2026-11-16.
 
 ## Entries
 

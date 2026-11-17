@@ -2,6 +2,21 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-16 — S1-a compression probes (EXP-0006)
+
+- **What:** EXP-0006 tested the operations S1-c to S1-e rely on. Layer removal on Qwen3.5-4B
+  works by whole blocks (three DeltaNet layers and one attention layer) and saves as a stock
+  checkpoint. Expert slicing on OLMoE-1B-7B gives the same function as masking the removed
+  experts. LoRA and full fine-tuning of the 0.8B, and LoRA on the pruned 4B, fit at 512 tokens
+  and not at 1,024.
+- **Why:** step S1-a of the frozen plan, after the owner's "Commit, push, go on".
+- **Evidence:** `research/design/feasibility.md` §6.
+- **Assets affected:** the plan's rule 4 assumed a 400-token excerpt leaves room for a short
+  worked answer; it leaves about 70 tokens. The excerpt cap for training items or the length of
+  worked answers must be chosen before S1-c is pre-registered. S1-d removes whole blocks. The
+  Qwen3 fallback is not triggered. Separately, the cause of EXP-0000's missing step speeds was
+  found: `mlx_lm.lora.run` drops the callback it is given (feasibility §4).
+
 ## 2026-11-15 — Sub-study S1 plan frozen; EarningsExam v0 built (EXP-0005)
 
 - **What:** the S1 plan v2 is approved and copied verbatim to

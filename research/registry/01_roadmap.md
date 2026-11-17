@@ -19,7 +19,7 @@ plan differ, the approved plan wins until `changelog.md` records an amendment.
 | WP3 Feasibility probes | Probes 1 and 2 done as EXP-0000 (`research/design/feasibility.md`). Remaining probes wait on WP2 samples, a download decision and an API key |
 | WP4 Labelling pilot | Codebook v1 drafted (`research/design/labeling_codebook.md`). Labelling waits on WP2 samples and the owner's time |
 | WP5 Sealed ledger | Waits on WP2. Deadline 2027-01-10 |
-| Sub-study S1 | Compressing small models for an earnings exam. Plan frozen 2026-11-15 (`docs/plans/2026-11-15_substudy_s1_plan.md`). Downloads done, company split v1 fixed (EXP-0004), EarningsExam v0 built (EXP-0005: 18,618 test items). Next: S1-a probes and the S1-b pre-registration. S1 may use the MLX machine until 2026-12-15 |
+| Sub-study S1 | Compressing small models for an earnings exam. Plan frozen 2026-11-15 (`docs/plans/2026-11-15_substudy_s1_plan.md`). Downloads done, company split v1 fixed (EXP-0004), EarningsExam v0 built (EXP-0005: 18,618 test items). S1-a probes done (EXP-0006): block removal, expert slicing and healing at 512 tokens all work; the training excerpt cap must shrink or worked answers stay short. Next: the S1-b pre-registration. S1 may use the MLX machine until 2026-12-15 |
 | WP6 Research design v1.0 | Waits for WP1 to WP5 |
 
 The repo is public and `main` has been pushed to `origin` since 2026-11-15. Every finished study
