@@ -66,6 +66,9 @@ can be regenerated.
   appended to every question, and a grader that reads accounting parentheses as negative. Owner's
   decisions of 2026-11-18. An engineering measurement with no hypothesis and no verdict; results
   in `research/design/feasibility.md` §5b. Run 2026-11-18.
+- **EXP-0012** — Slices of the EXP-0011 responses: the pre-registered filer-size slice its score
+  step left out, and the exploratory error kinds of EXP-0009 under the v0.2 grader. Read-only, no
+  model run; results in the EXP-0011 verdict. Run 2026-11-18.
 
 ## Entries
 
@@ -75,7 +78,7 @@ can be regenerated.
 - **Status:** drafted 2026-11-18 from the owner's decisions of that day (sign instruction on every
   template, parentheses read as negative, rerun thinking off only, cap 512). Approved by the owner
   2026-11-18 ("Approve, commit, push, run"). Committed and pushed before any model saw a drawn
-  v0.2 item. Not yet run.
+  v0.2 item. Run 2026-11-18; verdict below.
 - **Claim under test:** descriptive, as EXP-0007. The S1 ladder's zero-shot scores, gates, test-set
   size and answer lengths when the sign is asked for, accounting negatives are read, and answers
   have room to finish. Its outcomes replace EXP-0007's for S1-c.
@@ -107,11 +110,59 @@ can be regenerated.
 - **Not in scope:** thinking on; test items; training; any further change to the exam.
 
 ### VERDICT
-- **Pre-registration commit:**
-- **Result:**
-- **Failure analysis / slices:**
-- **Leakage sign-off:**
-- **Verdict:** descriptive (no ACCEPT / REJECT); gate outcomes recorded per criterion.
+- **Pre-registration commit:** `10dcbd9` (pushed before the run). Run 2026-11-18 14:50 to 18:10,
+  all five runs complete (600 items each): 28, 22, 47, 84 and 19 minutes. `prepare` confirmed the
+  ids, gold and excerpts equal EXP-0007's. Outputs: `s1/exp0011/scores.json`; filer size and error
+  kinds in `s1/exp0011/slices.json` (EXP-0012).
+- **Result** (thinking off, 512-token cap, accuracy % with 95% company-bootstrap interval; change
+  from EXP-0007 in brackets after it):
+
+  | Model | B1 (n 360) | B2 (n 240) | Negative gold (n 178) | B1 scale conversion | Forced |
+  |---|---|---|---|---|---|
+  | Qwen3.5-0.8B | 59.4 [54.1, 64.8] (+9.2) | 53.8 [47.6, 60.5] (+16.7) | 41.6 | 34.0 | 3.5% |
+  | Qwen3.5-2B | 79.2 [75.1, 83.4] (+16.9) | 57.5 [51.4, 63.8] (+15.0) | 62.9 | 67.9 | 4.2% |
+  | Qwen3.5-4B | 93.1 [90.5, 95.6] (+8.6) | 88.3 [84.2, 92.1] (+16.7) | 87.1 | 82.1 | 2.0% |
+  | Qwen3.5-9B | 95.6 [93.6, 97.5] (+5.8) | 86.7 [82.3, 90.8] (+18.3) | 87.6 | 94.3 | 2.7% |
+  | OLMoE-1B-7B | 13.6 [10.0, 17.1] (−1.1) | 7.9 [4.6, 11.6] (−2.1) | 5.1 | 2.8 | 8.2% |
+
+  Invalid (no number) at most 0.5%. Peak memory 1.9 to 5.7 GiB.
+
+  1. **Distillation gate: 9B → 4B fails; the two pairs into the 0.8B pass.** 9B → 4B: +2.5
+     [−0.5, 5.5] on B1 and −1.7 [−6.5, 3.5] on B2. 9B → 0.8B: +36.1 [30.4, 41.6] and +32.9
+     [25.7, 39.6]. 4B → 0.8B: +33.6 [28.2, 39.3] and +34.6 [28.0, 41.2]. By the rule of EXP-0007
+     criterion 1, 9B → 4B is dropped from S1-c.
+  2. **Ceiling and floor.** The 9B is above 95% on B1 (95.6), so B1 is dropped from the 9B's S1
+     tests. OLMoE is below 20% on both sections, as before. No other rung is at either bound.
+  3. **Test-set size: the owner decides.** H1/H2 (4B against 0.8B): d = 0.383, DE = 1.01,
+     n = 4,794. H5 (4B against 2B): d = 0.267, DE = 0.97, n = 3,193. H8 (OLMoE against the 4B)
+     n = 9,890, reported but not used: OLMoE is at the floor on both sections. The size is 4,794:
+     above 3,000, within the test pool at 3 items per company (5,451).
+  4. **Answer length.** The 9B writes a median 242 generated tokens (90th percentile 381) and the
+     4B 242 (384). Of their correct answers, none finishes within 64 tokens, 7.1% (9B) and 12.4%
+     (4B) within 128, and 57.8% and 62.3% within 256.
+- **Failure analysis / slices** (EXP-0012; filer size pre-registered, the rest exploratory):
+  1. **The sign fix worked.** Dropped minus signs fell from 49 to 2 errors for the 4B and from 52
+     to 2 for the 9B; negative-gold accuracy rose from 52 to 87% for both. Together with the
+     longer cap, every Qwen3.5 rung gained 6 to 18 points. EXP-0007's 9B → 4B pass was an
+     artefact of signs and the cap.
+  2. **The cap.** Forced answers fell from 35 to 40% of items to 2 to 4%. Most correct answers
+     need more than 128 tokens with thinking off.
+  3. **Filer size**, large accelerated / accelerated / non-accelerated or smaller: 0.8B 61 / 53 /
+     53, 2B 72 / 76 / 68, 4B 94 / 86 / 89, 9B 92 / 92 / 93. The small-filer gap of EXP-0007
+     closed for the 4B and the 9B, which suggests it came mostly from losses.
+  4. **What the 9B still gets wrong** (48 items, read by Claude against the 4B's answers): about 9
+     are rounding (a whole-number percentage where one decimal place was asked, or a figure
+     converted to millions and rounded); the rest are wrong rows, periods or arithmetic. The 4B
+     gets 32 of the 48 right. EPS change is the weakest template for every rung (0.8B 26%,
+     4B 79%, 9B 86%). A few B2 golds are extreme (operating margins in the thousands of percent, revenue
+     growth below −100%), from companies with almost no revenue; they are correct but odd.
+  5. **OLMoE** did not gain: it is at the floor through reasoning, not format.
+- **Leakage sign-off:** development items from releases accepted after 2026-06-30 only; no test
+  item opened. Claude read development answers to classify errors. No roster model labelled gold.
+- **Verdict:** descriptive. With the sign asked and room to answer, the 4B matches the 9B on this
+  exam: 9B → 4B fails the gate and is dropped from S1-c; 9B → 0.8B and 4B → 0.8B pass by more than
+  30 points. The 9B is at the ceiling on B1 and OLMoE at the floor on both sections. The S1 test
+  size of 4,794, and the training excerpt cap given answers of about 250 tokens, go to the owner.
 
 ## EXP-0007 — S1-b headroom: the S1 ladder zero-shot on EarningsExam v0 development items (2026-11-17)
 

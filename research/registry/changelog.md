@@ -2,6 +2,35 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-18 — Owner decisions for the S1-c pre-registration
+
+- **What:** chosen by the owner from options after EXP-0011:
+  1. S1-c distils one pair, 4B → 0.8B. 9B → 0.8B also passed the gate but is not run: the 4B is
+     as accurate on this exam and labels about twice as fast.
+  2. The S1 test set is 3,000 items, which detects about 3.8 points at the registered α and power
+     (4,794 would detect 3).
+  3. Training items keep 400-token excerpts; the teacher is asked for a terse worked answer (the
+     row, the computation, the box), and only correct answers that fit 512 tokens are kept. A small
+     development probe first checks the 4B's accuracy holds when terse.
+  4. H8 is dropped from S1: OLMoE-1B-7B, the only MoE that fits, is at the floor on both sections.
+     The expert-slicing results of EXP-0006 stay as engineering findings.
+- **Why:** EXP-0011 verdict; evaluation time before the MLX machine is released on 2026-12-15.
+- **Assets affected:** the S1 plan's confirmatory set (H8 removed) and the S1-c pre-registration,
+  which records these as amendments to the frozen plan.
+
+## 2026-11-18 — S1-b rerun (EXP-0011): the 4B matches the 9B; 9B → 4B dropped from S1-c
+
+- **What:** on EarningsExam v0.2, thinking off with a 512-token cap, B1 / B2 accuracy: 0.8B
+  59 / 54, 2B 79 / 58, 4B 93 / 88, 9B 96 / 87, OLMoE 14 / 8. Every Qwen3.5 rung gained 6 to 18
+  points on EXP-0007. 9B → 4B fails the gate (+2.5, interval [−0.5, 5.5] on B1; −1.7 on B2) and is
+  dropped from S1-c; 9B → 0.8B and 4B → 0.8B pass by more than 30 points. The 9B is at the ceiling
+  on B1. The S1 test size is 4,794, within the pool, above 3,000. EXP-0012 slices the responses.
+- **Why:** EXP-0007 measured the exam's sign defect and its 256-token cap as much as the models.
+- **Evidence:** the EXP-0011 verdict; `s1/exp0011/scores.json` and `slices.json` on the drive.
+- **Assets affected:** EXP-0011's gates replace EXP-0007's for S1-c. Owner decisions before the
+  S1-c pre-registration: the teacher (9B or 4B for the 0.8B), the test size, the training excerpt
+  cap given correct answers of about 250 tokens, and H8 with OLMoE at the floor.
+
 ## 2026-11-18 — EarningsExam v0.2 (EXP-0010); S1-b rerun pre-registered (EXP-0011)
 
 - **What:** v0.2 appends `Use a minus sign for a negative value (a loss or a decrease).` to every
