@@ -2,6 +2,25 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-18 — S1-b run (EXP-0007): all three S1-c pairs pass the gate; signs need fixing
+
+- **What:** EXP-0007 ran as pre-registered on 600 post-cutoff development items of EarningsExam
+  v0.1. Thinking off, B1 / B2 accuracy: 0.8B 50 / 37, 2B 62 / 43, 4B 84 / 72, 9B 90 / 68,
+  OLMoE 15 / 10. All three S1-c pairs pass the distillation gate; 9B → 4B only on B1 and at the
+  margin (+5.3, interval [1.7, 9.0]). OLMoE is at the floor on both sections. The S1 test size
+  comes out at 5,462 (H1/H2) without OLMoE's stand-in, above 3,000 and above the test pool at 3
+  items per company, so it goes to the owner. EXP-0009 slices the same responses.
+- **Why:** step S1-b of the S1 plan; gates S1-c.
+- **Evidence:** the EXP-0007 verdict; `s1/exp0007/scores.json` and `slices.json` on the drive.
+- **Found on the way:** 178 of the 600 golds are negative, and only the EPS-change question tells
+  the model to use a minus sign. A dropped sign is the largest single error for the 4B and the
+  9B, and `parse_number` reads accounting negatives such as `(1,234)` as positive. The 9B → 4B
+  pass survives reading parentheses as negative and fails if signs are ignored. Correct teacher
+  answers are long (11 to 13% within 128 tokens), and thinking never closes within 2,048 tokens.
+- **Assets affected:** the S1-c pre-registration, which needs owner decisions on the test size,
+  the sign wording and parsing, the thinking-off cap, and the training excerpt cap or answer
+  length. H8 has no usable stand-in while OLMoE sits at the floor.
+
 ## 2026-11-17 — EarningsExam v0.1 (EXP-0008); EXP-0007 amended to use it
 
 - **What:** EXP-0008 rebuilds the exam with the v0 generator and one changed rule: an excerpt

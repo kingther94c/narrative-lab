@@ -71,7 +71,8 @@ can be regenerated.
   before any model saw a sampled item. **Amended 2026-11-17, before the run** (owner: "Fix first,
   then run"): items come from EarningsExam v0.1 (EXP-0008) instead of v0, because v0 excerpts
   could lose the line naming each column's period. Only the item source, the pool and the draw
-  change; every other rule stands. The v0 draw is archived on the drive, unused. Not yet run.
+  change; every other rule stands. The v0 draw is archived on the drive, unused. Run
+  2026-11-17/18; verdict below.
 - **Claim under test:** descriptive, not a hypothesis (plan §4, S1-b). How each rung of the S1
   ladder scores zero-shot on B1 lookup and B2 computation; whether the gaps between rungs leave
   anything to distil; and the disagreement rates that size the S1 test set.
@@ -155,8 +156,79 @@ can be regenerated.
   informed by criterion 4 but not made here.
 
 ### VERDICT
-- **Pre-registration commit:**
-- **Result:**
-- **Failure analysis / slices:**
-- **Leakage sign-off:**
-- **Verdict:** descriptive (no ACCEPT / REJECT); gate outcomes recorded per criterion.
+- **Pre-registration commit:** `8e2db31` (pushed before the run), amended in `0943e3a` (pushed
+  before the run). Run 2026-11-17 20:58 to 2026-11-18 12:16, all nine runs in the registered
+  order, complete (600 items thinking off, 300 thinking on). Draw SHA-256 as registered. Outputs:
+  `s1/exp0007/scores.json`; slices from the same raw responses in `s1/exp0007/slices.json`
+  (EXP-0009).
+- **Result** (thinking off, accuracy % with 95% company-bootstrap interval):
+
+  | Model | B1 (n 360) | B2 (n 240) | B1 scale conversion (n 106) | Forced | Peak GiB | s / item |
+  |---|---|---|---|---|---|---|
+  | Qwen3.5-0.8B | 50.3 [45.0, 55.6] | 37.1 [30.8, 43.5] | 19.8 | 36% | 2.1 | 2.6 |
+  | Qwen3.5-2B | 62.2 [57.2, 67.6] | 42.5 [35.9, 48.4] | 31.1 | 39% | 1.9 | 1.9 |
+  | Qwen3.5-4B | 84.4 [80.8, 88.0] | 71.7 [65.6, 77.3] | 65.1 | 35% | 3.2 | 4.5 |
+  | Qwen3.5-9B | 89.7 [86.7, 92.7] | 68.3 [62.3, 74.0] | 81.1 | 40% | 5.6 | 7.3 |
+  | OLMoE-1B-7B | 14.7 [11.1, 18.6] | 10.0 [6.4, 13.8] | 0.0 | 55% | 4.2 | 1.6 |
+
+  Thinking on (300-item subset; B1 n 172, B2 n 128): 0.8B 58.1 / 44.5, 2B 61.6 / 46.1, 4B
+  78.5 / 68.0, 9B 89.0 / 84.4. Invalid (no number) at most 0.7% in any run.
+
+  1. **Distillation gate: all three pairs pass.** 9B → 4B passes on B1 only, at the margin:
+     +5.3 [1.7, 9.0]; on B2 the 4B leads, −3.3 [−9.2, 2.3]. 9B → 0.8B: +39.4 [34.0, 44.7] on
+     B1, +31.2 [24.5, 37.9] on B2. 4B → 0.8B: +34.2 [28.7, 39.7] and +34.6 [27.6, 41.6].
+  2. **Ceiling and floor.** No Qwen3.5 rung is at the ceiling or the floor on either section.
+     OLMoE is below 20% on both, so both sections are dropped from its S1 tests.
+  3. **Test-set size: above both limits; the owner decides before S1-c.** H1/H2 (4B against
+     0.8B): d = 0.393, DE = 1.12, n = 5,462. H5 (4B against 2B): d = 0.317, DE = 1.09,
+     n = 4,270. H8 (OLMoE against the 4B, the dense rung nearest its 4.2 GiB): d = 0.678,
+     n = 8,893. The largest is 8,893, but OLMoE is at the floor on both sections (criterion 2),
+     so its stand-in measures nothing; without it the largest is 5,462. Both are above 3,000 and
+     above the test pool at 3 items per company (1,817 × 3 = 5,451).
+  4. **Answer length.** Thinking off, the 9B writes a median 216 tokens (90th percentile 256, the
+     cap) and the 4B 234 (256). Of their correct answers, none finishes within 64 tokens; 11.3%
+     (9B) and 13.4% (4B) finish within 128. The prompt asks for brief reasoning; the models do
+     not keep to it.
+  5. Thinking on, every run hits the 2,048 cap: thinking never closed in 100% of 0.8B and 2B
+     items, 96% of 4B and 95% of 9B items, so thinking-on scores are answers forced after 2,048
+     tokens of thought. Run times: 23, 18, 42, 73 and 16 minutes thinking off; 117, 88, 195 and
+     346 minutes thinking on.
+- **Failure analysis / slices** (EXP-0009; the filer-size slice is the pre-registered one and was
+  left out of the score step, the rest are exploratory):
+  1. **Filer size**, thinking off, large accelerated (325 items) / accelerated (66) /
+     non-accelerated or smaller (176): 0.8B 51 / 44 / 38, 2B 61 / 62 / 45, 4B 86 / 76 / 71,
+     9B 86 / 83 / 74, OLMoE 17 / 14 / 7. Smaller filers are harder for every rung.
+  2. **Signs.** Gold is negative in 178 of the 600 items (losses, declines, negative margins).
+     Only the EPS-change template tells the model to use a minus sign; the loss and growth
+     questions do not. A dropped minus sign is the largest single error for the 4B and the 9B:
+     49 of the 4B's 124 wrong answers and 52 of the 9B's 113. On negative-gold items they score
+     52%. Thinking on, the 4B drops the sign on 79% of negative items, often after debating the
+     sign convention in its reasoning. Some answers are written in accounting form,
+     `(1,234)` or `-(5.6)`, which `parse_number` reads as positive: 3 to 15 boxed answers per
+     Qwen3.5 rung (25 for OLMoE) open with a parenthesis.
+  3. **Sign rule sensitivity of the gate.** Reading accounting parentheses as negative: 9B → 4B
+     +5.6 [1.7, 9.4] on B1, still passing. Counting |answer| = |gold| as right (an upper bound on
+     what a sign instruction could recover): 9B → 4B +4.7 [1.4, 8.1] on B1 and −1.2 on B2,
+     failing, and the 9B reaches 95.3% on B1, over the ceiling. The two pairs into the 0.8B pass
+     under every rule by 30 points or more. The 9B → 4B pass is therefore fragile: it turns on
+     how signs are asked and read.
+  4. **The 256-token cap.** A third of thinking-off answers are forced. Forced answers score far
+     below finished ones (9B 60% against 95%; 4B 59% against 91%), so the cap lowers every
+     rung's score and may compress the 9B → 4B gap.
+  5. **Units.** On B1 items that need a scale conversion the rungs spread widely (0.8B 20%,
+     4B 65%, 9B 81%); a wrong unit by a factor of 1,000 is 2 to 26 errors per model.
+  6. **Thinking on against off, same 300 items:** 0.8B +12.8 points on B1 and +0.7 on B2; 2B
+     +1.1 / −0.8; 4B −4.6 / −3.9; 9B +0.6 / +11.7. Thinking helps the 9B on computation and the
+     0.8B on lookup, and hurts the 4B, mostly through signs.
+  7. **OLMoE** is at the floor through poor reasoning rather than format: it boxes a number in
+     99% of items, and none of its 106 scale-conversion answers is right. In the responses read it
+     adds up rows that were not asked for and mixes units.
+- **Leakage sign-off:** every drawn item is a development item from a release accepted after
+  2026-06-30; no test item was opened. Claude read development responses and questions to check
+  the grader and classify errors, which the protocol allows. No roster model labelled any gold.
+  The run used the pinned snapshots and nothing left the machine.
+- **Verdict:** descriptive. Gates as pre-registered: all three S1-c pairs pass (9B → 4B at the
+  margin and fragile to the sign rule); OLMoE's sections are dropped at the floor; the test-set
+  size goes to the owner. Before S1-c the exam needs a decision on signs (a minus-sign instruction
+  in every template whose gold can be negative, and accounting parentheses read as negative) and
+  on the thinking-off cap.
