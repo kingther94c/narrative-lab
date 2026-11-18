@@ -237,6 +237,31 @@ known ambiguity left as it is. Test items were not read.
 times the planned 1,500 items, is still ample. EXP-0007 was amended before its run to draw from
 v0.1.
 
+## 5b. EarningsExam v0.2 (EXP-0010)
+
+Script: `research/experiments/exp0010_earnings_exam_v0_2.py`, run 2026-11-18. **Defect in v0.1.**
+S1-b (EXP-0007) found that 178 of its 600 golds were negative, that only the EPS-change question
+asked for a minus sign, and that a dropped sign was the largest single error for the 4B and the
+9B. The grader also read accounting negatives such as `(1,234)` and `-(5.6)` as positive
+(EXP-0009).
+
+**Fix** (owner's choices, 2026-11-18). Every question of every template and phrasing now ends
+with the same sentence, `Use a minus sign for a negative value (a loss or a decrease).`, whatever
+the sign of its gold; EPS change loses its own sign clause, which this replaces. The grader
+`exp0010.grade` reads a boxed figure in parentheses, with or without a leading minus, as negative;
+13 fixed parser cases pass. v0.2 is written from the v0.1 item files, so ids, excerpts, gold,
+tolerance and templates are v0.1's, checked item by item (counts only on the test side).
+
+| Side | Items | Negative gold |
+|---|---|---|
+| Train | 3,805 | 1,161 |
+| Development | 3,896 | 1,147 |
+| Test | 15,739 | 3,793 |
+
+**What it means.** v0.2 supersedes v0.1 for S1. A smoke test of the 4B on four pre-cutoff
+development items outside the draw: it now names the sign step and boxes a loss shown in
+parentheses with a minus sign, in each of the two such items.
+
 ## 6. Sub-study S1: compression probes (EXP-0006)
 
 Script: `research/experiments/exp0006_s1a_compression_probes.py`, run 2026-11-16 (plan §4, S1-a.3

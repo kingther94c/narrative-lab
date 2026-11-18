@@ -2,6 +2,19 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-18 — EarningsExam v0.2 (EXP-0010); S1-b rerun pre-registered (EXP-0011)
+
+- **What:** v0.2 appends `Use a minus sign for a negative value (a loss or a decrease).` to every
+  question and grades a boxed figure in parentheses as negative. Ids, excerpts and gold are
+  v0.1's. EXP-0011, pre-registered and approved, reruns S1-b thinking off on the same 600 ids from v0.2, with a
+  512-token cap; its gates would replace EXP-0007's.
+- **Why:** owner's decisions of 2026-11-18, chosen from options: the sign sentence on every
+  template (not only those that can be negative), parentheses read as negative, rerun thinking off
+  only, cap 512 (EXP-0007: 256).
+- **Evidence:** the EXP-0007 verdict and EXP-0009 slices; `research/design/feasibility.md` §5b.
+- **Assets affected:** v0.2 supersedes v0.1 for S1 (the S1-b rerun, and the S1-c test draw and
+  training items). v0 and v0.1 stay on the drive.
+
 ## 2026-11-18 — S1-b run (EXP-0007): all three S1-c pairs pass the gate; signs need fixing
 
 - **What:** EXP-0007 ran as pre-registered on 600 post-cutoff development items of EarningsExam
@@ -47,7 +60,7 @@ Newest first. What changed, why, on what evidence, and what it affects.
   answered. Training items are alike. The 30-item hand check of EXP-0005 did not meet such a case.
 - **Why:** found by Claude while checking the scoring path.
 - **Evidence:** the smoke item `nCino, Inc.`, net income for the quarter to 2026-04-30, gold
-  13.641 (XBRL agrees), excerpt with no period line. The count is a heuristic, not yet checked
+  confirmed by XBRL, excerpt with no period line. The count is a heuristic, not yet checked
   by hand.
 - **Assets affected:** EXP-0007 is pre-registered and its draw made, but no model has seen a
   drawn item. The run waits for the owner: run it as registered, or fix the generator forward

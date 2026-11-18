@@ -62,7 +62,56 @@ can be regenerated.
   forward the v0 defect found while preparing EXP-0007. An engineering measurement with no
   hypothesis and no verdict; results in `research/design/feasibility.md` §5a. Run 2026-11-17.
 
+- **EXP-0010** — EarningsExam v0.2: v0.1 items with one sentence asking for a minus sign
+  appended to every question, and a grader that reads accounting parentheses as negative. Owner's
+  decisions of 2026-11-18. An engineering measurement with no hypothesis and no verdict; results
+  in `research/design/feasibility.md` §5b. Run 2026-11-18.
+
 ## Entries
+
+## EXP-0011 — S1-b rerun: the S1 ladder thinking off on EarningsExam v0.2, 512-token cap (2026-11-18)
+
+### PRE-REGISTRATION
+- **Status:** drafted 2026-11-18 from the owner's decisions of that day (sign instruction on every
+  template, parentheses read as negative, rerun thinking off only, cap 512). Approved by the owner
+  2026-11-18 ("Approve, commit, push, run"). Committed and pushed before any model saw a drawn
+  v0.2 item. Not yet run.
+- **Claim under test:** descriptive, as EXP-0007. The S1 ladder's zero-shot scores, gates, test-set
+  size and answer lengths when the sign is asked for, accounting negatives are read, and answers
+  have room to finish. Its outcomes replace EXP-0007's for S1-c.
+- **Why the answer is not obvious:** EXP-0009 bounds the sign effect but cannot say what a model
+  does when asked: the 9B → 4B gate passed with parentheses read as negative and failed with signs
+  ignored. A longer cap may raise every rung, or mostly the 9B, whose forced answers scored 60%
+  against 95% for finished ones.
+- **Sample and scope, fixed here before looking:** the 600 items of the EXP-0007 draw, same ids and
+  order (SHA-256 `0ee6dbfd…a6c570`), taken from EarningsExam v0.2 (EXP-0010). Only the question
+  sentence differs from EXP-0007; `prepare` checks the ids, gold and excerpts are equal. The
+  models have seen these items once, in EXP-0007; nothing was trained between the runs.
+- **Method and baseline:** EXP-0007's method, run by its code (`exp0011_s1b_headroom_v0_2.py`
+  imports it), with three changes: items from v0.2; grading by `exp0010.grade`; thinking off only,
+  at most 512 generated tokens, then the forced answer of at most 48 tokens as before. Models and
+  revisions, prompt, greedy decoding, intervals (company bootstrap, 2,000 resamples, seed
+  20261117) and run order (0.8B, 2B, 4B, 9B, OLMoE) as EXP-0007. Estimated 4 to 6 hours.
+  Baseline: EXP-0007 thinking off, regraded with the old grader for the comparison.
+- **Criteria** (thinking off):
+  1. **Distillation gate:** as EXP-0007 criterion 1, for 9B → 4B, 9B → 0.8B and 4B → 0.8B.
+  2. **Ceiling and floor:** as EXP-0007 criterion 2.
+  3. **Test-set size:** as EXP-0007 criterion 3, same formula and stand-ins. A stand-in whose
+     model is at the floor on both sections is reported but not used for the size. If the size is
+     above 3,000 or above the test pool at 3 items per company (5,451), the owner decides.
+  4. **Answer length:** for the 9B and 4B, median and 90th percentile of generated tokens, and the
+     share of correct answers finishing within 64, 128 and 256 tokens.
+  5. Also reported, descriptive: per model and section, the change from EXP-0007; accuracy on
+     negative-gold items; forced and invalid rates; accuracy by template and filer size.
+- **Contamination label of the result:** clean, as EXP-0007.
+- **Not in scope:** thinking on; test items; training; any further change to the exam.
+
+### VERDICT
+- **Pre-registration commit:**
+- **Result:**
+- **Failure analysis / slices:**
+- **Leakage sign-off:**
+- **Verdict:** descriptive (no ACCEPT / REJECT); gate outcomes recorded per criterion.
 
 ## EXP-0007 — S1-b headroom: the S1 ladder zero-shot on EarningsExam v0 development items (2026-11-17)
 
