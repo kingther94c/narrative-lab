@@ -351,3 +351,31 @@ answer of 32 / 64 / 96 / 128 tokens: 98.1% / 58.3% / 40.9% / 31.7%.
    (about 300 tokens would leave roughly 150; not yet measured), worked answers capped near 64
    tokens, or both.
    Test items can keep 400 tokens, since inference is not limited.
+
+## 7. Sub-study S1: a terse teacher (EXP-0013)
+
+Script: `research/experiments/exp0013_terse_teacher.py`, run 2026-11-18. The 4B (thinking off,
+cap 512) on 300 EarningsExam v0.2 development items from releases before 2026-07-01 (195
+companies, none in the S1-b draw), with EXP-0011's prompt and with one asking for a terse worked
+answer: the row and column used, the arithmetic in one line, the box. A training sequence is the
+chat-templated prompt plus the answer, and fits if it is at most 512 tokens.
+
+| Prompt | B1 | B2 | All, 95% interval | Generated tokens, median / p90 | Correct answers that fit |
+|---|---|---|---|---|---|
+| Standard | 92.8 | 93.3 | 93.0 [90.0, 95.7] | 226 / 373 | 11.8% |
+| Terse | 89.4 | 88.3 | 89.0 [85.3, 92.4] | 53 / 79 | 36.7% |
+
+Terse against standard on the same items: −4.0 points [−7.9, −0.3]; its extra errors are wrong
+rows or arithmetic, not signs or units. **The adoption rule, fixed before the run (no more than 3
+points lost, at least 70% of correct answers fitting), fails on both counts.**
+
+**Why so few fit.** The prompt, not the answer, fills the sequence: median 488 tokens with the
+terse instruction (467 with the standard one), of which the excerpt is 373. Estimated by trimming
+each excerpt to a cap (a rebuild may drop some items instead): with terse answers, 64% of correct
+answers fit at a 350-token excerpt cap, 96% at 300 and all at 250. With standard answers, 35% fit
+at 250 and 72% at 150.
+
+**What follows** (owner's choice, 2026-11-18). S1-c training items are rebuilt with a 300-token
+excerpt cap and labelled by the 4B with the terse prompt; only gold-checked correct answers are
+kept, so the 4-point loss costs yield, not label quality. Test excerpts stay at 400 tokens, so
+training and test excerpts differ in length.

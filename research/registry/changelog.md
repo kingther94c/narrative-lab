@@ -2,6 +2,19 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-18 — Terse teacher probe (EXP-0013); training excerpts capped at 300 tokens
+
+- **What:** asked for a terse worked answer, the 4B scores 89.0% against 93.0% with the standard
+  prompt (−4.0, interval [−7.9, −0.3]) and writes a median 53 tokens, but only 37% of its correct
+  answers fit a 512-token training sequence. The pre-stated adoption rule fails. The owner chose
+  from options: rebuild S1-c training items with a 300-token excerpt cap (about 96% of correct
+  terse answers would fit) and label them with the terse prompt, keeping only correct answers.
+- **Why:** the prompt, median 488 tokens with a 373-token excerpt, fills the sequence; shortening
+  answers alone cannot make room.
+- **Evidence:** `research/design/feasibility.md` §7; `s1/exp0013/scores.json` on the drive.
+- **Assets affected:** S1-c training items (a 300-token excerpt cap on the train side only; test
+  excerpts stay at 400) and the S1-c pre-registration, which records the train/test length gap.
+
 ## 2026-11-18 — Owner decisions for the S1-c pre-registration
 
 - **What:** chosen by the owner from options after EXP-0011:

@@ -69,6 +69,15 @@ can be regenerated.
 - **EXP-0012** — Slices of the EXP-0011 responses: the pre-registered filer-size slice its score
   step left out, and the exploratory error kinds of EXP-0009 under the v0.2 grader. Read-only, no
   model run; results in the EXP-0011 verdict. Run 2026-11-18.
+- **EXP-0013** — Terse teacher probe for S1-c: the 4B on 300 pre-cutoff v0.2 development items
+  (none in the S1-b draw), EXP-0011's prompt against one asking for a terse worked answer, thinking
+  off, cap 512. Adoption rule fixed before the run: terse is adopted if its accuracy is no more
+  than 3.0 points below standard on the same items and at least 70% of its correct answers fit a
+  512-token training sequence. An engineering measurement with no hypothesis. Run 2026-11-18:
+  not adopted. Terse 89.0% against standard 93.0% (−4.0 [−7.9, −0.3]); 37% of correct terse
+  answers fit, because the prompt, not the answer, fills the sequence. Results in
+  `research/design/feasibility.md` §7; the owner chose terse answers with 300-token training
+  excerpts.
 
 ## Entries
 
