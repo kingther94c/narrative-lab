@@ -81,6 +81,108 @@ can be regenerated.
 
 ## Entries
 
+## EXP-0014 — S1-c: distilling Qwen3.5-4B into Qwen3.5-0.8B on EarningsExam v0.2 (2026-11-18)
+
+### PRE-REGISTRATION
+- **Status:** approved by the owner 2026-11-18 ("批准并全部开跑"), with the amendment on training
+  items below. Committed and pushed before any model saw a test item, with the test draw's hash.
+  Before the commit, and with no model run: the training items were built (rule 1) and the test
+  draw made (rule 5). The first draw, at most 2 items per company, gave only 2,740 items (counts
+  seen, no item text); the cap was raised to 3, within the pool the owner sized the test set by,
+  and the draw redone. The first draw is archived, unused.
+- **Claim under test:** confirmatory H1 and H2 of the S1 plan (§4, S1-c), for the one pair the
+  owner kept, 4B → 0.8B. H1: training the 0.8B on the 4B's worked answers beats training it on its
+  own (the teacher adds something beyond fine-tuning on the task). H2: the best distilled 0.8B is
+  non-inferior to the zero-shot 4B within 3 points. Secondary H3 (shorter answers at no loss);
+  descriptive H4 (what is given up on section A).
+- **Why the answer is not obvious:** in S1-b (EXP-0011) the 4B leads the 0.8B by about 34 points
+  on both sections. Rejection-sampling fine-tuning on the student's own answers (D2) often closes
+  much of such a gap on a narrow task, so the teacher's increment over D2 may be small. H2 asks a
+  model five times smaller to close nearly all of it. Terse labels (EXP-0013) cost the 4B 4 points,
+  and training excerpts are shorter than test excerpts (300 against 400 tokens).
+- **Amendments to the frozen S1 plan, all by the owner on 2026-11-18** (changelog): one pair,
+  4B → 0.8B (9B → 4B failed the gate; 9B → 0.8B passed but is not run); two seeds, not three; full
+  fine-tuning; D4 last and exploratory; a 3,000-item test set; 300-token training excerpts with
+  terse labels; trained arms tested with the terse prompt. **One amendment proposed here, for
+  approval, approved by the owner 2026-11-18:** the plan says each arm trains on "the same items,
+  same count". D2 and D3 keep only
+  correct answers, and the items the 0.8B answers correctly are the easier ones, so a common item
+  set would remove the items where a teacher can add most. Proposed: the same count N for every
+  arm, each arm drawing its N from its own kept items.
+- **Sample and scope, fixed here before looking:**
+  1. **Training items.** EarningsExam v0.2 rules applied to the training side with a 300-token
+     excerpt cap (EXP-0008's excerpt rule with `MAX_TOKENS = 300`, then EXP-0010's question
+     sentence): pre-cutoff releases of training companies only. Items whose needed rows do not fit
+     300 tokens are dropped and counted. Built before any label was generated: 3,596 items from
+     842 companies (no column heading 445 dropped, over budget 544), excerpts median 282 tokens.
+  2. **Labels**, thinking off, one user turn with the terse prompt of EXP-0013, at most 160
+     generated tokens. Up to 4 attempts per item and model: the first greedy, then up to 3 sampled
+     (temperature 0.7, top-p 0.95, seeds 1 to 3); the first attempt graded correct by
+     `exp0010.grade` is kept. A label is also dropped if the training sequence (chat-templated
+     prompt + answer + end token) exceeds 512 tokens, or if it names a year later than the item's
+     period end. D3 labels from Qwen3.5-4B (`32f3e8e`); D2 labels from Qwen3.5-0.8B (`2fc0636`).
+  3. **N** = the smaller of the D2 and D3 kept counts, rounded down to a multiple of 50. Each arm
+     draws N items in the order of SHA-256 of `"exp0014:" + arm + ":" + id`.
+  4. **Development set:** the 600 items of the EXP-0007 draw from v0.2 (as EXP-0011). Each trained
+     run is evaluated on it at the end of epochs 1 and 2, and the better checkpoint is kept (two
+     development evaluations per run, the same for every arm). Ties go to epoch 1.
+  5. **Test set:** 3,000 v0.2 test items, all from post-cutoff releases of test companies, at most 3
+     per company (see Status). Seen templates (first phrasing of the seven development templates): 2,400, of
+     which B1 4 × 360 and B2 3 × 320. Unseen templates (second phrasing, or the held-out metrics
+     gross profit, gross margin and net margin): 600, of which B1 300 and B2 300, round robin over
+     the unseen templates of each section. Items are ordered by SHA-256 of `"exp0014-test:" + id`;
+     a short template's quota goes to the others of its section and kind (seen or unseen), as in
+     EXP-0007. The draw is made by script and its items are never shown to Claude. Made 2026-11-18:
+     3,000 items, 1,360 companies, 2,400 seen (operating margin short at 275; eps change 343,
+     revenue growth 342 after redistribution); SHA-256 of the ids in draw order
+     `8e6adfc4b300bc553e942cf5c9758fd416cc68061bf4b2a58ef1829c070dddfe`.
+- **Method and baseline:**
+  1. Arms (0.8B student unless stated): **D0** zero-shot, standard prompt of EXP-0011, cap 512 —
+     for the 0.8B and for the 4B (H2's comparator). **D1** gold only: target `\boxed{gold}`, gold
+     written at the precision shown in the excerpt. **D2** self: the 0.8B's own kept terse answers.
+     **D3** teacher: the 4B's kept terse answers. **D4** (exploratory, only if time allows before
+     2026-12-15): D3's text with a top-20 logit-distillation loss from the 4B, mixed 50/50 with
+     cross-entropy; its training loop is checked against a reference on 10 items before use.
+  2. Training: full fine-tuning of Qwen3.5-0.8B (bf16), sequence 512, batch 1, gradient
+     checkpointing, AdamW, learning rate 1e-5 with 50 warm-up steps and cosine decay, 2 epochs,
+     loss on answer tokens only. Two seeds (1, 2) per trained arm. Within 12 GiB.
+  3. Trained arms are tested with the terse prompt they were trained on, thinking off, at most 160
+     generated tokens, then EXP-0007's forced answer. D0 as EXP-0011. Greedy decoding.
+  4. Grading by `exp0010.grade`. A trained arm's score per item is the mean over its two seeds.
+  5. Intervals: paired, bootstrap over companies, 10,000 resamples, seed 20261118.
+  6. A speed check of 100 training steps precedes the runs. If one run would exceed 8 hours,
+     epochs drop to 1 for every arm, decided before any development evaluation.
+- **Criteria** (B test, all 3,000 items; family H1, H2, H5, H8 Holm-corrected at the end of S1;
+  this verdict reports each at α = 0.0125, the strictest step):
+  1. **H1:** Δ = D3 − D2. Supported if Δ ≥ 3.0 points and the one-sided test of Δ > 0 rejects at
+     α = 0.0125. Refuted if the upper end of the 97.5% interval is below 3.0. Otherwise
+     inconclusive.
+  2. **H2:** Δ = best distilled 0.8B − D0 4B, where "best distilled" is D3, or D4 if it was run
+     and scores higher on the development set. Non-inferior if the lower end of the one-sided
+     98.75% bound is above −3.0. Refuted if the upper end of the 97.5% interval is below −3.0.
+  3. **H3 (secondary):** D3's median generated tokens at most half of D0 0.8B's, with D3's accuracy
+     no more than 2 points below D0 0.8B's.
+  4. **H4 (descriptive):** accuracy change against D0 on section A: 100 items each of FinQA,
+     CFA-Easy and FinanceIQ (`learnai.finbench.load_problems(100, seed=20261118)`), thinking off,
+     cap 512, for D0, D2 and D3.
+  5. **Also reported:** every arm by section, seen and unseen templates, filer size and template;
+     forced and invalid rates; seed spread; training loss curves; label yields per model and
+     attempt.
+- **Contamination label of the result:** clean. Test items come from releases accepted after
+  2026-06-30, after both models' release. The teacher sees only pre-cutoff training excerpts. No
+  model labels a test item.
+- **Not in scope:** 9B as a teacher; LoRA; thinking on; S1-d and S1-e; any change to the exam.
+- **Estimated compute:** training 6 runs of about 4 to 6 hours; labels about 3 hours; test and
+  development evaluation about 12 hours; section A about 3 hours. About 45 to 55 hours, plus about
+  15 for D4.
+
+### VERDICT
+- **Pre-registration commit:**
+- **Result:**
+- **Failure analysis / slices:**
+- **Leakage sign-off:**
+- **Verdict:**
+
 ## EXP-0011 — S1-b rerun: the S1 ladder thinking off on EarningsExam v0.2, 512-token cap (2026-11-18)
 
 ### PRE-REGISTRATION

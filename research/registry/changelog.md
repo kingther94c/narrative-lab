@@ -2,6 +2,33 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-18 — S1-c pre-registered (EXP-0014); MoE survey for S1-e
+
+- **What:** EXP-0014 pre-registers S1-c for the one pair 4B → 0.8B: arms D0 to D3 (D4 last, if time
+  allows), two seeds, full fine-tuning, a 3,000-item test draw (1,360 companies, at most 3 items per
+  company), training items rebuilt at 300-token excerpts (3,596 items). Approved by the owner with
+  one plan amendment: every arm trains on the same number of items, each drawn from its own kept
+  answers. A survey of downloadable MoE models for S1-e (no download) is reported to the owner.
+- **Why:** the owner's decisions of 2026-11-18 and the EXP-0011 and EXP-0013 results.
+- **Evidence:** the EXP-0014 entry.
+- **Assets affected:** S1-c runs on the MLX machine for about two to three days.
+
+## 2026-11-18 — Owner decisions on S1-c's design and on S1-e
+
+- **What:** chosen by the owner from options:
+  1. S1-e continues with a different MoE: OLMoE-1B-7B is at the floor. Claude surveys MoE models
+     that can be downloaded and fit the 12 GiB budget; any download needs the owner's approval.
+     (gpt-oss-20b, already on disk, was offered and not chosen.)
+  2. D4 (logit distillation) moves to the end of S1-c, run only if time allows before 2026-12-15,
+     and is exploratory. H1 compares D3 with D2.
+  3. Two seeds per trained arm, not three (S1-c estimated at about 60 hours instead of 85).
+  4. A trained 0.8B is tested with the terse prompt it was trained on; D0 keeps the standard prompt.
+  5. The 0.8B student is fully fine-tuned, not LoRA (7.2 GiB at 512 tokens, EXP-0006).
+  6. H2 stays as frozen: the best distilled 0.8B non-inferior to zero-shot 4B within 3 points.
+  No preference on order: Claude drafts the S1-c pre-registration first.
+- **Why:** the EXP-0011 and EXP-0013 results, and the MLX machine's S1 window to 2026-12-15.
+- **Assets affected:** the S1-c pre-registration and the S1 plan's compute table.
+
 ## 2026-11-18 — Terse teacher probe (EXP-0013); training excerpts capped at 300 tokens
 
 - **What:** asked for a terse worked answer, the 4B scores 89.0% against 93.0% with the standard
