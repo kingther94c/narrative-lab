@@ -2,6 +2,36 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-20 — S1-c run (EXP-0014): the teacher helps, but the 0.8B cannot do the arithmetic
+
+- **What:** EXP-0014 ran in full (2026-11-18 22:07 to 2026-11-20 19:12): labels, six training
+  runs (D1 to D3, two seeds, two epochs), 3,000 test items for eight configurations, section A.
+  Slices in EXP-0015. D3 (taught by the 4B) scores 74.6% against 68.1% for D2 (taught by itself),
+  58.9% for D1 (gold only), 60.3% for the untrained 0.8B and 92.7% for the 4B. H1 supported
+  (+6.5 [5.0, 8.0]); H2 refuted (−18.2 [−20.0, −16.3]); H3 holds as registered; section A falls
+  (FinQA 38% to 10–11% for D3).
+- **Why it matters:** the distilled 0.8B matches the 4B on lookups (B1 93.8 against 92.9) but
+  scores 48.1% on calculations (B2), below the untrained 0.8B's 61.5%. Most of its wrong B2
+  answers set up the right expression and get the division wrong: the terse one-line format the
+  owner chose to fit 512 tokens removes the working the student needs.
+- **Owner's decisions (2026-11-20, multiple choice):** B2 is to be addressed with a calculator: a
+  new arm in which the student writes the expression and Python evaluates it, pre-registered
+  separately and reported apart from the tool-free results ("让模型调用计算器"). D4 is dropped: it
+  distils the same one-line text and does not address the arithmetic ("不做 D4").
+- **Assets affected:** registry EXP-0014 verdict, EXP-0015; roadmap S1 row; experiments README.
+
+## 2026-11-18 — S1-e: LFM2-8B-A1B downloaded as the candidate MoE
+
+- **What:** of three MoE models surveyed (LFM2-8B-A1B, Moonlight-16B-A3B-Instruct,
+  Phi-mini-MoE-instruct; all fit 12 GiB at 4 bits, run on mlx_lm 0.32 and predate the cutoff), the
+  owner chose LFM2-8B-A1B (Liquid AI; 8.3B parameters, 1.5B active, 32 experts with 4 routed; LFM
+  Open licence v1.0). The `mlx-community/LFM2-8B-A1B-4bit` snapshot `3266a85` (4.86 GiB of weights) is downloaded
+  to the external drive, approved 2026-11-18.
+- **Why:** OLMoE-1B-7B is at the floor on the exam. OLMoE's own card reports GSM8K 72, so public
+  scores do not predict this exam; LFM2 is checked zero-shot on the 600 development items after
+  S1-c before S1-e is designed around it.
+- **Assets affected:** S1-e and H8; the S1 plan's ladder (§2).
+
 ## 2026-11-18 — S1-c pre-registered (EXP-0014); MoE survey for S1-e
 
 - **What:** EXP-0014 pre-registers S1-c for the one pair 4B → 0.8B: arms D0 to D3 (D4 last, if time

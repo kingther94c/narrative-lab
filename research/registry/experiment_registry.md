@@ -78,6 +78,11 @@ can be regenerated.
   answers fit, because the prompt, not the answer, fills the sequence. Results in
   `research/design/feasibility.md` §7; the owner chose terse answers with 300-token training
   excerpts.
+- **EXP-0015** — Slices of the EXP-0014 responses: the pre-registered template and filer-size
+  slices, invalid rates, training loss curves and label yields its score step left out, and an
+  exploratory check of wrong B2 answers (does the student's own one-line expression evaluate to
+  the gold?). Read-only, no model run, counts only; results in the EXP-0014 verdict. Run
+  2026-11-20.
 
 ## Entries
 
@@ -177,11 +182,73 @@ can be regenerated.
   15 for D4.
 
 ### VERDICT
-- **Pre-registration commit:**
-- **Result:**
-- **Failure analysis / slices:**
-- **Leakage sign-off:**
-- **Verdict:**
+- **Pre-registration commit:** `13adbd2` (pushed before any label was generated). Run 2026-11-18
+  22:07 to 2026-11-20 19:12 by `queue`, every step complete: labels 4 hours, six training runs of
+  4.6 to 5.4 hours (peak 7.4 to 8.1 GiB), test 8.4 hours, section A 0.6 hours. The speed check
+  (5.54 s a step, 5.7 hours for two epochs) kept 2 epochs. Outputs: `s1/exp0014/scores.json`;
+  template, filer size, loss curves, label yields and error slices in `s1/exp0014/slices.json`
+  (EXP-0015).
+- **Labels and sets.** The 4B answered 3,270 of 3,596 training items correctly on its first
+  (greedy) attempt and 92 on none; the 0.8B 1,308 first, 1,286 on none. Kept after the 512-token
+  and later-year checks: D3 3,457, D2 1,875, D1 3,596, so N = 1,850. Median answer tokens: D3 50,
+  D2 51, D1 9. Development chose epoch 2 for every run except D2 seed 2 (epoch 1).
+- **Result** (3,000 test items, accuracy %, trained arms the mean of two seeds; intervals 97.5%,
+  company bootstrap, 10,000 resamples):
+
+  | Arm | All | B1 (1,740) | B2 (1,260) | Seen (2,400) | Unseen (600) | Median tokens | Seeds |
+  |---|---|---|---|---|---|---|---|
+  | D0 0.8B zero-shot | 60.3 | 59.5 | 61.5 | 60.4 | 60.2 | 239 | |
+  | D0 4B zero-shot | 92.7 | 92.9 | 92.5 | 91.8 | 96.3 | | |
+  | D1 gold only | 58.9 | 87.5 | 19.4 | 61.1 | 49.9 | | 52.8 / 65.0 |
+  | D2 self | 68.1 | 86.4 | 42.7 | 69.4 | 62.7 | | 72.3 / 63.9 |
+  | D3 teacher | 74.6 | 93.8 | 48.1 | 76.3 | 67.7 | 53 | 72.9 / 76.3 |
+
+  Forced answers 0 to 0.1% for trained arms (3.6% and 1.7% for D0); invalid at most 0.5%.
+
+  1. **H1 supported.** D3 − D2 = +6.5 [5.0, 8.0], one-sided p < 0.0001: B1 +7.4 [5.8, 8.9], B2
+     +5.4 [2.6, 8.2]. The interval resamples companies, not seeds; with two seeds, D3's worse seed
+     (72.9) is 0.6 points above D2's better one (72.3), and D2's seeds differ by 8.4 points.
+  2. **H2 refuted.** D3 − D0 4B = −18.2 [−20.0, −16.3]. On B1 the distilled 0.8B matches the 4B,
+     +0.9 [−0.8, 2.7]; on B2 it is 44.5 points below [−47.6, −41.4].
+  3. **H3 supported as registered**: D3's median 53 generated tokens against 239 for D0 0.8B, and
+     14.3 points more accurate overall. But on B2 D3 is 13.4 points *below* the untrained 0.8B.
+  4. **H4.** Section A, 100 items each, accuracy %: 
+
+     | | FinQA | CFA-Easy | FinanceIQ |
+     |---|---|---|---|
+     | D0 0.8B | 38 | 36 | 27 |
+     | D2 seeds 1 / 2 | 6 / 25 | 32 / 22 | 28 / 29 |
+     | D3 seeds 1 / 2 | 10 / 11 | 20 / 13 | 28 / 23 |
+
+     The trained models answer everything in the terse style (median 27 to 87 generated tokens
+     against 371 to 474 for D0); FinQA, which needs arithmetic, falls most.
+- **Failure analysis / slices** (EXP-0015; template and filer size pre-registered, the rest
+  exploratory):
+  1. **B2 fails in the arithmetic, not the reading.** Of D3's wrong B2 answers, 392 of 696 (seed
+     1) and 402 of 613 (seed 2) write a one-line expression that, evaluated, gives the gold: the
+     right rows, columns and formula, then a wrong quotient. Claude read D3's development answers
+     and saw the same: correct operands, a division done in one step and off by one to several
+     points. D2's answers rarely write an evaluable expression (13 and 19 of this kind). The terse
+     format gives the 4B room to divide in one line; the 0.8B cannot.
+  2. **By B2 metric**, D0 0.8B against D3 (seeds 1 / 2): EPS change 36.5 against 72.5 / 75.1 (a
+     subtraction, which training improves); revenue growth 70.8 against 26.6 / 21.4; operating
+     margin 76.7 against 43.7 / 60.7; gross margin 64.0 against 20.9 / 38.4; net margin 73.3
+     against 29.1 / 57.0 (divisions, which it worsens).
+  3. **Unit and sign errors** nearly vanish after training (D3: 11 and 10 unit errors, 4 and 1
+     dropped signs, against 80 and 33 for D0 0.8B). D2 seed 2 keeps 146 unit errors.
+  4. **Filer size:** no consistent pattern in any trained arm (D3 71.5 to 78.0 across bands).
+  5. **Seeds.** Spread is large for D1 (12.2 points) and D2 (8.4) and smaller for D3 (3.4).
+     Final training loss: D3 0.09 and 0.19, D2 0.28 and 0.25, D1 0.21 and 0.12.
+- **Leakage sign-off:** test items from releases accepted after 2026-06-30, never shown to Claude:
+  scripts printed counts and rates only. The teacher labelled pre-cutoff training items only; no
+  model labelled a test item. Claude read development answers and four section A answers (public
+  benchmark). No roster model labelled gold. Clean.
+- **Verdict:** H1 supported: the 4B's worked answers teach the 0.8B 6.5 points more than its own
+  do, on both sections. H2 refuted: the distilled 0.8B matches the 4B on lookups (B1) but not on
+  calculations (B2), where it falls below the untrained 0.8B. Terse labels move the reading of the
+  table and the format to the student but compress away the arithmetic it needs. H3 holds as
+  registered; H4 shows general finance ability lost. D4 (logit distillation of the same terse
+  text) would not address the arithmetic. What to try for B2 goes to the owner.
 
 ## EXP-0011 — S1-b rerun: the S1 ladder thinking off on EarningsExam v0.2, 512-token cap (2026-11-18)
 
