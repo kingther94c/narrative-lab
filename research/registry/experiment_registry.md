@@ -357,6 +357,136 @@ can be regenerated.
   and their history depends on blinding (A, B) or on other strategies. The condition "no
   measurable leakage on raw text for this call" is not met.
 
+## EXP-0016 — S1-c calculator: the distilled 0.8B and the 4B, both with a calculator (2026-11-21)
+
+### PRE-REGISTRATION
+- **Status:** draft, 2026-11-21, from the owner's decisions of 2026-11-20 and 2026-11-21: a
+  calculator, reported apart from tool-free results; a fresh test draw; the calculator at decoding
+  only, no retraining; the same calculator for the large and the small model, compared with both
+  equipped ("工具要跟大模型和小模型同时都可以使用"), then the remaining errors analysed to choose
+  the next step; the calculator recognises written arithmetic, plain or LaTeX, with no change to
+  the prompts; small model D3 only; the tool-free 4B also run. Approved by the owner 2026-11-21
+  ("批准，开始实现"). Before the commit: the script was written, the calculator checked on
+  development items (step 3 below, with its result and the one rule it added) and the test draw
+  made (step 2, with its counts and hash). Nothing is run on a test item before the commit is
+  pushed.
+- **Claim under test:** EXP-0014 found the distilled 0.8B (D3) matches the 4B on lookups (B1) but
+  scores 48.1% on calculations (B2), below the untrained 0.8B: it sets up the right expression and
+  gets the arithmetic wrong (EXP-0015). The owner's aim is not the tool itself but whether, with
+  the same tools, the small model performs like the large one. HC1: the calculator raises D3's B2
+  accuracy. HC2: with the calculator, D3 is non-inferior to the 4B with the calculator, within 3
+  points. HC3: the calculator narrows the gap between them.
+- **Why the answer is not obvious:** in EXP-0015, 392 of 696 (seed 1) and 402 of 613 (seed 2) of
+  D3's wrong B2 answers wrote an expression that evaluates to the gold, which bounds its gain near
+  31 points. But that count used a lenient after-the-fact parse; at decoding the expression must
+  be caught as it is written, the inserted value (four decimals) is unlike anything D3 saw in
+  training and may derail what follows, and the model must still round, sign and box it. The 4B
+  already gets 92.5% of B2 right without a tool, so it has less to gain, but it may also lose
+  where the calculator interrupts long LaTeX working. If D3's remaining errors are reading errors
+  (wrong rows, periods or formulas), no calculator closes HC2.
+- **Sample and scope, fixed here before looking:**
+  1. **Models.** The two D3 checkpoints EXP-0014 chose on development (`s1/exp0014/dev/
+     chosen.json`: D3-s1 and D3-s2, both epoch 2) and Qwen3.5-4B (`32f3e8e`). No training.
+  2. **Test draw.** EarningsExam v0.2 test items (post-cutoff releases of test companies) from
+     releases (accession numbers) none of whose items is in EXP-0014's draw, so no fact is asked
+     twice across the two experiments. Because the calculator idea came from counts on EXP-0014's
+     test items, those items are not reused. Target 1,500 B1 and 1,500 B2 items, at most 3 per
+     company over the whole draw. Within a section, metrics are taken round robin, each metric's
+     items in the order of SHA-256 of `"exp0016-test:" + id`; a metric that runs out passes its
+     places to the others of its section, and a section that runs out passes its places to the
+     other. If fewer than 3,000 items qualify, all that qualify are used and the count is
+     reported. Counts before drafting (no item text): 5,937 items from 1,107 companies qualify,
+     about 3,000 under the company cap, mostly second phrasings and held-out metrics, so the draw
+     is weighted to unseen templates, unlike EXP-0014's. Every comparison below is within this
+     draw. Made by script; items are never shown to Claude. **Made 2026-11-21:** 3,000 items
+     (B1 1,650, B2 1,350: B2 ran out and passed 150 places to B1) from 1,101 companies and 1,310
+     releases; 370 items on templates seen in EXP-0014's training, 2,630 unseen; no release in
+     common with EXP-0014's draw. SHA-256 of the ids in draw order, one per line:
+     `251720e6cb4727ed5f1bb37927b1312da5276aeb9bdcfbca16bc653937794460` (`s1/exp0016/
+     test_draw.jsonl` on the data drive, ids only).
+  3. **Development check**, before the test draw is opened: D3 (both seeds) and the 4B, each with
+     the calculator, on the 600 EXP-0007 development items. Parser and insertion bugs may be fixed
+     here, on development only; the code is then frozen and committed. Reported before the
+     commit: the share of B2 answers with at least one call, for each model. If it is below 50%
+     for either model after bug fixes, the owner decides before the commit. No choice is made
+     from development accuracy. Claude may read these development answers. **Result,
+     2026-11-21.** First run: B2 answers with a call, C 97.5% and 96.7% (seeds 1, 2), 4C 42.5%.
+     Of the 138 4C B2 answers with no call, 114 put the arithmetic after the `=` on one line and
+     the result on the next (`Label = <arithmetic>`, then `Label \approx`); most of the rest needed
+     no arithmetic. That layout is a recognition gap, so the chained rule (method, step 2) was
+     added, with 7 parser cases, and all three runs were redone (the first run is kept as
+     `dev_v1/`). Second run, final code:
+
+     | | B1 with a call | B2 with a call | calls per B2 answer | B1 acc. (tool-free) | B2 acc. (tool-free) | forced |
+     |---|---|---|---|---|---|---|
+     | C-s1 | 39.7% | 97.5% | 0.97 | 94.7 (94.4) | 76.7 (45.8) | 0 |
+     | C-s2 | 41.4% | 96.7% | 0.97 | 93.9 (93.9) | 75.0 (50.8) | 0 |
+     | 4C | 27.5% | 96.7% | 1.55 | 91.9 (93.1) | 87.1 (88.3) | 24 (12) |
+
+     Both models are above 50%, so no owner decision is needed. Read, not acted on (they are
+     how the models respond to a correct value, not parser bugs): the 4B often writes a wrong
+     expression and the right result (e.g. dividing by 1,000 to turn dollars into millions) and,
+     handed the true value of what it wrote, sometimes follows it; in 22 4C answers the chained
+     value already includes `\times 100` and the 4B writes `\times 100` after it again. C's
+     residual B2 errors are reading errors: a loss shown without its sign, the wrong row or
+     column, or a rounded "% Change" copied instead of calculated.
+- **Method and baseline:**
+  1. Arms, all thinking off, greedy, then EXP-0007's forced answer if no box was written:
+     **D3** (tool-free, terse prompt, at most 160 generated tokens, as EXP-0014); **C** (D3 with
+     the calculator); **4B** (tool-free, EXP-0011's standard prompt, at most 512 generated tokens,
+     as EXP-0014); **4C** (the 4B with the calculator). Prompts are unchanged; neither model is
+     told about the calculator.
+  2. **Calculator**, the same code for every arm. After each generated token, if the text ends in
+     `=` or `\approx`, the stretch before it is taken back to the first character that is not
+     part of written arithmetic: digits, `.` `,`, the operators `+ - * / × ÷`, brackets `( )` and
+     braces `{ }`, spaces, `$` `%` `\%`, and the LaTeX commands `\frac` `\dfrac` `\times` `\cdot`
+     `\div` `\left` `\right` `\,`. If it holds at least two numbers joined by an operator, decoding
+     stops. The stretch is cleaned (thousands separators, `$` and `%` removed; `\frac{a}{b}` to
+     `(a)/(b)`; `\times`, `\cdot`, `×` to `*`; `\div`, `÷` to `/`; `\left`, `\right` dropped) and
+     evaluated by an arithmetic-only parser (no `eval`). On success, a space and the value rounded
+     to four decimals, trailing zeros dropped, no separators, are appended and decoding resumes
+     from the full text; on failure (no parse, division by zero) nothing is appended. At most 8
+     calls per answer. Appended tokens do not count against the generation cap. **Chained rule,
+     added on development (step 3):** the 4B writes `$$ \text{Growth} = \frac{a - b}{b} \times
+     100 $$` and opens the next line with `$$ \text{Growth} \approx`, so nothing it writes
+     before a trigger is arithmetic. When a trigger is the first on its line, follows at most 80
+     characters of label, and the previous line ends in `=` or `\approx` followed by nothing but
+     written arithmetic (trailing `\\`, `\]`, `\)`, `.` and spaces dropped) that evaluates, that
+     value is appended. Each call records which rule fired.
+  3. Grading by `exp0010.grade` on the model's own boxed answer. A D3 or C score per item is the
+     mean over its two seeds. Intervals: paired, bootstrap over companies, 10,000 resamples, seed
+     20261121.
+- **Criteria** (new family HC1 to HC3; each reported at α = 0.0125, as EXP-0014):
+  1. **HC1:** Δ = C − D3 on B2 items. Supported if Δ ≥ 5.0 points and the one-sided test of
+     Δ > 0 rejects at α = 0.0125. Refuted if the upper end of the 97.5% interval is below 5.0.
+     Otherwise inconclusive.
+  2. **HC2 (the owner's question):** Δ = C − 4C on all items. Non-inferior if the lower end of
+     the one-sided 98.75% bound is above −3.0. Refuted if the upper end of the 97.5% interval is
+     below −3.0. Otherwise inconclusive.
+  3. **HC3:** Δ = (4B − D3) − (4C − C), how much the calculator narrows the gap, on all items.
+     Supported if Δ ≥ 3.0 points and the one-sided test of Δ > 0 rejects at α = 0.0125. Refuted
+     if the upper end of the 97.5% interval is below 3.0.
+- **Error analysis, to choose the next step** (descriptive): every wrong answer of C and 4C is
+  sorted by script, in this order, into: no number; no calculator call on a B2 item; the boxed
+  value differs from the last inserted value after rounding to the asked decimals (copying or
+  rounding); the inserted value is right by magnitude but the sign or unit of the box is wrong;
+  wrong setup (the evaluated expression is not the gold). Wrong setups are split further where
+  the script can: an operand equal to no number in the excerpt, against operands from the
+  excerpt combined in a wrong formula. Claude reads the residual development errors of C and 4C
+  (not test) and names patterns the script cannot. Counts only on test.
+- **Also reported, descriptive:** every arm by section, metric, seen and unseen template; C − D3
+  and 4C − 4B on B1 (the calculator should not hurt lookups); C − 4B, the tool-free comparison of
+  EXP-0014's H2; calls per answer and the share of answers with a call; forced and invalid rates;
+  seed spread; section A (EXP-0014's 100 items each of FinQA, CFA-Easy and FinanceIQ) for C and
+  4C, against D3 and the untrained 0.8B in EXP-0014.
+- **Contamination label of the result:** clean. Test items come from releases accepted after
+  2026-06-30, from releases EXP-0014 did not use. No model labels a test item; nothing is trained.
+- **Not in scope:** retraining with calculator annotations; D1, D2 or the untrained 0.8B with the
+  calculator; tools other than the calculator; rerunning EXP-0014's other arms on the new draw.
+- **Estimated compute:** development check about 70 minutes (D3 two seeds, 4B); on the test draw,
+  4B and 4C about 4 hours each, D3 and C about 1.2 hours each for two seeds; section A about 40
+  minutes. About 12 hours.
+
 ## EXP-0014 — S1-c: distilling Qwen3.5-4B into Qwen3.5-0.8B on EarningsExam v0.2 (2026-11-18)
 
 ### PRE-REGISTRATION
