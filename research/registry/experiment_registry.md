@@ -159,9 +159,127 @@ can be regenerated.
   Median gap between the two growth figures 1.0 point (19 pairs). No sign that the transport
   changes the model's answers beyond what one sample per prompt varies; that variation itself,
   5 in 20, means later probes need repeated samples. Outputs in `s2/exp0025/` and
-  `s2/dispatch/exp0025_agree/`.
+  `s2/dispatch/exp0025_agree/`. **Found afterwards (2026-11-21):** run inside the repository,
+  this backend gave the model the project's auto-memory index and CLAUDE.md (see EXP-0027); the
+  20 answers here were made with that context. Superseded by EXP-0027.
+- **EXP-0027** — S2-a headless backend, isolated (fix forward of EXP-0025). Each call runs from
+  an empty directory outside the repository with the definition passed inline, no settings read
+  and auto-memory off. Verified 2026-11-21 by asking the model to quote its context: no memory,
+  no CLAUDE.md, no tool; what the harness still attaches is one Agent SDK sentence before the
+  definition's prompt, the account's e-mail address, today's date, "Assistant knowledge cutoff
+  is June 2026" and the working-directory path. About 1,100 tokens of overhead a call. Seven
+  calls of EXP-0026 made before the fix (three with EXP-0025, four with a first form of this
+  script) are voided and kept in `s2/dispatch/exp0026/voided_*`. Every S2 result from this
+  transport is a result for a model that is told the date and its own cutoff.
 
 ## Entries
+
+## EXP-0026 — S2-b step 3: which element of blinding removes outcome leakage from the PM's call? (2026-11-21)
+
+### PRE-REGISTRATION
+- **Status:** running since 2026-11-21 (owner: "同意"). The script `exp0026_s2b_views.py`,
+  with its scoring, was written after approval and before any call. `prepare` drew 60 old and 30
+  clean episodes as specified (463 and 82 candidates; none skipped; 870 prompts, 39.6 million
+  characters). Baselines before any reply: persistence 0.64 on old and 0.54 on clean episodes,
+  reversal 0.36 and 0.46. Transport: EXP-0027, not EXP-0025 (see there).
+- **Claim under test:** on old earnings releases of large companies, a PM call by Claude Opus 5.5
+  on the raw text leans towards the outcome that happened, more than on releases after the
+  cutoff; switching on elements of blinding (names, periods, scaling, noise) removes that lean;
+  and asserting a wrong identity on a blinded release brings it back.
+- **Why the answer is not obvious:** EXP-0024 shows the model recalls these outcomes when asked
+  directly, but recall and its use in a forecast dissociate (`jia-2026`); a release already
+  states this quarter's growth, so a good reader may lean the right way without memory; the rule
+  attacker identifies every blinded view (EXP-0022), yet the model's memory is far weaker than a
+  database; hiding dates left the pre-cutoff advantage in place in one study (`wu-2026`).
+- **Sample and scope, fixed here before looking:** seed 20261122. Companies among the 250 largest
+  by revenue of the training and development side; episodes outside the 2-point dead band; a
+  press release with earnings words and at most 80,000 characters.
+  - **Old:** 60 episodes from EXP-0021's pull (filed 2019 to 2025): 30 that accelerate and 30
+    that decelerate, half from the top 50 and half from the 51st to 250th, one per company.
+  - **Clean:** 30 episodes released after the cutoff (on the drive): 15 and 15, one per company.
+  - **Arms.** (a) The eight views of EXP-0022 for all 90 episodes, sigma 0.02, with the ratio
+    sheet cut to the two latest quarters (changelog 2026-11-20, item 3): 720 calls. (b)
+    Transplant, old episodes only: the fully blinded view with one line added, "This is the
+    release of <company> for the quarter ended <date>", naming another top-250 company-quarter
+    drawn by seed among those whose realised direction is the opposite of the true one: 60
+    calls. (c) No-document prior for all 90: company, ticker and quarter only: 90 calls.
+  - Arms (a) and (b) run from `roster-claude-opus-5-5`, arm (c) from
+    `s2-recall-claude-opus-5-5`, all headless (EXP-0025), one sample per call, three at a time.
+- **Method and baseline:** the prompt asks, after the release, whether year-on-year revenue
+  growth of the next quarter will be higher or lower than this quarter's, as `PROBABILITY: <0 to
+  100 that it is higher>` and a rationale of at most three sentences. The **readout** is the
+  probability given to the direction that happened. Sampling units are episodes; intervals are
+  90% bootstrap intervals over episodes (10,000 draws, the seed above). Baselines on the same
+  episodes, computed before any reply is read: a constant 0.5, persistence and reversal of the
+  last change in growth.
+- **Criteria:**
+  1. **Leakage on raw text.** Mean readout of the raw view, old minus clean, at least 0.10 with
+     its interval above 0.
+  2. **Element effects.** For each of the four switches, the mean readout of the four views with
+     it on minus the four with it off, on old episodes, minus the same contrast on clean episodes.
+     A switch removes leakage if this is at most -0.05 with its interval below 0. H2 of the plan:
+     the period's effect is more negative than the name's.
+  3. **The fully blinded view.** Old minus clean mean readout of the view with all four on. No
+     leakage detected if the interval contains 0; reported with criterion 5's detectable size,
+     never as "none".
+  4. **Transplant, the positive control.** On old episodes, the probability given to the asserted
+     company's direction, transplant minus the fully blinded view, at least 0.10 with its
+     interval above 0. If it fails while criterion 1 holds, the readout is reported as unable to
+     see memory through a name, and criteria 2 and 3 are not interpreted.
+  5. **Smallest detectable effect, before reading** (readout standard deviation taken as 0.30,
+     one-sided 5%, 80% power): old against clean (60, 30) about 0.17; a paired contrast within 60
+     old episodes about 0.10 if paired differences have standard deviation 0.30.
+  6. **Information kept (descriptive).** On the 30 clean episodes: accuracy (probability above 50
+     counted as "higher") of the raw view, the fully blinded view and the mean of the seven
+     blinded views, beside the baselines. No threshold: 30 episodes detect only gaps near 30
+     points.
+  - Also reported: the same contrasts with the no-document prior subtracted; results by size
+    tier; the share of rationales that name the company or a date in views where it is hidden
+    (string match on the key).
+- **Contamination label of the result:** old arms contaminated by design (the subject of the
+  measurement); clean arms clean (vendor-stated cutoff). No blinded result is called clean.
+- **Not in scope:** Sonnet; test-side companies; repeated samples; number edits; the consensus
+  call's use in a playbook; sigma other than 0.02; small companies.
+
+### VERDICT
+- **Pre-registration commit:** none; the entry was written on 2026-11-21 before any call and is
+  uncommitted with this verdict. The scoring code was written before the first call.
+- **Run:** 2026-11-21, EXP-0027 transport. 870 calls, all with their canary, none with a tool
+  use, every probability parsed; 11.4 million tokens (14,400 per document call). Seven earlier
+  calls voided (EXP-0027).
+- **Result** (readout: probability given to the direction that happened; 90% intervals):
+  1. Leakage on raw text: **holds.** Old 0.778, clean 0.624; difference 0.155 (0.094 to 0.215).
+  2. Element effects, old minus clean: names +0.006 (-0.009 to 0.019), periods +0.002 (-0.019 to
+     0.022), scaling -0.028 (-0.048 to -0.010), noise +0.016 (-0.001 to 0.034). **No switch
+     removes leakage**; none reaches -0.05. H2 holds in sign only and means nothing at this size.
+  3. Fully blinded view: old 0.766, clean 0.616; difference 0.150 (0.095 to 0.203). **Leakage
+     detected**, as large as on raw text.
+  4. Transplant: **holds.** Asserting another company moves the call 0.111 (0.086 to 0.137)
+     towards that company's outcome.
+  6. Accuracy on clean episodes: raw 0.77, fully blinded 0.80, mean of blinded views 0.70, no
+     document 0.63; persistence 0.54. On old episodes: 0.93, 0.93, 0.98, 0.85; persistence 0.64.
+  - Also: the no-document prior alone has readout 0.78 on old episodes and 0.53 on clean ones.
+    Rationales name the hidden company in 7 of 360 views and give a calendar year in 27 of 360
+    where periods are hidden.
+- **Failure analysis / slices (exploratory):** the eight views of an old episode give nearly the
+  same call (raw and fully blinded correlate 0.95; mean gap 0.06). On old episodes the fully
+  blinded call correlates 0.87 with the call made from the company's name and quarter alone, on
+  clean ones 0.44, and old calls are as far from 0.5 as the memory-only calls (0.28 against 0.34;
+  clean 0.17). No trend by filing year from 2019 to 2025. Where persistence is wrong the blinded
+  readout on old episodes is still 0.73. Two readings fit and this run cannot separate them: the
+  model recognises the company and quarter from a blinded release (the rule attacker does,
+  EXP-0022; common-word segment and product names are left in); or old releases are easier to
+  read than the one clean quarter (persistence 0.64 against 0.54), since old and clean differ
+  in period as well as in exposure. The criterion-1 and criterion-3 differences carry that
+  confound; the within-episode contrasts of criterion 2 do not.
+- **Leakage sign-off:** clean arms are clean (vendor-stated cutoff); the model is told the date
+  and its cutoff by the transport.
+- **Verdict:** criteria 1 and 4 ACCEPT WITH SCOPE LIMIT (Opus 5.5, large companies, this call);
+  the claim that these four elements remove the lean is **REJECT**: wave-1 blinding, by code,
+  changes the PM's call by less than 3 points of readout while a name alone moves it by 11. H1 of
+  the plan (the re-test of GY-0000) is not met by wave 1. Next, to separate the two readings: ask
+  the model to name the company and quarter of the fully blinded views (the attacker of plan
+  §6), and compare clean and old episodes matched on the persistence baseline.
 
 ## EXP-0024 — S2-b step 2: where does the model's recall of outcomes end? (2026-11-20)
 

@@ -2,6 +2,34 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-21 — EXP-0026 run: code-only blinding does not change the PM's call
+
+- **What:** 870 calls to Opus, all valid. On old large-company releases the PM's call leans
+  towards what happened (readout 0.78 against 0.62 on clean releases), and the fully blinded view
+  leans as much (0.77 against 0.62). None of the four switches moves the call by 3 points; a
+  wrong name asserted on a blinded release moves it by 11. The registry has the verdict.
+- **Why it matters:** wave 1's blinding (pseudonyms, relative periods, scaling, noise at the
+  label's tolerance) fails the re-test of GY-0000 as built. Whether that is recognition through
+  the blinding or easier old periods is open; the next step is the attacker on blinded views.
+- **Assets affected:** S2 plan H1, H2 (not supported), §16; EXP-0026.
+
+## 2026-11-21 — S2: the headless transport leaked session context; isolated (EXP-0027); EXP-0026 started
+
+- **What:** EXP-0026 (blinded views, transplant, prior; 870 calls) is pre-registered and, with
+  the owner's go-ahead ("同意"), running. Its first calls came back in Chinese. Cause: `claude -p`
+  run inside the repository hands the model the project's auto-memory index (the owner's name,
+  "Chinese replies") and the repository's CLAUDE.md, whatever the agent definition says. EXP-0027
+  replaces EXP-0025's backend: an empty working directory outside the repository, the definition
+  inline, no settings, auto-memory off. Seven calls made before the fix are voided and kept.
+- **What remains, by the model's own quotation of its context:** an Agent SDK sentence, the
+  account's e-mail address, today's date, the statement of its knowledge cutoff, and the
+  working-directory path. These need an API key to remove and are recorded as properties of the
+  transport. In particular the model under evaluation knows the date and its cutoff.
+- **Assets affected:** EXP-0025's agreement check (made with the leaked context; its conclusion,
+  that the two transports give the same accuracy, is unchanged but now carries that caveat);
+  EXP-0026; rule 7's headless path, which from here on means EXP-0027's command. Not checked: what
+  in-session subagents receive beyond their definition (EXP-0024's replies were in English).
+
 ## 2026-11-21 — S2: commercial models may be called headless from a script (rule 7)
 
 - **What:** for sub-study S2, the no-tool agent definitions may be run by a script through the
