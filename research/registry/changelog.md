@@ -2,6 +2,26 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-21 — S2: commercial models may be called headless from a script (rule 7)
+
+- **What:** for sub-study S2, the no-tool agent definitions may be run by a script through the
+  Claude Code command line, one fresh process per item:
+  `claude -p --agent <definition> --tools "" --strict-mcp-config --no-session-persistence
+  --output-format json`, the prompt on standard input. AGENTS.md rule 7 says so. The in-session
+  subagent path stays valid. The owner had the command line installed (2.1.330, official
+  installer, checksum verified) and logged in on 2026-11-21, and said "好" to the plan.
+- **Why:** a subagent cannot read a file, so a prompt the length of an earnings release (about
+  13,000 tokens) would pass through the session twice per call; and the session reads what it
+  dispatches, which rules out test-side items (S2 plan, decision 5).
+- **Evidence (configuration checks, 2026-11-21, no study item):** headless, both
+  `s2-recall-claude-sonnet-5-5` and `roster-claude-opus-5-5` report no tool at all (in-session
+  subagents report twelve harness tools); the served model matches the definition; overhead is
+  about 1,400 tokens a call against 3,900 in session. The system prompt opens with one fixed
+  sentence of the Agent SDK before the definition's own text; it cannot be removed and is
+  recorded as a property of the transport.
+- **Assets affected:** AGENTS.md rule 7; EXP-0025 (the headless backend and its agreement check
+  against EXP-0024); S2 plan decision 5, for which this is the scripted path.
+
 ## 2026-11-20 — S1-c run (EXP-0014): the teacher helps, but the 0.8B cannot do the arithmetic
 
 - **What:** EXP-0014 ran in full (2026-11-18 22:07 to 2026-11-20 19:12): labels, six training
@@ -19,6 +39,118 @@ Newest first. What changed, why, on what evidence, and what it affects.
   separately and reported apart from the tool-free results ("让模型调用计算器"). D4 is dropped: it
   distils the same one-line text and does not address the arithmetic ("不做 D4").
 - **Assets affected:** registry EXP-0014 verdict, EXP-0015; roadmap S1 row; experiments README.
+
+## 2026-11-20 — S2-b step 2 run (EXP-0024): Opus recalls next-quarter growth up to its cutoff
+
+- **What:** the closed-book probe, pre-registered as EXP-0024, run with the owner's go-ahead: 210
+  prompts to `s2-recall-claude-opus-5-5` through the session (EXP-0023), about 825,000 subagent
+  tokens. Before the cutoff the model names the direction of next-quarter revenue growth correctly
+  77% to 97% of the time in every bin from 2019 to 2026H1, against 30% after it; for the 50
+  largest companies it recalls the growth figure itself to a median 0.06 to 0.23 points. Every
+  pre-registered criterion of recall holds, up to the last bin before the cutoff.
+- **Why it matters:** two of the plan's §16 conditions are settled. Leakage on raw text for this
+  call is large, so S2 has something to remove. Recall is saturated for large and mid-sized
+  companies in every old period, so strategy C (use what the model cannot recall) offers them
+  nothing; only small companies leave some room. Wave 1's weight returns to measuring blinded
+  views (A, B) with the transplant and element effects, which need prompts the length of a
+  release.
+- **Assets affected:** S2 plan §11 (S2-b steps 1 and 2 answered for Opus), §16; registry EXP-0024.
+
+## 2026-11-20 — S2: pull approved; the plan's fingerprint condition met, and the response
+
+The owner (2026-11-20, verbatim): "同意1 和2， 4不用测忽视". Item 1 was the pull, item 2 the
+response below, item 4 the Chinese reading copy of the design, which stays out of git (ignored
+locally).
+
+- **What (1), decision 4 of the S2 plan:** the pull of old earnings releases is approved, with
+  filing years 2019 to 2025 rather than the plan's 2019 to 2024. 2025 is where recall is expected
+  to fade (`gao-2025`, stream 03), and the releases on the drive start in 2026. Drawn by seed in
+  EXP-0021: 1,407 releases from 732 training and development companies. The December
+  company-facts snapshot of the same decision is approved with it.
+- **What (2), the condition in plan §16** ("the rule fingerprint already finds every noised
+  view"): met in EXP-0022's development runs. From eight quarters of ratios the nearest-neighbour
+  attacker finds 45 of 45 companies at the planned bound of 2 points, dates hidden; one quarter
+  of exact ratios finds 80%. The response, amending plan §7 item 5 and §11:
+  1. The rule attacker no longer sets the noise bound. The bound is fixed at the label's
+     tolerance (0.02 on levels, 2 points on a ratio). Its job is to break recall of exact
+     figures, the effect Levy (2026) measured, not to make a company unrecognisable. The
+     attacker's hit rate is reported with every view as the floor of identifiability.
+  2. The blinded views stay as measured arms (§5, §9 unchanged): what matters is whether the
+     model uses what it remembers, and a database attacker is far stronger than a model's memory.
+  3. How many quarters of ratios a view shows becomes a factor of S2-c's numeric treatment.
+  4. Wave 1's weight moves to strategy C first: S2-b step 2, the closed-book probe on the last
+     quarters before the cutoff, which needs no pull, runs before steps 1 and 3. D stays as a
+     label variant; E waits for wave 2 as planned.
+- **Why:** the owner's decision on the recommendation of 2026-11-20.
+- **Assets affected:** S2 plan §7, §11 and §15 (decision 4 settled); EXP-0021 (run), EXP-0022;
+  roadmap open decision 9.
+- **Also found the same day (EXP-0023):** the "no tools" of the agent definitions does not hold
+  in this harness. Subagents from both the roster and the S2 definitions report twelve harness
+  tools still offered (artifacts, plugin and skill search, messaging, worktrees, task stop, the
+  hand-back); none can read files or the web. The disallowed-tools list of all four definitions
+  now names eleven of them (the hand-back is how a subagent returns its answer); a recheck in this
+  session still listed them, so either edits load only in a new session or these tools cannot be
+  withdrawn by name. Until that is settled, EXP-0023 counts a call only when the harness reports
+  that it used no tool. Every subagent call costs about 32,000 tokens before its prompt, which
+  sets S2's scale (plan §14).
+
+## 2026-11-20 — Sub-study S2 frozen (v2); its recall definitions created
+
+- **What:** the owner approved S2 design v2 ("同意"). The text is kept verbatim in
+  `docs/plans/2026-11-20_substudy_s2_plan.md`; the design file's status line and decision 7 are
+  the only edits to it. The two no-tool definitions approved on 2026-11-19 are created:
+  `.claude/agents/s2-recall-claude-opus-5-5.md` and `s2-recall-claude-sonnet-5-5.md`. They match
+  the roster definitions (model, effort `high`, no CLAUDE.md, the same disallowed tools) except
+  for one sentence of the system prompt: "Use anything you know as well as the text in the
+  message" in place of "Answer only from the text in the message". Whether they load with no
+  tools is checked by `s2a_dispatch check` before any S2 call.
+- **Why:** S2-a starts after the freeze.
+- **Assets affected:** S2 only. Decisions 4 to 6 of the design (pulls, the test-side run, the
+  prospective arm) stay open.
+
+## 2026-11-19 — Sub-study S2 drafted: replaying history without look-ahead
+
+- **What:** a second sub-study, drafted in `research/design/substudy_s2_blind_replay.md` and not
+  frozen. A commercial-model PM agent is to learn from pre-cutoff episodes without using what the
+  model remembers of their outcomes. S2 compares ways of doing that: masking with numeric noise,
+  several noisy views of one episode, selecting episodes the model cannot recall, relative
+  questions, and the model as a writer of rules that code applies. The first call studied is the
+  direction of next-quarter fundamentals. Three rule changes come with it, approved by the owner
+  on 2026-11-19:
+  1. S2 is the controlled re-test of GY-0000. AGENTS.md rule 2 and the graveyard entry say so;
+     rule 2 is unchanged for the main benchmark and S1.
+  2. The commercial part, set aside on 2026-11-14, is reopened for S2 only (roadmap decision 5,
+     methodology §2).
+  3. S2's attacker and closed-book recall probe run from separate no-tool agent definitions,
+     `.claude/agents/s2-recall-claude-*.md`, to be created in S2-a (AGENTS.md rule 7, methodology
+     §2).
+- **Why:** the owner's request of 2026-11-18, quoted in the draft. Clean post-cutoff data covers
+  one labelled quarter; an agent that is to learn from experience needs more history than that.
+- **Evidence:** ResearchOS's masking runs (all 15 large caps identifiable; GY-0000). Levy (2026):
+  randomising the last digit of each financial-statement item takes GPT-4's earnings-direction
+  accuracy from 0.60 to 0.51, chance, while boosted trees lose 0.4 points. The roster system
+  prompt says "Answer only from the text in the message", which would bias an attacker towards
+  "cannot tell".
+- **Literature:** a new stream, `research/literature/streams/08_blind_replay.md` with its CSV: 13
+  deep notes in `papers/` and 6 triaged rows; `matrix.csv` now has 105 rows. It changed the draft
+  from v1 to v2 on the same day. Leakage is measured by arms assigned by design (what each view
+  of an episode shows), a wrong-identity arm as positive control and a post-cutoff placebo, and
+  no longer by what an attacker recognised (HindsightBench). Subtracting memory at the output is
+  dropped as a strategy: it needs logits. The rule-writer strategy gains three controls and a
+  low prior. Spot check: a fresh reviewer re-opened three papers for eight claims; all were
+  supported in substance; the count "five of seven" for early cutoffs and one pair of figures in
+  the MemTrial note (+0.127 against +0.082 with dates hidden) were not found in the parts
+  re-read, and the design does not rest on either figure.
+- **Feasibility:** EXP-0020, an engineering run on local archives (registry, Reserved). Among
+  four candidate labels only "revenue growth accelerates" leaves a simple rule nothing (base rate
+  49%, best rule 52%). 995 labelled episodes are after the cutoff, 37 of them from the 50 largest
+  companies; 29,606 are before it, and their releases are not on the drive. Experiment numbers
+  EXP-0020 to EXP-0029 are held for S2 so that the S1 and S2 sessions do not collide.
+- **Assets affected:** AGENTS.md rules 2 and 7; methodology §2; roadmap status table, open
+  decisions 5 and 9 to 11 and the source count; graveyard GY-0000; the experiment registry and
+  `research/experiments/README.md`. Nothing of the main programme's or S1's: S2 uses no MLX time
+  and no Benchmark v0 gold. No S2 hypothesis is pre-registered, nothing has been pulled from
+  EDGAR, no model has been called and no agent definition has been created.
 
 ## 2026-11-18 — S1-e: LFM2-8B-A1B downloaded as the candidate MoE
 

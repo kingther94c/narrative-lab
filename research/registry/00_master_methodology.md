@@ -41,6 +41,14 @@ change.
   `.claude/agents/`: no tools, no CLAUDE.md, a fixed two-line system prompt, effort pinned at
   `high`. Each call is a fresh subagent with one item and no gold. Results are labelled with the
   model ID and "Claude Code subagent, no tools", since the harness differs from a bare API call.
+- **Sub-study S2** (owner, 2026-11-19): the commercial part is reopened for S2 only. Two of S2's
+  roles, the attacker that tries to name the company and period and the closed-book recall probe,
+  must answer from what the model remembers. The roster prompt tells the model to "answer only
+  from the text in the message", which would bias an attacker towards "cannot tell". Those two
+  roles therefore run from separate no-tool definitions, `.claude/agents/s2-recall-claude-*.md`,
+  created in S2-a: the same pinned model IDs, effort and tool ban, a system prompt that allows
+  recall. Every call whose answer is scored as the model's own judgement still uses the roster
+  definitions.
 
 ## 3. Contamination labels
 

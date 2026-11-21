@@ -147,3 +147,36 @@ One row per default in `../registry/01_roadmap.md`. "Feasibility" refers to
   Tell Us Where to Look?" (December 2024 draft), which trains LLMs with fixed knowledge cutoffs.
 - The streams ran with a cap of three deep notes each after a usage interruption. The stop rule
   (two consecutive batches that change no design decision) was not reached; this is a first pass.
+
+## Stream 08, added 2026-11-19 for sub-study S2
+
+Built from `streams/08_blind_replay.md`: 19 rows, 13 with a deep note. The first-pass sections
+above are unchanged.
+
+**Gaps and the experiments they suggest**
+
+| Gap | Experiment in S2 |
+|---|---|
+| No study blinds a text while keeping its numbers usable; the method that reaches chance replaces every number with a placeholder | Views that rename, scale with two factors and add bounded noise, with statements kept adding up (S2-b, step 3) |
+| Numeric noise is tested on bare tables only | The same noise on earnings releases, against a rule attacker and a model attacker (H3) |
+| No company-level leakage measure with arms assigned by design | Eight views per episode, a wrong-identity arm, and the same contrasts after the cutoff (S2-b) |
+| Nobody has tested an LLM that is handed computed ratios on blinded statements | The blinded PM against a logistic baseline on clean episodes (H6) |
+| Hindsight carried by a rewriting or lesson-writing model is untested | Wave 2: a blind lesson writer, with the playbook ablated (S2-d) |
+| No audit covers Claude Opus 5.5 or Sonnet 5.5 | The closed-book probe on both (S2-a, S2-b step 1) |
+
+**Already answered: do not redo**
+
+- Renaming alone does not hide a text (`engelberg-2025`).
+- Instructions to ignore later knowledge do not work (`li-2026`; `lopez-lira-2025`).
+- Membership-inference scores, cross-model disagreement and performance decay are not usable
+  leakage measures here (`roy-2026`, `benhenda-2026`, `wu-2026`).
+- Output-side subtraction of memory needs logits (`li-2026`, `merchant-2025`).
+
+**Design defaults against the literature**
+
+- Test after every cutoff: supported; measured cutoffs mostly run early (`jia-2026`).
+- No masking for the main benchmark: supported.
+- Simple baselines first: supported (`levy-2026`, `wu-2026`, `roy-2026`, `gencay-2026`).
+- The memorisation probe of methodology §9: supported, with repeated samples, a hit-rate gate and
+  demeaning by entity and period. Its item-level regression on recall propensity is weakened:
+  the propensity may be saturated on a frontier model.

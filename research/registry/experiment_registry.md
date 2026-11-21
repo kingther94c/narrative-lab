@@ -83,8 +83,161 @@ can be regenerated.
   exploratory check of wrong B2 answers (does the student's own one-line expression evaluate to
   the gold?). Read-only, no model run, counts only; results in the EXP-0014 verdict. Run
   2026-11-20.
+- **EXP-0020 to EXP-0029** — held for sub-study S2 (`research/design/substudy_s2_blind_replay.md`),
+  so that S1 and S2, worked on in separate sessions, do not take the same number. S1 continues
+  from EXP-0016.
+- **EXP-0020** — S2-a episodes, candidate labels and rule baselines: for the training and
+  development companies of split v1, a quarterly series of revenue, operating income and net
+  income as first filed (the fourth quarter as the year less nine months), four candidate
+  next-quarter labels with their base rates and best simple rules, and a list of the earnings
+  releases since 2019 with what is already on the drive. It reads the company-facts snapshot of
+  2026-11-14 and the bulk submissions archive of 2026-11-12, pulls nothing and calls no model.
+  Test companies are not opened. An engineering measurement with no hypothesis and no verdict.
+  Run 2026-11-19, before the S2 design is frozen, as groundwork for its label and pull decisions.
+  1,362 of 1,559 companies have a series (36,929 quarters, 6,481 of them derived fourth
+  quarters); 31,065 episodes have a next quarter. Next-quarter base rate and best rule: growth
+  positive 68% (persistence 80%); growth accelerates, outside a 2-point dead band, 49% (reversal
+  52%); operating margin up 53% (persistence 66%); net income up 55% (persistence 64%). Since
+  2019 these companies filed 44,629 earnings releases; 33,378 map to a labelled quarter and 4,404
+  are on the drive, nearly all from 2026. Dated by release, 995 episodes are after the cutoff (734
+  outside the dead band; 37 and 25 for the 50 largest companies by revenue) and 29,606 are before
+  it. Three mistagged periods and 40 quarters filed together by late filers are excluded by rule.
+  `audit` recomputes 40 growth rates from the archive. Results in the S2 design, §8 and §10;
+  outputs in `s2/exp0020/` on the external drive.
+- **EXP-0021** — S2-a pull of old earnings releases (S2 plan, decision 4). `draw` picks, by seed
+  20261120 and without the network, labelled pre-cutoff releases not on the drive from EXP-0020's
+  list, training and development companies only: four in four different filing years for each of
+  the 250 largest companies by revenue, one from each of 500 other companies. `fetch` downloads
+  their press releases with EXP-0003's choice of document and text extraction; `audit` checks the
+  draw reproduces, that no release is post-cutoff or from a test company, and that the texts are
+  non-empty. No model is called. An engineering step with no hypothesis and no verdict. Run
+  2026-11-20 after the owner's approval, filing years 2019 to 2025: 1,407 releases from 732
+  companies (194 top 50, 713 from the 51st to 250th, 500 others; 1,061 training, 346
+  development); 228 of the 250 largest companies have candidates, ten of them fewer than four
+  years. 1,386 press releases fetched (one after a retry of a 502), 21 filings with no press
+  release document; 82 MB, median 50,000 characters. 24 texts lack every earnings word: mostly
+  the 8-K cover chosen because its description says "release" (EXP-0003's rule, kept as is),
+  a few releases about other news. Later draws exclude them. Outputs in `s2/exp0021/`.
+- **EXP-0022** — S2-a sanitiser (S2 plan §5 to §7). `build` writes the eight views of each
+  episode, a half-fraction (I = NPSZ) of four switches: names, periods, two-factor scaling, noise
+  (each current-period leaf times 1 + e, e ~ U(-0.02, 0.02); totals, differences, growth rates and
+  margins found by value re-derived; last digit of other levels redrawn), with a key per view.
+  Each view opens with a sheet of ratios from earlier filings: eight quarters of revenue growth,
+  operating margin and net margin. `check` tests every view; `fingerprint` is the rule attacker, a
+  nearest neighbour over all 1,362 training and development companies' as-filed ratios. No model
+  is called. An engineering step with no hypothesis and no verdict. Written 2026-11-20 and not
+  yet run for the record. Development runs in the session's scratch space, on 48 training and
+  development episodes drawn by seed (8 per cutoff side and size tier) and their 384 views: no
+  identity term or calendar year left where the switch is on, no growth rate that loses its sign,
+  no percentage touched by scaling. The attacker found the company in 45 of 45 episodes from the
+  eight-quarter sheet at the planned bound of 2 points per ratio, with dates hidden; 84% at 4
+  points, 49% at 8 points (84% within its top ten), 29% at 16. Exploratory, from the same
+  episodes: one quarter of exact ratios finds 80%; one quarter at 2 points finds 22%; two
+  quarters at 2 points, 36% (82% within the top ten). Known gaps: segment and product names that
+  are common words stay (wave 2); orderings across segments and the position against guidance
+  are not yet enforced under noise; numbers in prose without a currency sign or unit are left
+  as they are.
+- **EXP-0023** — S2-a transport for subagent calls: `emit` (items carry id, agent and prompt
+  only, plus a canary), `pending`, `ingest` (a call counts only if its canary returns and the
+  harness reports no tool use), `check`, `usage`. Written 2026-11-20; no study call made. Four
+  configuration calls the same day (two each to `s2-recall-claude-sonnet-5-5` and
+  `-opus-5-5`, then one each to an S2 and a roster definition after the disallowed-tools list
+  was extended): every one answered, used no tool, and listed twelve harness tools still
+  offered to it (artifacts, plugin and skill search, messaging, worktrees, task stop, the
+  hand-back); each cost about 32,000 subagent tokens and 2 to 6 seconds. A definition cannot
+  read a file, so a prompt the length of an earnings release (about 13,000 tokens) has to be
+  passed through the session verbatim.
+- **EXP-0025** — S2-a headless backend (changelog 2026-11-21, rule 7): `run` answers an EXP-0023
+  outbox through `claude -p --agent <definition> --tools ""`, three processes at a time, and
+  writes the inbox in EXP-0023's format, so the same canary check applies. Agreement check, an
+  engineering measurement with no hypothesis, run 2026-11-21: 20 of EXP-0024's 210 closed-book
+  prompts, drawn by seed 20261121, asked again headless of `s2-recall-claude-opus-5-5`. All 20
+  returned their canary with no tool use; 2,000 tokens a call (3,900 in session), 7.5 seconds.
+  Against the truth, each transport names the direction correctly in 17 of 20. The two agree on
+  15: four of the five differences are mid-sized and small companies, each transport right in
+  two, and the fifth is an after-cutoff prompt (UNKNOWN headless, a wrong guess in session).
+  Median gap between the two growth figures 1.0 point (19 pairs). No sign that the transport
+  changes the model's answers beyond what one sample per prompt varies; that variation itself,
+  5 in 20, means later probes need repeated samples. Outputs in `s2/exp0025/` and
+  `s2/dispatch/exp0025_agree/`.
 
 ## Entries
+
+## EXP-0024 — S2-b step 2: where does the model's recall of outcomes end? (2026-11-20)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Waits on the owner's choice of transport and usage budget (each
+  subagent call costs about 32,000 tokens, measured 2026-11-20). Written before any reply exists.
+- **Claim under test:** told only a company and a quarter, Claude Opus 5.5 recalls whether the
+  next quarter's year-on-year revenue growth rose or fell, for outcomes filed before its
+  cutoff, and does not for outcomes filed after it. The question is where, between 2019 and the
+  cutoff, that recall fades: strategy C uses the raw text of episodes the model cannot recall.
+- **Why the answer is not obvious:** recall of a forecast target is measured for frontier models
+  on macro series and headline figures, not on the growth direction of 1,300 companies of every
+  size; HindsightBench (`jia-2026`) finds measured cutoffs earlier than vendors' dates; memory of
+  small companies may be nil in every period.
+- **Sample and scope, fixed here before looking:** `exp0024_s2b_recall_probe.py prepare`, seed
+  20261121. EXP-0020's labelled episodes of training and development companies, outside the
+  2-point dead band. Seven bins by the date the outcome quarter was first filed (2019-2021,
+  2022-2023, 2024, 2025H1, 2025H2, 2026H1 to the cutoff, after the cutoff to 2026-11-11) by three
+  size tiers (top 50, 51 to 250, the rest), ten company-quarters per cell, one quarter per
+  company per cell: 210 prompts. One sample each from `s2-recall-claude-opus-5-5`, carried by
+  EXP-0023; a call counts only with its canary and no tool use.
+- **Method and baseline:** the prompt names the company, its ticker and two quarter-end dates,
+  shows no document, and accepts UNKNOWN. Scores per bin: answer rate; direction accuracy over
+  all prompts (UNKNOWN counts as wrong) and over answered ones; median absolute error of the
+  growth figure and the share that beats persistence (this quarter's growth carried forward).
+  The baseline for every bin is the after-cutoff bin, which the model cannot have seen: there,
+  any accuracy comes from what it knows of the company.
+- **Criteria:**
+  1. Recall in a bin: direction accuracy over all prompts at least 15 points above the
+     after-cutoff bin, with the 90% bootstrap interval of the difference above zero (resampled
+     prompts, seed 20261121, 10,000 draws).
+  2. Where recall ends: the latest bin before the cutoff that meets criterion 1.
+  3. Recall on large companies, the S2-b step 1 question: the top-50 and 51-to-250 tiers pooled
+     over the three bins from 2019 to 2024 (60 prompts) against the same tiers after the cutoff
+     (20 prompts), by criterion 1. If it fails, the plan's §16 condition "no measurable leakage
+     on raw text for this call" is reported as met, at this sample size.
+  4. Smallest detectable effect, computed before reading (accuracy near 50%, one-sided 5%, 80%
+     power): 30 prompts in a bin against 30 after the cutoff, about 32 points; the three bins
+     from 2019 to 2024 pooled (90) against 30, about 26; criterion 3's 60 against 20, about 32.
+     A smaller difference is reported as not detected, not as absent.
+- **Contamination label of the result:** prompts on outcomes filed before the cutoff probe
+  contaminated items by design; the after-cutoff bin is clean (vendor-stated cutoff).
+- **Not in scope:** Sonnet (the §12 comparison); repeated samples per prompt (one sample gives
+  rates per bin, not a propensity per company-quarter); any document.
+
+### VERDICT
+- **Pre-registration commit:** none; the repo has not been committed since. The entry above was
+  written, and its arithmetic corrected, before the first call; the scoring code for criteria 1
+  to 3 was added after the calls and before any score was computed.
+- **Run:** 2026-11-20, owner's go-ahead ("好的"), in-session transport (EXP-0023), three calls in
+  flight. 210 prompts and one retry (a reply with its canary in the middle); every call reported
+  no tool use. 825,000 subagent tokens in all, 3,900 per call, 5 seconds per call. Prompt names
+  were re-cased and the items re-emitted before the first call.
+- **Result:** direction accuracy over all prompts, before the cutoff, by bin: 2019-2021 0.77,
+  2022-2023 0.87, 2024 0.77, 2025H1 0.93, 2025H2 0.97, 2026H1 0.77; after the cutoff 0.30 (the
+  model answers UNKNOWN to 63% there; 9 of its 11 answers are right). Criterion 1 holds in every
+  bin (differences 0.47 to 0.67, every 90% interval above 0.27). Criterion 2: recall reaches the
+  last bin, 2026H1 (outcomes filed January to June 2026). Criterion 3: the 60 large-company prompts
+  of 2019-2024 score 0.90 against 0.30 (difference 0.60, interval 0.42 to 0.77). The growth figure
+  is recalled, not inferred: median absolute error for the 50 largest companies 0.06 to 0.23
+  points in every bin from 2019 to 2025H2, for the next 200 0.2 to 3.9 points, for the rest 2.6 to
+  25 points; after the cutoff the model gives two figures in 30.
+- **Failure analysis / slices:** criterion 1 counts UNKNOWN as wrong, so it mixes recall with the
+  willingness to answer; the numeric errors settle that the willingness reflects memory. Small
+  companies are the exception: direction 0.40 to 0.90 by bin and errors of several points, so
+  some old small-company episodes may be usable raw. The format example "7.5%" anchored at least
+  one reply, which said so (prompt p0145); kept for comparability, to be replaced in later probes.
+  One sample per prompt; 30 per bin.
+- **Leakage sign-off:** the after-cutoff bin is clean (vendor-stated cutoff 2026-06-30); the
+  replies there say the outcomes are after the model's data.
+- **Verdict:** ACCEPT WITH SCOPE LIMIT, for Claude Opus 5.5 and this call. The model recalls the
+  next quarter's revenue growth of large and mid-sized companies, nearly to the decimal, for every
+  period from 2019 to the cutoff. The plan's §16 condition "recall is saturated for every old
+  episode of a large company" is met: strategy C offers those companies nothing before the cutoff,
+  and their history depends on blinding (A, B) or on other strategies. The condition "no
+  measurable leakage on raw text for this call" is not met.
 
 ## EXP-0014 — S1-c: distilling Qwen3.5-4B into Qwen3.5-0.8B on EarningsExam v0.2 (2026-11-18)
 

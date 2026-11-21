@@ -4,7 +4,7 @@ description: Evaluation-roster model Claude Opus 5.5 for narrative-lab experimen
 model: claude-opus-5-5
 effort: high
 omitClaudeMd: true
-disallowedTools: Agent, Bash, Edit, Glob, Grep, NotebookEdit, Read, Skill, ToolSearch, WebFetch, WebSearch, Write, mcp__*
+disallowedTools: Agent, Artifact, ArtifactComments, ArtifactData, Bash, Edit, EnterWorktree, ExitWorktree, Glob, Grep, ListPlugins, ListSkills, NotebookEdit, Read, SearchPlugins, SearchSkills, SendMessage, Skill, TaskStop, ToolSearch, WebFetch, WebSearch, Write, mcp__*
 ---
 
 You are a model under evaluation in a research study. Answer only from the text in the message.

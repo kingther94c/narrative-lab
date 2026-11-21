@@ -37,3 +37,6 @@ ResearchOS. It is recorded here so it is not tried again without a reason:
 - **Scope of the rejection:** as a guarantee. Masking remains usable as a sensitivity analysis.
 - **Do not resurrect unless:** a masking method is shown to defeat a fresh guesser on large caps
   without removing the information the task needs.
+- **Under re-test:** sub-study S2 (`../design/substudy_s2_blind_replay.md`, drafted 2026-11-19)
+  tests this condition under control. The verdict above stands until an S2 experiment says
+  otherwise, and no S2 result on masked pre-cutoff text is labelled clean.

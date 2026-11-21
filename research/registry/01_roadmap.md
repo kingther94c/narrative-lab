@@ -20,6 +20,7 @@ plan differ, the approved plan wins until `changelog.md` records an amendment.
 | WP4 Labelling pilot | Codebook v1 drafted (`research/design/labeling_codebook.md`). Labelling waits on WP2 samples and the owner's time |
 | WP5 Sealed ledger | Waits on WP2. Deadline 2027-01-10 |
 | Sub-study S1 | Compressing small models for an earnings exam. Plan frozen 2026-11-15 (`docs/plans/2026-11-15_substudy_s1_plan.md`). Downloads done, company split v1 fixed (EXP-0004), EarningsExam v0 built (EXP-0005: 18,618 test items). S1-a probes done (EXP-0006): block removal, expert slicing and healing at 512 tokens all work; the training excerpt cap must shrink or worked answers stay short. Exam fixed forward as v0.1 (EXP-0008: 15,739 test items, column headings kept). S1-b run (EXP-0007, 2026-11-18): all three S1-c pairs pass the gate, 9B → 4B only at the margin; OLMoE at the floor; test size 5,462 goes to the owner. Exam questions do not ask for a sign on losses, the largest single error for the 4B and 9B (EXP-0009). Exam fixed forward as v0.2 (EXP-0010: a minus sign asked on every question, accounting parentheses read as negative). S1-b rerun (EXP-0011, thinking off, 512 cap): the 4B matches the 9B, so 9B → 4B is dropped; 9B → 0.8B and 4B → 0.8B pass by more than 30 points; 9B at the ceiling on B1; test size 4,794. Owner decisions (2026-11-18): distil 4B → 0.8B only, test set 3,000 items, terse teacher answers within 512 tokens, H8 dropped. Terse probe (EXP-0013): terse 4B answers lose 4 points and still do not fit with 400-token excerpts, so training excerpts are capped at 300 tokens (owner). Design settled by the owner (2026-11-18): two seeds, full fine-tuning of the 0.8B, terse test prompt for trained arms, D4 last and exploratory, H2 as frozen; S1-e to switch to another MoE (survey under way). S1-c run (EXP-0014, 2026-11-20): the 4B's terse answers teach the 0.8B 6.5 points more than its own (H1 supported), but the distilled 0.8B matches the 4B only on lookups (B1 93.8 against 92.9) and falls below the untrained 0.8B on calculations (B2 48.1 against 61.5): it sets up the right expression and gets the division wrong (H2 refuted). LFM2-8B-A1B downloaded as the S1-e MoE candidate. Owner (2026-11-20): B2 next through a calculator arm (student writes the expression, Python evaluates), pre-registered separately; D4 dropped. Next: that pre-registration, then S1-e. S1 may use the MLX machine until 2026-12-15 |
+| Sub-study S2 | Replaying history to a commercial-model PM agent without look-ahead. Plan v2 frozen 2026-11-20 (`docs/plans/2026-11-20_substudy_s2_plan.md`); no hypothesis pre-registered. It is the controlled test of GY-0000's condition for bringing masking back, and it sets masking beside other ways of using pre-cutoff history (several noisy views of one episode, selecting episodes the model cannot recall, relative questions, the model as rule writer). Literature pass: `research/literature/streams/08_blind_replay.md`. The commercial part is reopened for S2 only (owner, 2026-11-19). First feasibility run done (EXP-0020, local archives only): the label is "revenue growth accelerates" (base rate 49%, best simple rule 52%); 995 labelled episodes after the cutoff on the training and development side, 37 from the 50 largest companies; 29,606 before it, whose releases are not on the drive. Recall definitions for the attacker and probe created (`.claude/agents/s2-recall-claude-*.md`; they load in a new session). Old releases pulled (EXP-0021: 1,386 press releases, 2019 to 2025). Sanitiser written and tried on 48 development episodes (EXP-0022): its rule attacker finds every company from eight quarters of ratios at the planned noise bound, dates hidden, which is the plan's §16 condition for moving wave 1's weight to strategies C, D and E. Owner, 2026-11-20: pull approved (2019 to 2025); noise fixed at the label's tolerance and the attacker reported, not used as a gate; strategy C first. Closed-book probe run (EXP-0024, 210 calls to Opus through the session): the model recalls next-quarter revenue growth of large and mid-sized companies, often to a tenth of a point, in every period from 2019 to the cutoff, and not after it; strategy C offers those companies nothing. Next: the transport for release-length prompts (open question to the owner), then the blinded views with the transplant on old large-company episodes. S2 uses no MLX time; its scarce resource is Claude usage |
 | WP6 Research design v1.0 | Waits for WP1 to WP5 |
 
 The repo is public and `main` has been pushed to `origin` since 2026-11-15. Every finished study
@@ -266,16 +267,30 @@ In order of urgency.
    are Claude Opus 5.5 and Sonnet 5.5, run as no-tool Claude Code subagents
    (`.claude/agents/roster-claude-*.md`). Goal C's claim is limited to Claude. On the same day the
    owner set the commercial part aside for now: Phase 0 runs local models and baselines only, and
-   the Claude models join the roster only when the owner reopens it.
+   the Claude models join the roster only when the owner reopens it. Reopened for sub-study S2
+   only on 2026-11-19; goal C and the Phase 0 pilots stay as they were.
 6. **Data budget (not urgent).** Post-cutoff transcripts and delisting-aware daily prices are paid.
 7. ~~**Must both releases of a test pair postdate the cutoff?**~~ Settled 2026-11-14: only the
    later one. About 1,700 to 2,200 numeric pairs exist now. Every pair result is also reported on
    the both-after subset (800 to 1,000 pairs now), and the earlier release's memorisation is
    checked; `00_master_methodology.md` §3, `data_audit.md` §8.
+9. ~~**S2 data pulls.**~~ Approved 2026-11-20 with filing years 2019 to 2025 (changelog);
+   EXP-0021. As proposed: earnings releases from 2019 to 2024 for training and development companies:
+   EXP-0020 lists 31,165 that map to a labelled quarter and are not on the drive, and S2 needs
+   episodes the models remember well. Proposed: about 1,500, four per company for the 250 largest
+   and 500 from the rest (S2 design, decision 4). A second company-facts snapshot
+   in December, for the 18% of July-to-September releases whose next quarter is not filed yet.
+10. **S2 test-side run (before S2-c).** Claude does not read post-cutoff test items (changelog,
+    2026-11-14), but a session that dispatches subagent calls reads what it dispatches. Either an
+    exception for S2's confirmatory run or a scripted path that keeps the items out of the
+    session.
+11. **S2 prospective arm.** Whether to seal calls on the October and November 2026 releases now.
+    Their next-quarter labels arrive in February 2027, which would give a second clean quarter
+    and separate "period" from "after the cutoff". It could share WP5's sealing.
 
 ## Links
 
-All 86 sources are in `research/literature/matrix.csv`. Links the plan cites directly:
+All sources are in `research/literature/matrix.csv`: the 86 of the first pass and the 19 rows of stream 08 (sub-study S2). Links the plan cites directly:
 
 - [mlx-community/Qwen2.5-7B-Instruct-4bit](https://huggingface.co/mlx-community/Qwen2.5-7B-Instruct-4bit)
 - [Tang, Yao, Zarowin: Once Is Not Enough](https://www.stern.nyu.edu/sites/default/files/assets/documents/Michael%20Tang.pdf)

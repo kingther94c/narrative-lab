@@ -35,7 +35,9 @@ The reasoning behind the research rules is in
 2. **Clean tests only.** Test documents are dated after the knowledge cutoff of every model on the
    evaluation roster (after 2026-06-30 as of this writing). Training and development data are
    earlier and come from different companies. Masking is not used: it removes the numbers that
-   are the label, and ResearchOS showed that large caps stay identifiable after it.
+   are the label, and ResearchOS showed that large caps stay identifiable after it. Sub-study S2
+   studies masking as its subject (the re-test of GY-0000); a result on masked pre-cutoff text is
+   never labelled clean.
 3. **Every result carries a contamination label**: clean, bounded, contaminated or prospective.
 4. **Pre-register, then look.** A hypothesis gets a `PRE-REGISTRATION` entry in
    `experiment_registry.md`, committed before any outcome data is touched. The verdict cites that
@@ -52,6 +54,11 @@ The reasoning behind the research rules is in
    commercial models (Claude Opus 5.5 and Sonnet 5.5) are called only through the no-tool agent
    definitions in `.claude/agents/roster-claude-*.md`, as fresh subagents (never forks), one item per
    call, with no gold labels in the message; the experiment script logs every raw output.
+   Sub-study S2's attacker and recall probe, which must answer from memory, use the separate
+   no-tool definitions `s2-recall-claude-*.md` (methodology §2). For S2, the same definitions may
+   also be run headless from a script, one fresh process per item
+   (`claude -p --agent <definition> --tools ""`), which offers the model no tool at all and keeps
+   the items out of the session (changelog, 2026-11-21).
 8. **Simple baselines first.** A rule-based baseline sets the bar before any model result is read.
 9. **Every number is traceable** to a script and a run record: the command, the model repo and
    revision or the commercial model ID, and the date. Keep the raw request and response of every
