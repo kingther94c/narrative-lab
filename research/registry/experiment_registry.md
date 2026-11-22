@@ -357,6 +357,114 @@ can be regenerated.
   and their history depends on blinding (A, B) or on other strategies. The condition "no
   measurable leakage on raw text for this call" is not met.
 
+## EXP-0017 — S1-c calculator distillation: the 4B's answers with the calculator, and more margins and losses (2026-11-22)
+
+### PRE-REGISTRATION
+- **Status:** draft, 2026-11-22, from the owner's decisions of that day after EXP-0016: distil
+  again with the calculator ("带计算器重新蒸馏"); the values the calculator inserts are left out
+  of the training loss; the shift towards margin and loss items is a separate arm; the test items
+  are EXP-0016's (a fresh draw was the first choice, but only 145 test items in 38 releases are
+  left once EXP-0014's and EXP-0016's releases are removed). Approved by the owner 2026-11-22
+  ("批准开始实现"). Before the commit: the script was written (`exp0017_s1c_calc_distillation.py`),
+  the masking checked and the label smoke run made (step 4 below, with results). Nothing is run
+  on a test item before the commit is pushed.
+- **Claim under test:** EXP-0016 found that with the same calculator the distilled 0.8B (C) is
+  2.6 points behind the 4B (4C) overall, ahead on lookups (B1) and 8.8 points behind on
+  calculations (B2). Its wrong B2 answers now evaluate a wrong expression built from excerpt
+  numbers (about 77%: on development, the wrong row, column or periods) or drop the sign of a
+  loss (about 18%). D3 was trained on the 4B's tool-free terse answers, which do the arithmetic
+  in the text, and on a random 1,850 of 3,457 usable items, of which 6.4% are operating margins
+  and 31.3% have a negative answer. HD1: training on the 4B's answers written with
+  the calculator, values masked, raises B2 accuracy with the calculator. HD2: at the same number
+  of items, a training set shifted towards margins and negative answers raises it further. HD3
+  (the owner's question): that model is non-inferior to the 4B with the calculator.
+- **Why the answer is not obvious:** the calculator removes the arithmetic, not the reading.
+  Labels written with the calculator change how the arithmetic is written, not which row is read,
+  so HD1 may find nothing; it may also help, because the teacher no longer spends its terse
+  answer on a long division and its expressions become the target. Masking the inserted values
+  means the student never sees a loss on them, which matches use but gives fewer trained tokens.
+  At a fixed 1,850 items, more margins and losses means fewer of everything else, which may cost
+  B1 or EPS change. Two B2 metrics (gross margin, net margin) are held out of training by the
+  exam's design, so HD2 can reach them only by transfer from operating margins. And the test
+  items are EXP-0016's, on which C and 4C were scored: this direction was chosen from that run's
+  error counts and from development answers, not from any test item, but it was chosen after
+  seeing those counts.
+- **Sample and scope, fixed here before looking:**
+  1. **Models.** Student Qwen3.5-0.8B and teacher Qwen3.5-4B, the revisions of EXP-0014. No new
+     download.
+  2. **Training items.** EXP-0014's 3,596 training items (training companies, pre-cutoff,
+     300-token excerpts), with their exam templates. No new item is built.
+  3. **Test items.** EXP-0016's draw: 3,000 items, SHA-256 of the ids in draw order
+     `251720e6cb4727ed5f1bb37927b1312da5276aeb9bdcfbca16bc653937794460`. C, 4C, D3 and 4B are not
+     rerun: their EXP-0016 responses, made by the same calculator code, are the comparators,
+     paired on the same items. Section A: EXP-0014's 100 items each of FinQA, CFA-Easy and
+     FinanceIQ.
+  4. **Checks before the commit**, on training items only (Claude may read them): (a) the
+     masking: on 20 labels with a call, the masked tokens are exactly the inserted values; (b) a
+     label smoke run of the teacher with the calculator on 100 training items, reporting the
+     share correct on the first attempt and the share of B2 labels with a call. If under 50% of
+     B2 labels have a call, the owner decides before the commit. **Results, 2026-11-22:** (a) on
+     20 labels with a call, the masked tokens decode to exactly the inserted values, 20 of 20; with
+     nothing masked, the masked loss equals mlx_lm's default loss on the same batch (0.212184 on
+     93 tokens), and three training steps run. (b) 100 training items (the first 100 in the order
+     of SHA-256 of `"exp0017-smoke:" + id`): 94% correct on the first attempt (EXP-0014's terse
+     labels: 3,270 of 3,596, 91%), 99% on some attempt; B2 labels with a call on the first attempt
+     94.4% (34 of 36), B1 21.9%. 1.4 seconds an item, peak 3.0 GiB. No owner decision is needed.
+     The smoke run is kept apart (`labels_smoke/`) and not used for training.
+- **Method and baseline:**
+  1. **Labels.** The 4B answers every training item with EXP-0014's terse prompt, thinking off,
+     at most 160 generated tokens, with EXP-0016's calculator (same code, both rules; inserted
+     tokens do not count against the cap). As in EXP-0014: greedy first, then up to three samples
+     (temperature 0.7, top-p 0.95, seeds 1 to 3); the first correct attempt is kept; dropped if
+     none is correct, if it names a year after the item's period, or if prompt and answer pass
+     512 tokens.
+  2. **Masking.** The answer is tokenised in pieces split at each inserted value; the tokens of
+     each inserted value (the space and the number) get no loss. The prompt gets no loss, as in
+     EXP-0014. Everything else the teacher wrote, including the `=` before each value and the
+     text after it, is trained.
+  3. **Arms**, each trained twice (seeds 1, 2), N = 1,850 items, the size of EXP-0014's D3:
+     **K1** takes D3's 1,850 items where the new label is kept, then fills from the other kept
+     items in the order of SHA-256 of `"exp0017:K1:" + id`. **K2** takes, from the kept items,
+     every operating-margin item, then every item whose gold is negative (any metric), then fills
+     in K1's order up to 1,850. If margins and negatives pass 1,850, they are taken in K1's order.
+     The composition of both sets (by metric, sign and section) is reported. Before labelling,
+     1,260 of the 3,596 training items are operating margins or have a negative gold, so K2
+     should hold about 1,200 of them; D3's set holds 119 operating margins (6.4%) and 579
+     negative answers (31.3%), 33% B2.
+  4. **Training** as EXP-0014's D3: full fine-tuning of every block, embeddings frozen, AdamW,
+     learning rate 1e-5 with 50 warm-up steps and cosine decay, batch 1, sequences up to 512
+     tokens, 2 epochs, a checkpoint at each epoch; the epoch is chosen on the 600 development items
+     by accuracy with the calculator, as EXP-0014 chose by tool-free accuracy.
+  5. **Evaluation**, every arm with the calculator, as C in EXP-0016: terse prompt, greedy,
+     thinking off, at most 160 generated tokens, then EXP-0007's forced answer if no box was
+     written. Grading by `exp0010.grade`. An arm's score per item is the mean over its two seeds.
+     Intervals: paired, bootstrap over companies, 10,000 resamples, seed 20261122.
+- **Criteria** (new family HD1 to HD3; each at α = 0.0125, as EXP-0014 and EXP-0016):
+  1. **HD1:** Δ = K1 − C on B2. Supported if Δ ≥ 3.0 points and the one-sided test of Δ > 0
+     rejects. Refuted if the upper end of the 97.5% interval is below 3.0. Otherwise
+     inconclusive.
+  2. **HD2:** Δ = K2 − K1 on B2. Supported if Δ ≥ 3.0 points and the one-sided test of Δ > 0
+     rejects. Refuted if the upper end of the 97.5% interval is below 3.0. Otherwise
+     inconclusive.
+  3. **HD3 (the owner's question):** Δ = K2 − 4C on all items. Non-inferior if the lower end of
+     the one-sided 98.75% bound is above −3.0. Refuted if the upper end of the 97.5% interval is
+     below −3.0. Otherwise inconclusive.
+- **Also reported, descriptive:** every arm by section, metric, seen and unseen template; K1 −
+  4C; K2 − K1 and K1 − C on B1 (the shift should not cost lookups); operating margin (trained)
+  against gross and net margin (held out); EXP-0016's error categories for K1 and K2 against C,
+  with the dropped sign of a loss counted separately; label yield per attempt and the share of
+  labels with a call; training loss; forced and invalid rates; seed spread; section A for K1 and
+  K2 against C. Claude reads K2's development errors; counts only on test.
+- **Contamination label of the result:** clean. The teacher labels training items only (training
+  companies, pre-cutoff); no model labels a test item. Test items are reused from EXP-0016, as
+  stated above.
+- **Not in scope:** more training items or a new data pull; logit distillation; training without
+  the mask, or on all 3,457 usable items (each a possible follow-up); tools other than the
+  calculator; changing the prompts; rerunning C, 4C, D3 or 4B.
+- **Estimated compute:** labels about 1.5 hours (3,596 items at 1.4 seconds, from the smoke
+  run); four training runs of about 5 hours each; development about 1 hour (8 checkpoints); test
+  about 35 minutes a run, 2.3 hours; section A about 30 minutes. About 25 hours.
+
 ## EXP-0016 — S1-c calculator: the distilled 0.8B and the 4B, both with a calculator (2026-11-21)
 
 ### PRE-REGISTRATION
