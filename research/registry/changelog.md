@@ -2,6 +2,22 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-22 — S1-c calculator run (EXP-0016): with the same calculator, the 0.8B is 2.6 points behind the 4B
+
+- **What:** EXP-0014's distilled 0.8B (D3) and the 4B, each with and without a calculator that
+  evaluates the arithmetic they write, on 3,000 fresh test items. The calculator lifts D3's
+  calculations (B2) from 45.6% to 79.1% (HC1 supported) and overall from 71.6% to 86.7%; the 4B
+  scores 91.3% without it and 89.4% with it. C − 4C = −2.6 [−4.4, −0.9]: inside the 3-point
+  margin at the point estimate but not at the bound (HC2 inconclusive). The gap shrinks by 17.1
+  points (HC3 supported). A second, "chained" recognition rule was added on development, before
+  the commit, for the 4B's layout.
+- **Why it matters:** the owner's question was whether, with the same tools, the small model
+  performs like the large one. On lookups it does (and better); on calculations it is 8.8 points
+  behind, and what is left is reading (the right row, column and periods, the sign of a loss),
+  not arithmetic. A calculator that evaluates what the 4B writes, not what it means, costs the
+  4B 1 to 3 points.
+- **Assets affected:** S1 roadmap row; the choice of S1's next step (to the owner).
+
 ## 2026-11-21 — EXP-0026 run: code-only blinding does not change the PM's call
 
 - **What:** 870 calls to Opus, all valid. On old large-company releases the PM's call leans

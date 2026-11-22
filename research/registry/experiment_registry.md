@@ -369,7 +369,7 @@ can be regenerated.
   ("批准，开始实现"). Before the commit: the script was written, the calculator checked on
   development items (step 3 below, with its result and the one rule it added) and the test draw
   made (step 2, with its counts and hash). Nothing is run on a test item before the commit is
-  pushed.
+  pushed. Committed and pushed as `e26d26f`; run 2026-11-21 to 22; verdict below.
 - **Claim under test:** EXP-0014 found the distilled 0.8B (D3) matches the 4B on lookups (B1) but
   scores 48.1% on calculations (B2), below the untrained 0.8B: it sets up the right expression and
   gets the arithmetic wrong (EXP-0015). The owner's aim is not the tool itself but whether, with
@@ -486,6 +486,81 @@ can be regenerated.
 - **Estimated compute:** development check about 70 minutes (D3 two seeds, 4B); on the test draw,
   4B and 4C about 4 hours each, D3 and C about 1.2 hours each for two seeds; section A about 40
   minutes. About 12 hours.
+
+### VERDICT
+- **Pre-registration commit:** `e26d26f` (pushed before any model saw a test item). Run
+  2026-11-21 20:15 to 2026-11-22 07:30 by `queue`, every step complete: D3 and C about 35
+  minutes a seed, 4B 4.0 hours, 4C 4.2 hours, section A 0.75 hours. Output:
+  `s1/exp0016/scores.json`.
+- **Result** (3,000 test items of the fresh draw, accuracy %, D3 and C the mean of two seeds;
+  intervals 97.5%, company bootstrap, 10,000 resamples):
+
+  | Arm | All | B1 (1,650) | B2 (1,350) | Seen (370) | Unseen (2,630) | Seeds |
+  |---|---|---|---|---|---|---|
+  | D3 distilled 0.8B | 71.6 | 92.8 | 45.6 | 75.8 | 71.0 | 70.0 / 73.2 |
+  | C D3 + calculator | 86.7 | 93.0 | 79.1 | 85.0 | 87.0 | 86.3 / 87.2 |
+  | 4B | 91.3 | 91.9 | 90.7 | 86.8 | 92.0 | |
+  | 4C 4B + calculator | 89.4 | 90.6 | 87.9 | 84.9 | 90.0 | |
+
+  B2 answers with a call: C 98.7% and 98.3%, 4C 97.9% (1.5 calls each); B1, 37 to 38% and 28%.
+  Forced answers: D3 and C at most 0.1%, 4B 2.3%, 4C 3.6%; invalid at most 0.1%.
+
+  1. **HC1 supported.** C − D3 on B2 = +33.4 [30.8, 36.2], one-sided p < 0.0001. The bound of
+     about 31 points from EXP-0015 is reached; the inserted values did not derail D3.
+  2. **HC2 inconclusive.** C − 4C on all items = −2.6 [−4.4, −0.9]. The point estimate is inside
+     the 3-point margin but the lower bound is not, so non-inferiority is not shown; nor is it
+     refuted. The difference is not zero: with the same calculator, the small model is still
+     behind. By section it is two different stories: on B1 C is ahead, +2.4 [0.5, 4.3]; on B2 it
+     is behind, −8.8 [−11.5, −6.1].
+  3. **HC3 supported.** (4B − D3) − (4C − C) = +17.1 [15.5, 18.7]: the calculator shrinks the
+     gap from 19.7 points to 2.6, partly because it costs the 4B points (below).
+- **Also reported:**
+  1. **The calculator does not hurt lookups for D3** (C − D3 on B1 +0.2 [0.0, 0.4]) **but costs
+     the 4B on both sections:** 4C − 4B = −1.3 [−2.4, −0.2] on B1 and −2.8 [−4.0, −1.7] on B2.
+     Against the tool-free 4B (EXP-0014's H2 comparison), C − 4B = −4.6 [−6.3, −2.9].
+  2. **By B2 metric**, C against 4C: EPS change 77.6 against 83.0, revenue growth 88.5 against
+     86.1, gross margin 77.7 against 97.4, operating margin 71.1 against 94.1, net margin 58.9
+     against 92.9 (84 items). C's gap is in the margins, where a row must be divided by revenue;
+     on growth it matches the 4B. D3's B2 by metric: 69.5, 22.4, 25.1, 55.6, 46.4.
+  3. **Seen and unseen templates:** C scores about the same on unseen (87.0) as on seen (85.0);
+     the gain carries to second phrasings and held-out metrics.
+  4. **Section A**, 100 items each, C seeds 1 / 2 against D3 in EXP-0014: FinQA 28 / 27 against
+     10 / 11, CFA-Easy 20 / 13 against 20 / 13, FinanceIQ 28 / 23 against 28 / 23; 4C 65, 68, 49
+     (no tool-free 4B run on section A). The calculator restores much of FinQA, which needs
+     arithmetic, but C stays below the untrained 0.8B there (38).
+- **Error analysis** (registered categories, test counts; development read by Claude):
+
+  | Wrong answers | C-s1 B2 | C-s2 B2 | 4C B2 | C-s1 B1 | C-s2 B1 | 4C B1 |
+  |---|---|---|---|---|---|---|
+  | total | 285 | 280 | 164 | 127 | 104 | 155 |
+  | no number | 0 | 0 | 2 | 0 | 0 | 2 |
+  | no call (B2) / no call, lookup wrong (B1) | 9 | 11 | 21 | 71 | 68 | 64 |
+  | copying or rounding | 2 | 4 | 32 | 0 | 0 | 16 |
+  | sign or unit of the box | 49 | 52 | 24 | 3 | 1 | 55 |
+  | wrong setup: operand not in the excerpt | 0 | 1 | 7 | 28 | 17 | 5 |
+  | wrong setup: excerpt operands, wrong formula | 225 | 212 | 78 | 25 | 18 | 13 |
+
+  1. **D3's arithmetic problem is solved; its reading problem is what is left.** About 77% of C's
+     wrong B2 answers evaluate an expression built from numbers in the excerpt that is not the
+     gold. On development these were the wrong row (gross profit for operating income), the
+     wrong column ("$ Change" for the current period) or the wrong pair of periods, more often
+     than a wrong formula; the script cannot tell them apart. Another 18% have the right
+     magnitude and the wrong sign: the table shows "Loss from operations" as a positive number
+     and the model keeps it positive.
+  2. **The 4B's losses with the calculator are interaction errors.** Its 32 B2 and 16 B1
+     "copying or rounding" errors and 55 B1 "sign or unit" errors are where it wrote an
+     expression it would not have evaluated literally (on development, dividing by 1,000 to turn
+     dollars into millions while stating the right millions) or wrote `\times 100` after a value
+     that already included it, then followed the inserted value.
+- **Leakage sign-off:** test items from releases accepted after 2026-06-30 and not used by
+  EXP-0014; scripts printed counts and rates only. Claude read development answers only. No
+  model labelled a test item; nothing was trained. Clean.
+- **Verdict:** HC1 and HC3 supported, HC2 inconclusive. A calculator lifts the distilled 0.8B's
+  calculations by 33 points and brings it within 2.6 points of the 4B with the same calculator
+  (4.6 of the tool-free 4B): ahead on lookups, 8.8 points behind on calculations. What separates
+  them now is reading the table for a calculation (the right row, column and periods, and the
+  sign of a loss), not arithmetic. Bolted onto the 4B, the calculator costs it 1 to 3 points,
+  because it evaluates what the 4B writes rather than what it means. Next steps go to the owner.
 
 ## EXP-0014 — S1-c: distilling Qwen3.5-4B into Qwen3.5-0.8B on EarningsExam v0.2 (2026-11-18)
 
