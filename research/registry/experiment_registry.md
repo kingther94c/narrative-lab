@@ -83,10 +83,13 @@ can be regenerated.
   exploratory check of wrong B2 answers (does the student's own one-line expression evaluate to
   the gold?). Read-only, no model run, counts only; results in the EXP-0014 verdict. Run
   2026-11-20.
+- **EXP-0030 to EXP-0039** — held for sub-study S2 as well (2026-11-21; the first block is used up).
 - **EXP-0020 to EXP-0029** — held for sub-study S2 (`research/design/substudy_s2_blind_replay.md`),
   so that S1 and S2, worked on in separate sessions, do not take the same number. S1 continues
   from EXP-0016.
-- **EXP-0020** — S2-a episodes, candidate labels and rule baselines: for the training and
+- **EXP-0020** — (Added 2026-11-22: EXP-0034 finds a comparison-base rule, g(t-3) < g(t-4), right
+  on 65% of acceleration episodes; "best simple rule 52%" below holds only for the rules tried.)
+  S2-a episodes, candidate labels and rule baselines: for the training and
   development companies of split v1, a quarterly series of revenue, operating income and net
   income as first filed (the fourth quarter as the year less nine months), four candidate
   next-quarter labels with their base rates and best simple rules, and a list of the earnings
@@ -173,6 +176,669 @@ can be regenerated.
   transport is a result for a model that is told the date and its own cutoff.
 
 ## Entries
+
+## EXP-0036 — S2-b: code-stated facts, the analyst skill, and a blinded brief, on clean episodes (2026-11-22)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Owner, 2026-11-22: approved at the proposed scale; asked that the
+  question of what recurs and what is one-off cover more than earnings ("不仅仅是盈利 很多方面我们都
+  想看是不是可持续还是单次性的 加上"); agreed to freeze skill v1 from the literature without tuning.
+- **Claim under test:** (1) facts computed by code and stated as sentences (comparison base,
+  reference rates, guidance arithmetic, inventory and contract liabilities against revenue, the
+  margins' own year-ago bases) raise the PM's readout on clean episodes over the raw release
+  alone; (2) a brief made only of those facts and a quote-checked reader form (skill v1, Part B)
+  keeps that signal while hiding the company and leaking less on old episodes.
+- **Why the answer is not obvious:** prompt structure rarely helps forecasts (stream 12); the
+  facts duplicate numbers already in the release; EXP-0031/0032's briefs lost most of the signal.
+- **Sample, fixed here before looking:** clean: every post-cutoff episode of the 500 largest
+  training and development companies with a label, a release on the drive, under 80,000
+  characters and EXP-0026's earnings filter: 197 (82 of them among the 250 largest; EXP-0026's 30
+  clean episodes are among them). Old: EXP-0026's 60 old episodes.
+- **Labels (owner's point 2):** L1 revenue acceleration (EXP-0020, 2-point dead band; primary);
+  L2 gross margin up year on year next quarter; L3 operating margin up year on year next quarter;
+  L4 net income up year on year next quarter. Dead bands: 0.25 margin points for L2 and L3, 2% of
+  the year-ago amount for L4. All from as-filed company facts, first filing of each quarter.
+- **Calls (Opus through EXP-0027's isolated headless transport, one item per call):**
+  - R, reader (PM definition), raw release: fills skill v1's form (EXP-0032's form plus what
+    recurs and what does not, by line, exit rate, inventory and channel, management language);
+    no probability asked. 257 calls.
+  - A0, raw release + skill v1's considerations block (identical in A0, A1 and B) + the four
+    questions, probabilities first, then at most four sentences. 257.
+  - A1, A0 plus the code facts. 257.
+  - B, code facts plus the code-rendered form only, no release text. 257.
+  - Attacker on B (EXP-0028's question): the 60 old and EXP-0026's 30 clean episodes. 90.
+  Code facts use only filings made before the release, plus current-quarter values whose number
+  appears in the release text; growth in whole percent, margins to one decimal.
+- **Code baselines:** per label, a logistic regression fitted on episodes whose outcome was filed
+  before 2026-07-01 (L1: EXP-0035's combined model; L2 to L4: own persistence, g(t) .. g(t-4) and
+  the label's own year-ago base); for clean episodes these are point in time.
+- **Criteria (readout = probability on the realised direction; 90% intervals from 10,000
+  bootstrap draws of episodes, seed 20261131):**
+  1. Primary, L1, clean: A1 minus A0 paired readout. "Helps" if the interval is above 0; "hurts"
+     if below; otherwise undecided.
+  2. L1, clean: B minus A1 paired readout. "Retains" if the estimate is at least -0.03 and the
+     interval's lower end above -0.10; "loses" if the interval is below 0; otherwise undecided.
+  3. B's leak: old minus clean readout (no leak detected if the interval spans 0); attacker top-1
+     on B ("stopped" at most 0.20, "not stopped" at least 0.50). B is a usable replay input if
+     not "not stopped", no leak detected, and not "loses".
+  4. Each arm's old-minus-clean gap is reported; A1 must not raise the gap over A0 by more than
+     0.05 (interval of the difference).
+  5. Against code, clean: accuracy and Brier of A0, A1, B, the code baseline, and the average of
+     each arm's probability with the code baseline's (equal weights, fixed here).
+  6. L2 to L4, clean: criteria 1, 2 and 5 repeated, reported with Benjamini-Hochberg across the
+     three labels (q = 0.10), as secondary.
+  7. Exploratory: does the reader's tag "does not recur next quarter" on a line predict that line's
+     next-quarter year-on-year change in the opposite direction?
+  Calibration (mean probability, Brier and its reliability part) is reported per arm and label.
+- **Contamination label of the result:** clean (vendor-stated cutoff) for the clean episodes;
+  contaminated for the old ones, which serve only to measure leaks.
+- **Power:** with about 197 clean episodes the paired readout difference is detectable at about
+  0.03 to 0.04; prompt-placement effects of the size in stream 12 are not.
+- **Not in scope:** placement variants of the checklist; call transcripts (owner asked for an IR
+  survey first); tuning the skill.
+
+## EXP-0035 — S2-a: do as-filed accounting items add to the comparison base? (2026-11-22)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Follows the owner's request of 2026-11-22 for an analysis skill that
+  reads the accounting structure behind the numbers (changelog), and literature stream 10 (draft),
+  whose checklist ranks backlog/RPO, deferred revenue, inventory, gross margin and receivables as
+  candidate leads of sales, all tested on annual data and none against a comparison-base baseline.
+- **Claim under test:** some balance-sheet and margin items, as first filed, predict next
+  quarter's revenue acceleration beyond EXP-0034's five-lag logistic (R3, 0.675).
+- **Why the answer is not obvious:** the evidence is annual, mostly on small and mid-sized firms,
+  and does not control for the year-ago comparison base, which already explains much of the label;
+  stream 10 finds no post-announcement drift after revenue surprises for large firms.
+- **Kind:** code only, on EXP-0020's as-filed company facts (training and development companies);
+  no model, no pull. Script `exp0035_s2a_accounting_screen.py`.
+- **Sample, fixed here before looking:** EXP-0034's 22,373 episodes (five quarters of as-filed
+  growth, outside the 2-point dead band); reported on all and on the 250 largest companies.
+  Point in time: each item for quarter t is the value in the filing that first reports quarter t
+  (or earlier), and its year-ago value as first filed. The decision time is therefore that 10-Q or
+  10-K, a few weeks after the release; the release carries the same balance sheet in 78 of
+  EXP-0026's 90 releases.
+- **Features, fixed here (growth gaps clipped to [-1, 1], margin changes to [-0.5, 0.5]):**
+  F1 inventory growth minus revenue growth (year on year); F2 receivables growth minus revenue
+  growth; F3 contract liabilities or deferred revenue growth minus revenue growth; F4 remaining
+  performance obligations growth minus revenue growth; F5 gross margin change; F6 SG&A growth
+  minus revenue growth; F7 operating margin change; F8 change in non-operating income (pre-tax
+  less operating income) over revenue; F9 sector growth: median g(t) of other companies with the
+  same two-digit SIC and calendar quarter, as filed by the focal filing date (at least five
+  peers); F10 g(t) minus F9. The first concept a company tags is used, in the order in the script.
+- **Method and baseline:** R3 with EXP-0034's company folds (seed 20261129). For each feature, R3
+  and R3 plus the feature are fitted on the same episodes (those where the feature exists) and
+  scored out of fold. Combined model: R3 plus all ten, a missing feature set to 0 with a missing
+  indicator. Increments in log loss and accuracy, 90% intervals from 2,000 bootstrap draws of
+  companies (seed 20261130).
+- **Criteria:**
+  1. Per feature, all episodes: "adds" if the log-loss increment's bootstrap p-value survives
+     Benjamini-Hochberg at q = 0.10 across the ten features and the accuracy increment is not
+     negative; otherwise "nothing found".
+  2. Combined model, 250 largest companies: "worth stating in the brief" if accuracy rises by at
+     least 1.0 point over R3 with a 90% interval above 0; "no material gain" if the interval's
+     upper end is below 1.0 point; otherwise undecided.
+  3. Exploratory, no decision: the same screens for EXP-0020's earnings-side labels (next
+     quarter's operating margin up year on year; net income up year on year) on the same
+     episodes, base = logistic on the label's own persistence, g(t) .. g(t-4) and F7.
+- **Contamination label of the result:** not applicable (no model).
+- **Not in scope:** items only in words (backlog, bookings, organic growth, price and volume,
+  guidance), inventory components, cash-flow accruals, any model call.
+
+### RESULTS
+- **Run:** 2026-11-22, no model call; 22,373 episodes (4,637 among the 250 largest companies).
+  Coverage, all / 250 largest: inventory 0.60 / 0.65, receivables 0.73 / 0.73, contract
+  liabilities 0.46 / 0.45, RPO 0.16 / 0.21, gross margin 0.65 / 0.63, SG&A 0.48 / 0.59, operating
+  margin 0.85 / 0.80, non-operating 0.76 / 0.76, sector 0.76 / 0.67. Output
+  `s2/exp0035/result.json`.
+- **Criterion 1 (per feature, all episodes; accuracy gain over R3 on the episodes with the item,
+  90% interval; sign of the coefficient):**
+  - **Adds:** F1 inventory gap +1.0 point [+0.6, +1.5] on 13,513 (250 largest: +0.8 [-0.1, +1.8]),
+    positive: inventory growing faster than revenue goes with acceleration; F3 contract
+    liabilities gap +0.7 [+0.2, +1.2] on 10,298 (250 largest: +1.0 [-0.1, +2.1]), positive; F2
+    receivables gap, log loss only, accuracy +0.1 [-0.2, +0.4] (250 largest +0.6 [-0.1, +1.3]),
+    positive, not the negative sign a pull-forward reading predicts; F6 SG&A gap, log loss only,
+    accuracy +0.1 (250 largest -1.2 [-2.0, -0.4]); F7 operating margin change +0.3 [+0.0, +0.5].
+  - **Nothing found:** F4 RPO (3,646 episodes), F5 gross margin, F8 non-operating income, F9
+    sector growth, F10 growth against the sector.
+- **Criterion 2 (combined, 250 largest):** accuracy 0.669 to 0.676, +0.7 points [-0.3, +1.6]:
+  **undecided**. On all episodes 0.675 to 0.683, +0.8 [+0.4, +1.2]; log loss improves in both.
+- **Exploratory, earnings-side labels:** combined accuracy gains are nil (operating margin up
+  -0.04 points all, +0.2 for the 250 largest; net income up +0.2 and +0.3), with small log-loss
+  gains. The one item in the owner's example, a rise in non-operating income, has the expected
+  sign for net income (coefficient -0.69: a quarter lifted by non-operating income is less often
+  followed by a year-on-year rise) and improves log loss (+0.0009 [+0.0003, +0.0016]), but moves
+  accuracy by less than 0.2 points.
+- **Reading (ours):** two balance-sheet leads, inventory and contract liabilities growing faster
+  than revenue, add about one point of accuracy to the comparison-base logistic, in line with
+  stream 10 (raw materials and work in process lead sales; deferred revenue leads sales growth);
+  among the 250 largest the gain has the same size but the interval reaches zero. The statistical
+  bar for an S2 call rises to about 0.68. These items are worth stating in a brief as sentences
+  (skill draft, Part A4); none is large, so their value to the PM has to be shown on clean
+  episodes, not assumed. One-off items matter for earnings, as the owner expected, but in this
+  code-only form they barely move direction calls.
+
+## EXP-0034 — S2-a: does the comparison base alone predict acceleration? (2026-11-22)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Follows from EXP-0033 (right post-cutoff calls lean on the comparison
+  base); within the owner's request of the same day to find what makes post-cutoff calls right.
+- **Kind:** code only, on EXP-0020's as-filed series (training and development companies); no
+  model, no pull. Script `exp0034_s2a_base_effect.py`.
+- **Label:** EXP-0020's: next quarter's year-on-year growth minus this quarter's, outside a
+  2-point dead band. g(t-k) is year-on-year growth k quarters before this one, as first filed.
+- **Rules, fixed here before looking:**
+  R1 reversal (EXP-0020's best, 52%): accelerates if growth fell last quarter.
+  R2 comparison base: accelerates if g(t-3) < g(t-4), i.e. next quarter is compared against a
+  weaker year-ago quarter than this one was (two-year growth held constant).
+  R3 logistic regression on g(t), g(t-1), g(t-2), g(t-3), g(t-4), five-fold cross-validation
+  grouped by company, seed 20261129.
+- **Reported:** accuracy of each rule outside the dead band on all episodes with the needed
+  quarters; on episodes among the 250 largest companies; and on EXP-0026's 90 episodes (60 old,
+  30 clean), beside EXP-0026's raw-view and no-document calls on the same episodes.
+- **Known limits:** derived fourth quarters (year less nine months) carry their own noise;
+  rules see no text.
+
+### RESULTS
+- **Run:** 2026-11-22, no model call. 22,373 episodes outside the dead band with five quarters of
+  as-filed growth known at the time (1,205 companies); base rate 0.493.
+- **Accuracy, all / 250 largest (4,637) / 50 largest (1,031):** R1 reversal 0.520 / 0.498 /
+  0.500; **R2 comparison base 0.652 [0.647, 0.658] / 0.653 / 0.657**; R3 logistic 0.675 [0.670,
+  0.680] / 0.669 / 0.661. R3's coefficients (fold 1, on intercept, g(t) .. g(t-4)): 0.23, -1.38,
+  0.26, -0.23, -1.85, 1.07: next quarter accelerates when this quarter's growth and the year-ago
+  next quarter's growth are low and this quarter's year-ago growth is high.
+- **On EXP-0026's episodes (those with five known quarters):** old 56: R2 0.68, R3 0.71 (model
+  raw 0.95, prior 0.86); clean 28: R2 0.64, R3 0.57, model raw 0.75, no-document prior 0.64.
+- **Reading (ours):** the label is far from rule-proof: the year-ago comparison base alone calls
+  65% of episodes, the same for the largest companies. EXP-0020's "best simple rule 52%" holds
+  only for the rules it tried. On clean episodes the model's no-document prior (0.64) is no
+  better than R2 (0.64), so what EXP-0032 called "knowledge of the company" may largely be the
+  comparison base, which code can state without naming anyone. EXP-0032's arm s4 gave the PM the
+  four earlier quarters and its clean readout did not move (+0.005): the PM did not do this
+  arithmetic from a table; it has to be done by code and stated.
+
+## EXP-0033 — S2-b: what makes a post-cutoff call right? (2026-11-22)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Asked for by the owner on 2026-11-22 (dictated): "去看一看 cut off 之后的
+  这些判断，这些预测，尤其是看那个预测准确的和预测不准确的，归因一下，然后看看能不能从这里面找到他们预测正确究竟的
+  是什么原因，不应该是说因为这个公司才预测正确的，对于我们要看未来的信息。"
+- **Kind:** slices of existing records, no new model call. Script
+  `exp0033_s2b_clean_attribution.py`. Descriptive; no hypothesis, so no verdict threshold.
+- **Data:** EXP-0026's 30 clean episodes (outcome after the cutoff), with the 60 old episodes as
+  contrast: EXP-0026's raw-view call and no-document prior (name and quarter only); EXP-0029's
+  structured answers on the raw and the fully blinded view (evidence items with source, direction,
+  weight and verbatim quote) and its flip question.
+- **Classification, fixed here before looking:** each DOCUMENT item by its quote, by keyword rule,
+  first match wins: (1) guidance and outlook (guidance, outlook, expect, anticipate, forecast,
+  target, "full year", "next quarter", "second half", "will"); (2) orders, backlog and pipeline
+  (backlog, bookings, orders, book-to-bill, pipeline, remaining performance obligations, deferred
+  revenue, awards, subscribers); (3) announced changes (acquisition, divestiture, spin-off, price
+  increase, launch); (4) otherwise, this quarter's results. Categories 1 to 3 are
+  "forward-looking". The rule is checked by hand on 25 items drawn by seed 20261128, agreement
+  reported.
+- **Slices:**
+  1. Document against company: on clean episodes, raw-view call right or wrong crossed with the
+     no-document prior right or wrong; paired readout raw minus prior.
+  2. Evidence accuracy: for each source (DOCUMENT, GENERAL, MEMORY) and each DOCUMENT category,
+     items' count, weight share, and the weighted share pointing the way that happened; clean and
+     old, raw and blinded view.
+  3. Right against wrong calls (EXP-0029 A, clean): weight share of forward-looking DOCUMENT
+     items, of current-results items and of MEMORY items.
+  4. Category of the item named as the one that would flip the answer, in right and wrong calls.
+  5. Examples: for every clean episode, the top-weighted item of the raw-view answer, saved for
+     reading.
+- **Known limits:** 30 clean episodes; stated reasons are not causes (EXP-0029); the rule is
+  crude. A causal test (removing forward-looking sentences and re-asking) is not in scope.
+- **Added after the hand check, before the slices were read:** the rule agrees with my reading on
+  19 of 25 items; all 6 disagreements are forward-looking items filed as "this quarter's
+  results" (guidance printed as a table row, "Organic growth4: +2% to +4%"; a guidance sentence
+  quoted without its verb; a homebuilder's backlog). An exploratory second rule also files an
+  item as forward-looking when the model's claim speaks of guidance, outlook, full year,
+  backlog, pipeline, bookings or orders. Both are reported.
+
+### RESULTS (descriptive)
+- **Run:** 2026-11-22, no model call.
+- **1. Document against company (clean, raw view against the no-document prior):** both right 17,
+  document right and prior wrong 6, document wrong and prior right 2, both wrong 5. Readout raw
+  minus prior +0.094 [0.054, 0.132]. Old episodes: -0.002 [-0.042, 0.042]: the document adds
+  nothing there to what the model remembers.
+- **2. Evidence (clean, raw view; quote rule / claim rule):** this quarter's results carry 0.63 /
+  0.54 of the weight, 0.68 / 0.66 of it pointing the way that happened; forward-looking items
+  0.15 / 0.24 of the weight, 0.63 / 0.68 right; MEMORY 0.14, 0.68 right; GENERAL 0.09, 0.56
+  right. Old episodes: MEMORY 0.98 right, GENERAL 0.89, this quarter's results 0.83. Called from
+  one kind of evidence alone, clean: this quarter's results 0.73 (n 30), MEMORY 0.70 (20),
+  forward-looking 0.58 (12) / 0.56 (16), GENERAL 0.52 (21). Blinded view, clean: results 0.86,
+  MEMORY 0.74, forward 0.62 / 0.63, GENERAL 0.39.
+- **3. Right against wrong calls (clean, raw; 23 right, 7 wrong):** weight on forward-looking
+  items 0.17 against 0.06 (quote rule), 0.26 against 0.13 (claim rule); on MEMORY 0.11 against
+  0.21; on this quarter's results 0.63 against 0.61.
+- **4. Flip item (clean, quote rule):** right calls: this quarter's results 16, MEMORY 3,
+  guidance 2, orders 1, announced changes 1; wrong calls: results 4, MEMORY 2, announced changes 1.
+- **5. Reading the top item of each right clean call (my hand coding, exploratory):** 12 of 23
+  are consequences already set by the time of the release: full-year guidance minus the first
+  half, implying the second half (4); a known change that will be in next quarter and not this
+  one, or the reverse: currency turning from tailwind to headwind, businesses sold during the
+  quarter, a contract term ending, a plant back at full output, a quarter-end exit rate above
+  the average, new customer load coming online (7); a larger backlog (1). 7 are comparison-base
+  effects or one-offs that will not recur (an extreme quarter, investment gains inflating
+  growth, last year's oil price), 2 of them taken from memory of the year-ago quarter, which was
+  public at the time. 4 are trends in growth. In 6 of the 7 wrong calls revenue accelerated and
+  the model said it would not; their top items are generic rules ("some reversion toward the
+  lower trend is likely", "a clear deceleration that tends to persist"), a misread acquisition
+  effect, and guidance that the company then beat.
+- **Reading (ours):** after the cutoff, the document adds to what the name alone gives, and the
+  right calls rest mostly on arithmetic of the next quarter that the release already fixes
+  (guidance against year to date, known changes, comparison base), not on statements of
+  sentiment and not on memory, which is right 68% of the time after the cutoff against 98%
+  before. The wrong calls lean on generic mean-reversion and on memory. EXP-0031/0032's
+  templates lacked most of this arithmetic: no comparison base, no implied rest-of-year growth,
+  no flag for effects that change between this quarter and the next.
+
+## EXP-0032 — S2-b: the rewrite template, version 2 (2026-11-22)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Owner's go-ahead 2026-11-22 ("同意，开始做吧"). Script
+  `exp0032_s2b_rewrite_v2.py`.
+- **Claim under test:** EXP-0031's loss of signal came from its form, not from rewriting as such;
+  a form that carries guided revenue (as growth) and drops segment shares keeps recognition low
+  and the leak undetectable while recovering the signal.
+- **Changes from EXP-0031, and only these:** (a) the reader also copies guided revenue amounts
+  as printed, with their unit and a quote; code converts them to growth against the year-ago
+  period as first filed (next quarter: the quarter three before this one; full year: the four
+  quarters of the last completed fiscal year, or, after a fourth-quarter release, of the year
+  just reported) and drops a conversion outside -50% to +100%; stated growth guidance is used
+  as before when present. (b) Segments keep growth and order, not share. (c) Two ratio sheets:
+  arm s2, EXP-0026's (two earlier quarters); arm s4, four earlier quarters, noised the same way.
+  The brief is the FULL form (EXP-0031 found the judgements added no leak).
+- **Sample and scope, fixed here before looking:** EXP-0026's 90 episodes. 90 reader calls (PM
+  definition, raw release) and 360 short calls: attacker and PM on arms s2 and s4. About 2.5
+  million tokens, through EXP-0027.
+- **Method and baseline:** as EXP-0031 (readout, old minus clean, 90% bootstrap, seed
+  20261127, EXP-0030's hit rule). Baselines on the same episodes: EXP-0026 raw view, EXP-0031
+  FULL (attacker 0.444, leak 0.039, clean accuracy 0.63).
+- **Criteria (each arm):**
+  1. Attacker top-1: stopped at most 0.20, not stopped at least 0.50.
+  2. Leak: no leak detected if the 90% interval of old minus clean includes 0.
+  3. Signal: clean readout minus raw view, paired: retains if at least -0.03 with the interval
+     above -0.10; loses if the interval is below 0. Also against EXP-0031 FULL, paired.
+  4. Guidance coverage: briefs with next-quarter revenue guidance (stated or implied); target
+     at least 25 of 90 (a rough text search found about 30 releases with a range).
+  5. Sheet: s4 minus s2 on attacker top-1 and on clean readout, paired.
+  An arm is **usable** for the next step if criterion 1 is not "not stopped", criterion 2 finds
+  no leak and criterion 3 is not "loses".
+- **Known limits:** as EXP-0031; 30 clean episodes; the implied guidance compares a guided figure
+  with the year-ago figure as first filed, which may differ from the company's own basis.
+- **Contamination label of the result:** old contaminated by design; clean clean (vendor-stated
+  cutoff).
+- **Not in scope:** a reader without outcome memory; more clean episodes; D.
+
+### VERDICT
+- **Run:** 2026-11-22, EXP-0027 transport, 450 calls, no failures, no tool use. All 90 forms
+  parsed.
+- **Results** (arm s2 / arm s4):
+  1. Attacker top-1: 0.311 [0.233, 0.389] / 0.289 [0.211, 0.367], undecided (EXP-0031 FULL on
+     the same episodes: 0.444); median confidence 20 / 21. Old 0.38 / 0.33, clean 0.17 / 0.20;
+     the 50 largest 0.46 / 0.40, the rest 0.22 / 0.22.
+  2. Leak: 0.069 [0.019, 0.119] / 0.082 [0.028, 0.135]: detected in both.
+  3. Signal: clean readout minus raw, paired, -0.116 [-0.165, -0.069] / -0.111 [-0.143,
+     -0.078], loses; against EXP-0031 FULL -0.025 [-0.046, -0.008] / -0.020 [-0.051, 0.012].
+     Clean accuracy 0.60 / 0.53; mean clean readout 0.507 / 0.513, i.e. near 0.5.
+  4. Guidance coverage: next quarter 5 of 90 (target 25: fails); full year 18 (EXP-0031: 15).
+  5. Sheet: s4 minus s2, attacker top-1 -0.022 [-0.111, 0.067], clean readout 0.005 [-0.020,
+     0.034]; four earlier quarters change neither.
+  Neither arm is usable.
+  Exploratory, across EXP-0031 and EXP-0032 on the same episodes: mean readout old / clean is
+  raw 0.778 / 0.624, fully blinded 0.766 / 0.616, EXP-0031 FULL 0.572 / 0.533, FACTS 0.553 /
+  0.508, s2 0.576 / 0.507, s4 0.595 / 0.513. Leak pooled over the four brief arms: 0.059 [0.012,
+  0.105]. The leak of s2 exceeds EXP-0031 FULL's by 0.030 [0.007, 0.054], paired, mostly
+  because clean readouts fell. On old episodes the attacker missed, the readout is still 0.56 /
+  0.59 against clean 0.51.
+- **Failure analysis:** (a) criterion 4's target rested on my text search in EXP-0031's
+  verdict, which mostly matched reported results ("Fourth quarter net revenue was $13.8
+  billion, down 6%"), not guidance; a search for guidance phrasing finds revenue guidance in
+  about 4 to 6 of the 90 releases, and the reader found it in 6. Revenue guidance is rare in
+  these press releases, so its absence is not what costs the signal. EXP-0031's verdict is
+  corrected below. (b) A midpoint-and-band format ("$7.90 billion ± $200 million", Micron) has
+  no printed low or high; the form's "exactly as printed" left it empty. (c) Dropping segment
+  shares lowered recognition by about 13 points.
+- **Verdict:** REJECT for template v2 as a usable input. Recognition is lower (about 30%), but a
+  leak of 0.06 to 0.08 remains, which EXP-0031's interval had not excluded, and the brief keeps
+  almost no signal on clean episodes (readout about 0.51, against 0.62 raw). Read together, the
+  rewrite briefs cut the leak by about 60% (0.155 to about 0.06) and the clean signal by about
+  90% (0.12 above 0.5 to about 0.01).
+- **What this suggests (our reading, for the owner):** on these companies the content that
+  predicts next-quarter acceleration and the content that identifies the company overlap; the
+  no-document prior alone (name and quarter) reaches 0.63 clean accuracy, so part of what the
+  raw release offers on clean episodes is knowledge of the company, which a live PM agent will
+  have. The leak left among unrecognised old episodes points at the reader's choices or at the
+  PM knowing more than the single-sample attacker shows. 30 clean episodes are too few to
+  measure retention: 82 clean large-company episodes exist on the training and development side.
+
+## EXP-0031 — S2-b: extract, then rewrite into a fixed template (2026-11-22)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Asked for by the owner on 2026-11-22 (dictated, in part): "先有一层去读，
+  然后把他觉得预测需要的东西全都拿出来，然后完全重写一个 input，作为下一层的输入 … 你 identify 一些关键的要影响
+  预测的 dimension，这些 dimension 应该是一些数字或者是一些描述，你保留这些，然后其他的东西给它全都给重写掉。你看看
+  这样的效果怎么样？" The owner also set S2's scope: large companies (S&P 500) only.
+- **Claim under test:** a release reduced to a fixed form of forecast-relevant facts and rendered
+  by code in one template for every company (a) no longer lets the attacker name the company and
+  (b) keeps the forecast signal; and with both, the old-minus-clean leak disappears.
+- **Why the answer is not obvious:** EXP-0030 showed the attacker works from segment structure,
+  reporting style and business description, all of which a fixed template removes; but the
+  reader sees the raw release, knows the company and, for old episodes, the outcome, and can put
+  that knowledge into its choices; and the remaining numbers (growth, segment shares, guidance)
+  may still single out a large company.
+- **Sample and scope, fixed here before looking:** EXP-0026's 90 episodes (60 old, 30 clean, all
+  among the 250 largest companies). Script `exp0031_s2b_rewrite.py`.
+  1. Reader: one call per episode to the PM definition (its instruction: answer only from the
+     text) with the raw release: a JSON form of 11 percentages, 3 menu choices, up to 4 forward
+     indicators and 4 unnamed segments, 3 judgements (demand, pricing, outlook tone) and up to 4
+     next-quarter effects from a menu, each fact with a verbatim quote.
+  2. Code keeps a number only if its quote is found in the release and the number is in its
+     quote (or the reader marks it computed); keeps a choice or effect only with a found quote;
+     rounds percentages to whole numbers; renders two briefs in one fixed English template:
+     FACTS (verified facts and the sector) and FULL (FACTS plus the three judgements and the
+     effects). No word of the reader's reaches a brief except menu entries. The ratio sheet is
+     the one of EXP-0026's fully blinded view (noised, relative periods).
+  3. Attacker (`s2-recall-claude-opus-5-5`, EXP-0028's question, wording adapted to a summary) on
+     FULL and on FACTS; PM (EXP-0026's question) on FULL and on FACTS.
+  450 calls, about 2.5 million tokens, through EXP-0027.
+- **Method and baseline:** readout = probability given to the realised direction; leak = old
+  minus clean; 90% bootstrap over episodes, seed 20261126. Baselines on the same episodes:
+  EXP-0026 raw view (leak 0.155; clean accuracy 0.77; prior 0.63; persistence 0.54) and
+  EXP-0028/0030 (attacker 90 of 90). Hit rule: EXP-0030's (folded case and punctuation).
+- **Criteria:**
+  1. Attacker top-1 over all 90, FULL and FACTS separately: stopped if at most 0.20, not stopped
+     if at least 0.50. Also old against clean and by size tier.
+  2. Leak, FULL and FACTS separately: no leak detected if the 90% interval of old minus clean
+     includes 0; reported beside EXP-0026's raw 0.155.
+  3. What the judgements add: leak of FULL minus leak of FACTS (the reader's judgements are where
+     knowledge of the outcome can enter without a quote).
+  4. Signal kept, FULL and FACTS separately: clean readout of the brief minus the raw view's,
+     paired over the 30 clean episodes. Retains if the estimate is at least -0.03 and the interval
+     lies above -0.10; loses if the interval lies below 0; otherwise undecided. Clean accuracy
+     beside raw, prior and persistence.
+  5. Extraction: share of episodes with each main fact (reported and organic growth, next-quarter
+     and full-year guidance, segments, forward indicators); facts dropped by kind of failure.
+  6. Exploratory: demand judgement (+1 strong or improving, -1 softening or weak, else 0), up
+     minus down episodes, old against clean.
+- **Known limits, stated before the run:** 30 clean episodes give wide intervals on criterion 4;
+  one sample per call; the reader is the same model as the PM and the attacker; whole-number
+  rounding is the only noise on the brief's own numbers.
+- **Contamination label of the result:** old episodes contaminated by design; clean episodes
+  clean (vendor-stated cutoff).
+- **Not in scope:** a reader without memory of the outcome (a local model, or a reader that sees
+  only the blinded view); coarser templates; D (paired comparisons), which follows.
+
+### VERDICT
+- **Run:** 2026-11-22, EXP-0027 transport, 450 calls, 2.6 million tokens. One attacker call
+  (FACTS, episode 17) was refused by the API's safeguards classifier and answered on one retry;
+  no canary failures, no tool use. All 90 forms parsed.
+- **Results** (FULL / FACTS):
+  1. Attacker top-1: 0.444 [0.356, 0.533] / 0.400 [0.311, 0.489], undecided (EXP-0028: 1.00);
+     median confidence 25 / 30 (97). Old 0.517 / 0.483, clean 0.300 / 0.233; the 50 largest
+     0.571 / 0.486, the rest 0.364 / 0.345. Exact quarter: old 0.50 / 0.43, clean 0.20 / 0.03.
+  2. Leak: 0.039 [-0.010, 0.089] / 0.045 [-0.006, 0.095]; no leak detected in either (raw view
+     on the same episodes: 0.155 [0.096, 0.217]). The intervals do not exclude a leak of up to
+     about 0.09.
+  3. Judgements add nothing measurable: FULL minus FACTS leak -0.006.
+  4. Signal lost: clean readout minus raw, paired, -0.091 [-0.140, -0.043] / -0.116 [-0.162,
+     -0.071], loses in both. Clean accuracy 0.63 / 0.53 against raw 0.77, no-document prior
+     0.63, persistence 0.54.
+  5. Extraction: reported growth in 0.92 of briefs, segments 0.81, forward indicators 0.53,
+     organic growth 0.28, operating-margin change 0.27, full-year revenue guidance 0.17,
+     next-quarter revenue guidance 0.06. Of 775 numbers offered with a found quote, 29 were
+     dropped because the number was not in its quote.
+  6. Demand judgement, up minus down episodes: old +0.30 [0.03, 0.57], clean -0.13 [-0.47,
+     0.20].
+  Exploratory: on old episodes the PM's readout is 0.595 / 0.589 where the attacker named the
+  company and 0.547 / 0.519 where it did not, against clean 0.533 / 0.508: what leak remains
+  sits mostly in the recognised episodes.
+- **Failure analysis:** (a) the attacker's clues on recognised episodes (read on six) are the
+  unnamed segments' revenue shares ("a three-segment split near 72/22/6"; "consumables about 80%,
+  then seasonal, home products and apparel"), margin profiles and the size of a stated
+  divestiture effect. It recognises old episodes more often than clean ones, which fits
+  recognition by remembered figures. (b) The signal loss has a visible cause: releases state
+  guidance mostly as dollar ranges, which the form had no place for, so next-quarter guidance
+  reached 5 briefs. (Corrected after EXP-0032: the text search behind "about 30 of the 90
+  releases" matched mostly reported results; revenue guidance is in about 4 to 6 of them, so
+  missing guidance does not explain the loss.) Other content the PM reads in the raw release (tables, the
+  narrative) has no field at all.
+- **Verdict:** partial. The fixed template does what name-removal could not: recognition falls
+  from 90 of 90 to about 40% with low confidence, and the leak falls from 0.155 to an amount the
+  test cannot tell from zero. But the brief as built keeps too little: clean accuracy falls to
+  the no-document prior (FULL) or a coin (FACTS). Not usable yet; both failures point to the
+  template, not to the idea.
+- **Next (owner's line, template v2):** take guidance as dollar levels and let code convert them
+  to growth against the year-ago quarter as first filed (EXP-0020's series), so no level reaches
+  the brief; coarsen segment shares (or drop them) and keep segment growth; add organic growth
+  and margins from code where the series has them. Measure the same four quantities on the
+  same episodes.
+
+## EXP-0030 — S2-b: does redaction guided by the attacker's own clues stop it? (2026-11-21)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Owner's go-ahead given 2026-11-21 ("第二点的话，我也同意你的建议"); the
+  owner adds that the clues collected here are to feed a later, code-only replacement of names,
+  people and the like ("积累多了之后，我们再回来优化使用代码方法的这种替换 … 这都是后面的 plan").
+- **Claim under test:** if the attacker lists the words that gave a company away and code
+  removes them, a fresh attacker no longer names the company.
+- **Why the answer is not obvious:** EXP-0028's clues are mostly names a list can remove, but
+  some are descriptions ("a warehouse club with twelve-week quarters") and a company's segment
+  structure; an earlier loop of this kind in a sibling project still left large companies
+  recognised (S2 plan, evidence 2).
+- **Sample and scope, fixed here before looking:** the fully blinded views of EXP-0026's 90
+  episodes. Three attacks through EXP-0027 with `s2-recall-claude-opus-5-5`: EXP-0028's prompt
+  plus up to 20 terms copied from the text, each tagged PERSON, BRAND, PLACE, NUMBER, EVENT or
+  OTHER. After attacks 1 and 2, code replaces every occurrence of each listed term (and a
+  person's last name) with a placeholder. An episode whose company is not among the three
+  guesses leaves the loop and counts as a miss in later rounds. At most 270 calls, about 4.3
+  million tokens.
+- **Method and baseline:** hit rule of EXP-0028; 90% bootstrap over episodes, seed 20261125.
+  Baseline: EXP-0028, 90 of 90.
+- **Criteria:**
+  1. Top-1 hit rate at the third attack over all 90 episodes: stopped if at most 0.20, not
+     stopped if at least 0.50. Also old against clean and the 50 largest against the rest.
+  2. The first attack repeats EXP-0028 (top-1 at least 0.90).
+  3. Cost of the removals: median share of characters replaced per round.
+  4. Share of listed terms found verbatim, and the terms by kind: the catalogue the owner asked
+     for.
+- **Known limits, stated before the run:** one attack per text, so a single miss can be chance;
+  no PM call is made on the redacted texts, so what the removals cost the forecast is not
+  measured here; the attacker and the helper that lists terms are the same model.
+- **Contamination label of the result:** a recognition measure, not a forecast.
+- **Not in scope:** a code-only sanitiser built from the catalogue (later, per the owner);
+  rewriting by a model; Sonnet.
+- **Deviation, 2026-11-22, before any reply of round 1 was read:** the hit rule also matches
+  the company's name after folding case and punctuation, because EXP-0029 showed EXP-0028's rule
+  scoring "HP Inc.", "C.H. Robinson" and "PG&E" as misses. Here a false miss would drop an
+  episode from the loop and flatter criterion 1.
+
+### VERDICT
+- **Run:** 2026-11-22, EXP-0027 transport, 270 calls (three rounds of 90), all with their canary
+  and no tool use; 3.9 million tokens.
+- **Results:**
+  1. Top-1 hit rate at the third attack: 90 of 90 (old 60 of 60, clean 30 of 30, the 50 largest
+     and the rest alike). Not stopped. Median confidence fell from 97 to 95 to 93.
+  2. The first attack repeats EXP-0028: 90 of 90.
+  3. Each removal replaced a median 1.0% of the characters (0.95%, 0.99%; the third list 1.06%).
+  4. Terms listed per round: 1,480, 1,468, 1,454; found verbatim 0.98, 0.97, 0.95. By kind, the
+     mix moves from names to descriptions: PERSON 129, 19, 8; BRAND 172, 70, 33; OTHER 744,
+     1,037, 1,126. Exact quarter: old 1.00 every round; clean 0.93, 0.83, 0.83.
+- **Failure analysis:** none of the transport. The round-3 clues (read on seven episodes) are
+  segment names and structure ("Individual Retirement, Group Retirement, Life Insurance and
+  Institutional Markets"), the company's own reporting style ("Adjusted EBITDA Margin by Business
+  Type", "Analysis of Change"), what the company does ("designing, installing, repairing and
+  maintaining energy and communications infrastructure"), regulatory markers ("NI 51-101",
+  "Sci-Tech Innovation Board") and dated events (an IPO, a COVID-quarter exit from Latin America).
+  A few names a 20-term list had not yet reached also survived ("Fortitude Re", "Arcosa").
+- **Verdict:** ACCEPT "not stopped". For large and mid-sized companies, removing the words an
+  attacker cites does not hide the company: after two removals it still names every one, from
+  what the business is and how it reports. This is GY-0000's condition (block a fresh guesser
+  on large companies without deleting what the task needs) tested by direct removal, and it
+  fails: what identifies these companies is the content a forecaster needs. Clean episodes are
+  recognised as well as old ones, so recognising the company needs no memory of the outcome;
+  whether recognition turns into outcome knowledge is EXP-0029's per-episode recall question.
+- **Consequences:** (a) the term catalogue (4,402 terms, by kind, on the drive) is what the owner
+  asked to collect for a later code-only replacement; it says that replacing people and brands is
+  necessary and far from sufficient; (b) blinding large companies is not a route to usable replay
+  history; the plan's §16 condition for moving weight to strategies C, D and E holds more firmly;
+  (c) for small companies, where recall is weaker (EXP-0024 covers only the 250 largest), the
+  same loop may end differently and is untested.
+
+## EXP-0029 — S2-b: can the model's own stated reasons show where its call comes from? (2026-11-21)
+
+### PRE-REGISTRATION
+- **Status:** owner's go-ahead given 2026-11-21 ("我同意第一点"), after this entry was written;
+  started the same day. Script `exp0029_s2b_rationale_audit.py`.
+- **Owner's request (2026-11-21, dictated, in part):** "盲化之后，和盲化之前，我们就从各个角度去不断的去问他
+  问题。比如说你为什么要这样做，你的原因是什么？要求他有一些结构化的表示，然后他这样的判断必须要能够符合他最终的
+  这个判断 … 能不能在这里面去看出来它到底是不是猜到了这个公司，还是 … 在这个原来的数据上有 linkage 出现了".
+- **Claim under test:** an audit of the model's stated reasons can tell a call made from the text
+  from one helped by knowing the company or the outcome. Ground truth is in hand: on these 90
+  episodes the call leans to the realised outcome on old releases (EXP-0026) and the model can
+  name the company behind every view (EXP-0028).
+- **Why the answer is not obvious:** stated reasons need not be the causes of an answer; the PM
+  definition tells the model to use only the text, so it may neither use nor admit memory; or
+  it may say plainly that it knows the company.
+- **Sample and scope, fixed here before looking:** EXP-0026's 90 episodes (60 old, 30 clean),
+  raw view and fully blinded view as built, the same texts. Three calls per text through
+  EXP-0027, Opus only: A, 180 calls to the PM definition, the question of EXP-0026 with three to
+  six evidence items first (source DOCUMENT, GENERAL or MEMORY; direction; weight 1 to 5; a
+  verbatim quote; a claim), then the company it believes it is reading, then the probability.
+  B, up to 180 calls to the PM definition with no document, only A's DOCUMENT quotes that code
+  finds verbatim in the text. C, 180 calls to the recall definition with the text and A's
+  reply: company, quarter, the growth the next quarter went on to show, the probability from the
+  text alone and from everything it knows, and which item would flip the answer. About 540
+  calls and 6 million tokens.
+- **Method and baseline:** readout = probability given to the realised direction; leakage = old
+  minus clean, 90% bootstrap over episodes, seed 20261124. Each criterion is reported for the
+  raw and the blinded view separately. EXP-0026's readouts on the same texts are the baseline.
+- **Criteria:**
+  1. *The leak under the structured format.* A's old-minus-clean readout. It reproduces if at
+     least 0.10 with the interval above 0. If not, asking for reasons first changed the call,
+     which is a finding, and criteria 3 and 5 are then descriptive only.
+  2. *Does the answer admit recognition?* Share of A's COMPANY lines that name the company
+     (EXP-0028's hit rule). Blinded view: reveals if at least 0.80, conceals if at most 0.20.
+  3. *Do MEMORY tags account for the leak?* Share of old answers with a MEMORY item; and the
+     old-minus-clean readout among answers with none. Self-report accounts for the leak if that
+     gap is under half of criterion 1's; it does not if the gap is at least 0.10 with the
+     interval above 0. Reported if at least 20 old answers have no MEMORY item.
+  4. *Do the reasons hold together?* Share of quotes found verbatim (flagged under 0.90); share
+     of answers whose weighted evidence points the way of the probability; and the
+     old-minus-clean gap of the weighted evidence itself, all items and DOCUMENT items only.
+  5. *Do the cited passages carry the leak?* B's old-minus-clean readout. Inside the cited
+     passages if at least half of A's gap on the same items with the interval above 0; outside
+     them if B's interval includes 0 while A's does not.
+  6. *Knowledge of the outcome when asked.* Share of C replies that give a next-quarter growth
+     figure, how often it lies on the realised side of the reported quarter's growth, and its
+     median error, old against clean (clean is the placebo: the outcome postdates the cutoff).
+     Linkage: A's readout on old episodes where the recalled direction is right, minus the rest,
+     if each group has at least 10.
+  7. *Does asking to set memory aside remove the leak?* Old-minus-clean readout of C's
+     text-only probability. Removed if the estimate is under 0.05 and the interval includes 0.
+- **Known limits, stated before the run:** C is a new call, so it reports what the model can
+  know about the text, not what call A used. B loses the tables, so its level is not comparable
+  with A's, only its old-minus-clean gap. The blinded view is not blind (EXP-0028).
+- **Contamination label of the result:** old episodes contaminated by design; the clean group
+  is clean (vendor-stated cutoff) and serves as placebo.
+- **Not in scope:** edits to the text that test the stated reasons (a second round, after this
+  one shows which reasons are cited); Sonnet; repeated samples; a repaired sanitiser.
+
+### VERDICT
+- **Run:** 2026-11-21 to 22, EXP-0027 transport, 540 calls (180 A, 180 B, 180 C), all with their
+  canary and no tool use; 5.8 million tokens. Stage A was cut by the account's usage limit after
+  29 calls and resumed; failed calls were never recorded, so nothing was answered twice.
+- **Results** (old minus clean readout, 90% interval; raw view / fully blinded view):
+  1. Leak under the structured format: 0.236 [0.175, 0.298] / 0.179 [0.124, 0.234], against
+     EXP-0026's 0.155 / 0.150 on the same texts. Reproduces; reasons-first made the call lean
+     further toward the realised outcome, not less.
+  2. The COMPANY line names the company in 0.95 of old (1.00 by hand, see failure analysis)
+     and 1.00 of clean answers in both views; never UNKNOWN. Reveals, under a definition that says to use only the text.
+  3. A MEMORY item appears in 0.97 of old answers in both views (clean: 0.67 raw, 0.90 blinded).
+     Only 2 old answers have none, so the gap without MEMORY items cannot be computed. Read by
+     hand, many old MEMORY items state the next quarter's result outright ("as I recall,
+     third-quarter 2021 revenue fell only about 1%"); clean ones speak of the current quarter or
+     the industry.
+  4. Quotes found verbatim: 0.99 / 0.99. Weighted evidence points the way of the probability in
+     every answer with a direction. The evidence itself carries the leak: weighted lean of all
+     items 0.219 [0.136, 0.305] / 0.147 [0.068, 0.227]; DOCUMENT items only 0.175 [0.087, 0.268]
+     / 0.084 [0.007, 0.163].
+  5. Call from the cited quotes alone (B): 0.170 [0.120, 0.221] / 0.079 [0.027, 0.131], against
+     A's 0.236 / 0.179. Raw view: inside the cited passages (at least half of A's gap). Blinded
+     view: neither rule holds (under half, interval above 0); partly inside.
+  6. Asked outright (C), the model gives a next-quarter growth figure for 0.97 / 0.98 of old
+     episodes, on the realised side in 0.98 / 0.95 of them, median error 0.30 / 0.35 points. For
+     clean episodes it declines in 0.97 / 0.93. It names every company, old and clean. The
+     linkage contrast cannot be computed: only 3 / 4 old episodes lack a right recall.
+  7. "Judged from the text alone" (C): 0.137 [0.079, 0.194] / 0.115 [0.063, 0.165]; "using
+     everything": 0.307 / 0.271. Not removed: the instruction halves the gap and leaves the rest.
+  Exploratory: the item C names as the one that would flip the answer is the top-weighted item
+  in 0.96 / 0.97 of answers.
+- **Failure analysis:** none of the transport. The hit rule (EXP-0028's) scores three old
+  episodes as misses in each view whose COMPANY line is right by hand: "HP Inc." (name forms under
+  four letters are skipped), "C.H. Robinson" (key spells "C. H."), "PG&E" (key "Pg&E"). Read by
+  hand, criterion 2 is 60 of 60 old in both views. The rule needs punctuation- and case-folding
+  before it is reused.
+- **Verdict:** ACCEPT, with a split answer to the owner's question. As a detector of recognition
+  and outcome knowledge, asking works and is cheap: on old releases the model names the company,
+  tags its memory and, asked, recalls next-quarter growth to a third of a point; on clean ones it
+  says it does not know. As an audit of the call's cause, the stated reasons are not enough:
+  they are verbatim and coherent, yet the document evidence the model chooses and weighs already
+  leans toward the outcome it remembers, and asking it to set memory aside leaves about half the
+  gap. The leak runs through which true sentences get picked, which no quote check catches.
+- **Consequences:** (a) a recall question (C's NEXT_GROWTH) is a per-episode gate that costs one
+  call: an episode whose outcome the model can state is not usable as replay; (b) "ignore what
+  you know" instructions are not a fix; (c) the edit test this entry left out (change or remove
+  the top-weighted DOCUMENT evidence and see whether the call follows) is the next step of the
+  audit line, since the flip item is identified in 96% of answers.
+
+## EXP-0028 — S2-b: does the model recognise the company behind a fully blinded release? (2026-11-21)
+
+### PRE-REGISTRATION
+- **Status:** not yet run. Owner's go-ahead for this step given 2026-11-21.
+- **Claim under test:** EXP-0026 left two readings of why the fully blinded view leans to the
+  realised outcome as much as the raw text. Reading 1: the model recognises the company and
+  quarter through the blinding. Reading 2: it does not, and old releases are easier to read.
+- **Why the answer is not obvious:** the rule attacker identifies every view from ratios
+  (EXP-0022), but it holds a database; rationales named the hidden company in 7 of 360 views.
+- **Sample and scope, fixed here before looking:** the fully blinded view (names, periods,
+  scaling and noise on) of EXP-0026's 90 episodes, the same texts. One call each to
+  `s2-recall-claude-opus-5-5` through EXP-0027: 90 calls, about 1.4 million tokens.
+- **Method and baseline:** the prompt says names, dates and figures may have been replaced, and
+  asks for three company guesses, the quarter end (year and month) and a confidence. A guess is
+  a hit if it holds the company's ticker or one of its name forms (the key of EXP-0022). Chance
+  is below 1% (1,362 companies). Intervals: 90% bootstrap over episodes, seed 20261123.
+- **Criteria:**
+  1. Top-1 hit rate on the 60 old episodes. Reading 1 is supported if it is at least 0.50,
+     reading 2 if it is at most 0.20; between the two, undecided.
+  2. The same on the 30 clean episodes: recognising a company needs no memory of the outcome,
+     so a similar rate is expected under reading 1.
+  3. On old episodes, EXP-0026's fully blinded readout for recognised (top-1) minus unrecognised
+     episodes, with its interval; reported only if each group has at least 10 episodes.
+  4. Year named within one of the true year, and the exact quarter end, old and clean.
+- **Contamination label of the result:** a recognition measure, not a forecast; old texts are
+  contaminated by design.
+- **Not in scope:** partial blinding; Sonnet; a line-up; repeated samples.
+
+### VERDICT
+- **Pre-registration commit:** none; written minutes before the run, uncommitted with it.
+- **Run:** 2026-11-21, EXP-0027 transport, 90 calls, all with their canary and no tool use.
+- **Result:** the first guess names the company in 60 of 60 old and 30 of 30 clean fully blinded
+  views (median confidence 97 and 95), and the exact quarter end in 60 of 60 and 29 of 30.
+  Criterion 1: reading 1, recognised. Criterion 3 cannot be computed: no episode is unrecognised.
+- **Failure analysis:** the clues the model cites are in the blinded text. Checked on three
+  episodes: the company's own name is gone, but executives ("Benioff", "Roberts"), subsidiaries
+  and brands ("Slack" 20 times, "Peacock" 11, "Avanade", "Duck Creek") and unscaled counts
+  ("774,000" people) remain. Two causes in EXP-0022: its test for "a common English word" strips
+  up to four trailing letters, so "MuleSoft" passes as "mule"; and people are found only next to
+  a title in one of three patterns. Brand names that are dictionary words (Slack, Sky, Peacock)
+  were a known gap. `check` tested only the company's own name forms and so reported no residue.
+- **Verdict:** ACCEPT reading 1. EXP-0026's "fully blinded" view was not blind: its verdict
+  stands for the sanitiser as built and says nothing about what thorough name-blinding would do.
+  The attacker should have run before the PM calls, as the owner's original pipeline has it; from
+  here it is a gate: no view goes to a PM arm until the attacker's hit rate on it is known.
 
 ## EXP-0026 — S2-b step 3: which element of blinding removes outcome leakage from the PM's call? (2026-11-21)
 
@@ -280,6 +946,9 @@ can be regenerated.
   the plan (the re-test of GY-0000) is not met by wave 1. Next, to separate the two readings: ask
   the model to name the company and quarter of the fully blinded views (the attacker of plan
   §6), and compare clean and old episodes matched on the persistence baseline.
+- **Added after EXP-0028 (2026-11-21):** the model names the company behind every fully blinded
+  view, from brand, subsidiary and executive names the sanitiser left in. Reading 1 holds, and
+  the REJECT above is a verdict on EXP-0022's sanitiser, not on name-blinding as such.
 
 ## EXP-0024 — S2-b step 2: where does the model's recall of outcomes end? (2026-11-20)
 

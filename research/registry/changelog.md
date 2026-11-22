@@ -2,6 +2,98 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-22 — Owner: EXP-0036 approved; one-off versus recurring across lines; IR survey
+
+- **What:** the owner approved EXP-0036 at the proposed scale (about 1,100 calls); asked that the
+  recurring-or-one-off question cover more than earnings ("不仅仅是盈利 很多方面我们都想看是不是可持续还是
+  单次性的 加上"), so EXP-0036 asks four probabilities (revenue acceleration, gross margin,
+  operating margin, net income) and its reader tags what recurs by line; asked to check whether
+  companies' websites carry past call text ("看看他们网站上有没有既往text") before any transcript
+  purchase; agreed to freeze skill v1 without tuning ("同意").
+- **Assets affected:** EXP-0036 pre-registration; S2 analyst skill (v1 frozen for EXP-0036);
+  data audit §2 (an IR-site survey under way).
+
+## 2026-11-22 — EXP-0035: inventory and contract liabilities add about a point to the base
+
+- **What:** on 22,373 as-filed episodes, inventory growing faster than revenue (+1.0 point of
+  accuracy) and contract liabilities growing faster than revenue (+0.7) add to EXP-0034's
+  five-lag logistic; together with the other items the bar moves from 0.675 to 0.683 (250
+  largest: 0.669 to 0.676, interval reaching zero). RPO, gross margin, non-operating income and
+  sector growth add nothing for this label. For earnings-side labels nothing moves accuracy.
+- **Why it matters:** the accounting structure carries a small, real signal for the S2 label that
+  code can state in a blinded brief; the bar a PM call must clear is about 0.68.
+- **Assets affected:** S2 analyst skill draft (Part A4); baselines of EXP-0036 onward.
+
+## 2026-11-22 — Owner: an analysis skill for the S2 PM, built from the literature
+
+- **What:** the owner agreed to template v3 (comparison base and guidance arithmetic computed by
+  code and stated in the brief) and asked for more: a reusable analysis "skill" that makes the PM
+  read the structure behind the numbers, from an accounting view and from earnings-call language.
+  In the owner's words: "你光看这种 headline number、EPS 是涨，但里面是不是可以持续的呢？……比如说今年
+  买了某一个股票，然后这个股票 IPO 了赚了钱，像这种东西是不可持续的"; "能不能细节到它这个 inventory
+  到底是变快了还是变慢了……从 accounting 的角度去看，其实具体 number 后面有没有什么帮助"; and on calls,
+  "它这些 speech 它的这个用词啊、遣词造句啊……尤其是在回答问题的时候……有没有就是规避一些问题啊". The
+  owner expects most calls to stay mean reversion or trend following and wants to know what can
+  be added on top: "我们希望在这个基础上去找到它能不能额外的去多一些信息".
+- **Done:** three literature passes started (streams 10 accounting signals, 11 call language, 12
+  structured prompting for forecasts). Census of the 90 EXP-0026 releases: 78 carry a balance
+  sheet, 57 mention inventory, 71 receivables, 23 deferred revenue or contract liabilities, 27
+  backlog, orders or remaining performance obligations, 20 organic growth.
+- **Why it matters:** EXP-0033 found clean calls right for reasons fixed in the release; the
+  skill asks whether more of that can be read out, beyond the comparison base (EXP-0034).
+- **Assets affected:** S2 plan §6 (inputs) and §8 (labels; earnings-quality items bear more on an
+  earnings label than on the revenue label); the transcript data decision (data audit §2).
+
+## 2026-11-22 — EXP-0034: the comparison base calls 65% of acceleration episodes
+
+- **What:** on EXP-0020's as-filed series, "next quarter accelerates if its year-ago quarter grew
+  less than this quarter's year-ago quarter" is right on 65% of 22,373 episodes (66% for the 50
+  largest companies); a five-quarter logistic regression 67%. EXP-0020 reported 52% as the best
+  simple rule because it tried only persistence and reversal; its entry carries a note.
+- **Why it matters:** (a) the label is not rule-proof, so the statistical baseline for S2 calls
+  is about 0.65, not 0.52 to 0.54; (b) on clean episodes the model's no-document prior (0.64)
+  matches the rule, so much of "knowing the company" may be the comparison base, which a blinded
+  brief can carry if code computes and states it.
+- **Assets affected:** S2 plan §8 and §10 (label rationale, baselines); EXP-0026 to 0033
+  verdicts that cite persistence 0.54 as the baseline; the next rewrite template.
+
+## 2026-11-22 — EXP-0033: post-cutoff calls are right for arithmetic reasons, not for the name
+
+- **What:** on the 30 clean episodes, the release adds +0.094 [0.054, 0.132] readout over the
+  company name alone (old episodes: nothing). The evidence behind right calls is mostly the next
+  quarter's arithmetic that the release already fixes: guidance against year to date, changes
+  known to enter or leave next quarter, comparison base and one-offs. Memory is right 68% of the
+  time after the cutoff (98% before); wrong calls lean on generic mean reversion and on memory.
+- **Why it matters:** it says what a replay input must carry to be worth learning from, and the
+  templates of EXP-0031/0032 carried little of it.
+- **Assets affected:** the next rewrite template; S2 plan §6.
+
+## 2026-11-22 — EXP-0032: template v2 hides more but still leaks and keeps little signal
+
+- **What:** dropping segment shares lowers recognition to about 30%, but a leak of 0.07 to 0.08
+  is detected (pooled over EXP-0031 and 0032's four brief arms: 0.06) and clean readouts stay
+  near 0.5. The guidance fix changed nothing because revenue guidance is in only 4 to 6 of the
+  90 releases; EXP-0031's verdict, which said about 30, is corrected.
+- **Why it matters:** rewriting cuts the leak by about 60% and the clean signal by about 90% on
+  these companies; part of the raw signal on clean episodes is knowledge of the company itself.
+  Literature pass on rewrite-based blinding written the same day (stream 09, draft, not merged
+  into the matrix).
+- **Assets affected:** S2 plan §6; EXP-0031 verdict (correction); next templates.
+
+## 2026-11-22 — EXP-0031: rewriting into a fixed template hides most companies but loses the signal
+
+- **What:** the owner's extract-and-rewrite idea, on EXP-0026's 90 large-company episodes: a
+  reader fills a fixed form from the raw release, code verifies the quotes and renders one
+  template. The attacker names the company in 40 to 44% (from 100%), with median confidence 25 to
+  30; the old-minus-clean leak falls from 0.155 to about 0.04, within noise of 0. Clean accuracy
+  falls from 0.77 to 0.63 (with the reader's judgements) or 0.53 (facts only).
+- **Why it matters:** first S2 transformation that breaks recognition of large companies; its
+  loss of signal traces to the form (guidance in dollars had no place; segment shares identify),
+  so a second template is the next step. Scope set by the owner the same day: large companies
+  (S&P 500) only.
+- **Assets affected:** S2 plan §6 (sanitiser levels L3 and L4); EXP-0032, if run, uses the same
+  episodes.
+
 ## 2026-11-22 — S1-c calculator run (EXP-0016): with the same calculator, the 0.8B is 2.6 points behind the 4B
 
 - **What:** EXP-0014's distilled 0.8B (D3) and the 4B, each with and without a calculator that
@@ -17,6 +109,42 @@ Newest first. What changed, why, on what evidence, and what it affects.
   not arithmetic. A calculator that evaluates what the 4B writes, not what it means, costs the
   4B 1 to 3 points.
 - **Assets affected:** S1 roadmap row; the choice of S1's next step (to the owner).
+
+## 2026-11-22 — EXP-0030: removing the attacker's clues does not hide large companies
+
+- **What:** three attacks on EXP-0026's fully blinded views with two rounds of removing every term
+  the attacker cited (about 1,470 terms a round, 1% of the text each time): Opus names all 90
+  companies every round, old and clean. Its clues move from people and brands to segment
+  structure, reporting style and what the business does.
+- **Why it matters:** GY-0000's condition for bringing masking back fails for large and
+  mid-sized companies when tested by direct removal; the identifying content is the content a
+  forecast needs. Moves S2's weight further toward strategies C, D and E (plan §16).
+- **Assets affected:** S2 plan §6 and §16; GY-0000 (evidence, not a change of rule); the term
+  catalogue on the drive for a later code-only replacement (owner, 2026-11-21).
+
+## 2026-11-22 — EXP-0029: asking detects recognition; stated reasons do not show the cause
+
+- **What:** on EXP-0026's texts, Opus asked for structured reasons names the company (95 to
+  100%), tags memory in 97% of old answers and, asked outright, recalls next-quarter growth of old
+  episodes to a median 0.3 points while declining on clean ones. Its quotes are verbatim and its
+  reasons agree with its call, yet the document evidence it selects leans toward the remembered
+  outcome, and "judge from the text alone" removes only about half of the old-minus-clean gap.
+- **Why it matters:** a one-call recall question is a cheap per-episode gate for replay; neither
+  self-reported reasons nor an instruction to ignore memory removes the leak.
+- **Assets affected:** S2 plan §7 (auditor role); EXP-0030 and later replay arms.
+
+## 2026-11-21 — EXP-0028: every "fully blinded" view is recognised; the sanitiser was not blind
+
+- **What:** asked to name the company behind EXP-0026's fully blinded views, Opus is right on
+  the first guess in 90 of 90, with the exact quarter in 89. The blinded texts still hold
+  executive, subsidiary and brand names and unscaled counts; two defects of EXP-0022 let them
+  through (a too-loose test for common words; narrow patterns for people), and its `check` looked
+  only for the company's own name.
+- **Why it matters:** EXP-0026's result is explained (the model knew the company in every view)
+  and limited: it tests EXP-0022's sanitiser, not thorough blinding. The attacker becomes a gate
+  before any PM arm, as in the owner's original pipeline (2026-11-18).
+- **Assets affected:** EXP-0022 (to be fixed forward), EXP-0026's verdict (scope note added),
+  S2 plan §6 and §7.
 
 ## 2026-11-21 — EXP-0026 run: code-only blinding does not change the PM's call
 
