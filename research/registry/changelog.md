@@ -2,6 +2,42 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-23 — Owner: a reasoning exam for S1 (section R), and EXP-0018 approved
+
+- **What:** the owner holds that lookups and arithmetic are what code already does and that an
+  LLM's value is in the analyst's logic ("AI 的主要贡献应该是在于这个逻辑思考上面"). Two
+  literature streams (13a on financial reasoning benchmarks, 13b on item design) and a design
+  draft (`research/design/s1_reasoning_exam.md`) followed. The owner took every recommended
+  option: multi-fact calls with rule gold (R1) and twin items (R2) first, a descriptive forecast
+  batch (R4) and claim-by-claim analysis (R5) later; excerpts up to about 800 tokens; no
+  segments in v1; FinIndices and XFinBench after a licence check; S1 numbers EXP-0019, then
+  EXP-0050 to EXP-0059. EXP-0018, the 4B rerun with the calculator's inline rule only, approved
+  after EXP-0017's verdict.
+- **Why it matters:** S1's question widens from reading and calculating to combining facts. The
+  calculator must be fair to the 4B before R is measured with it on, hence EXP-0018 first.
+- **Assets affected:** S1 roadmap row; registry Reserved (EXP-0050 to 0059 held for S1); S1 plan
+  rule 4 (the 400-token cap) for R items only.
+
+## 2026-11-23 — S1-c calculator distillation (EXP-0017): new labels fix a loss's sign, not the reading
+
+- **What:** the 0.8B distilled again from the 4B's answers written with the calculator, inserted
+  values masked from the loss: K1 on D3's items, K2 shifted to operating margins and negative
+  answers, two seeds each, tested with the calculator on EXP-0016's 3,000 items. K1 86.8%, K2
+  87.4%, against C 86.7%, 4C 89.4% and the tool-free 4B 91.3%. HD1 (K1 − C on B2 +1.4), HD2
+  (K2 − K1 on B2 +1.7) and HD3 (K2 − 4C −2.0 [−3.7, −0.2]) all inconclusive. Together the two
+  steps add 3.1 points on B2 (K2 − C, p = 0.0007), about the losses whose sign C dropped (C 41
+  and 43, K2 1 and 3).
+- **Why it matters:** with the same calculator the 0.8B is level with the 4B on lookups and 6 to
+  8 points behind on calculations. What is left is reading the right column of a wide table:
+  on development the model takes the sequential quarter or the year-to-date columns instead of
+  the same quarter a year earlier. Changing the labels did not touch it, and the off-target exams
+  (section A) fall further. EXP-0018's analysis found 4C handicapped by the calculator's chained
+  rule (about 2 points), so HD3 is easier for the 0.8B than it looks; against the tool-free 4B
+  K2 is −3.9 [−5.6, −2.3].
+- **Assets affected:** S1 roadmap row; EXP-0018 (its re-analyses use K2's test files); the S1
+  reasoning exam draft (`research/design/s1_reasoning_exam.md`), where reading periods across
+  columns is template R1.7.
+
 ## 2026-11-23 — Owner: Alpha Vantage's free key for call transcripts
 
 - **What:** after EXP-0039's low yield (37 of 190), the owner offered a free-tier Alpha Vantage

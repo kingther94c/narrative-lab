@@ -245,6 +245,9 @@ can be regenerated.
   `s2/exp0039/summary.json`, `extracted.jsonl`, `texts/`.
 - **EXP-0040 to EXP-0049** — held for sub-study S2 as well (2026-11-23; the block EXP-0030 to
   EXP-0039 is used up). S1 continues from EXP-0019 and skips S2's blocks.
+- **EXP-0050 to EXP-0059** — held for sub-study S1 (owner, 2026-11-23, decision D5 of
+  `research/design/s1_reasoning_exam.md`: S1 takes the next free block after S2's). S1 uses
+  EXP-0019 first, then this block for the reasoning exam (section R); S2 continues from EXP-0060.
 - **EXP-0040** — S2-a collection of earnings-call transcripts from Alpha Vantage for EXP-0036's
   clean episodes (owner, 2026-11-23: "此外我会给你free tier alpha vantage api （25 use per day in
   US timzeone）"). Scope: the 197 clean episodes (190 companies); one request to
@@ -1268,6 +1271,92 @@ can be regenerated.
   and their history depends on blinding (A, B) or on other strategies. The condition "no
   measurable leakage on raw text for this call" is not met.
 
+## EXP-0018 — S1-c calculator, inline rule only: a fair 4B-with-calculator comparator (2026-11-23)
+
+### PRE-REGISTRATION
+- **Status:** draft, 2026-11-23. The owner asked why the calculator costs the 4B points
+  (EXP-0016: 4C − 4B = −1.3 on B1, −2.8 on B2) and chose to fix the calculator and rerun the 4B
+  once EXP-0017 has finished ("修好后重跑"). Approved by the owner 2026-11-23 after EXP-0017's
+  verdict ("一 A": approve and commit). Before the commit: the script is
+  written (`exp0018_s1c_calculator_inline.py`), its parser cases pass (22 of 22: EXP-0016's inline
+  cases unchanged, every chained case now finds nothing), and its scoring was dry-run with 4C's
+  test responses standing in for 4I (it reproduces EXP-0016's 4C − 4B figures). No model is run
+  before approval, and nothing on a test item before the commit is pushed. EXP-0017's K2 test
+  files now exist, so the K2 − 4I re-analysis is computed.
+- **What was found, post hoc, on EXP-0016's responses.** Claude read the 25 development items
+  where 4C and the tool-free 4B disagree. On test, the same comparison was made by program,
+  counts only, with the detectors that `mechanisms()` in this experiment's script fixes; its
+  `score` recomputes them for 4C, so the counts can be reproduced.
+  - 4C against 4B, item by item: B1 43 lost, 22 gained; B2 44 lost, 6 gained.
+  - **B2:** 41 of the 44 lost items show the same pattern. A chained call evaluates a line ending
+    in `\times 100`, so the value is already a percentage. The 4B then multiplies it by 100
+    again, for example 198.9% written as 19,888.9%.
+  - The chained rule was added on development to raise the 4B's call rate. On development it
+    lowered 4C's B2 accuracy from 89.2 (inline rule only, `dev_v1`) to 87.1; the tool-free 4B
+    scores 88.3.
+  - **B1:** 40 of the 43 lost items contain a call on a literally wrong unit conversion the 4B
+    wrote itself, such as `51,018,000 / 1,000 =`. Tool-free, it writes the right figure after
+    the wrong expression. 38 of the 43 add a rounding step after a value is inserted.
+  - **The 0.8B:** the chained rule never fired (0 of 3,000 test responses for C-s1 and for
+    C-s2, 0 of 600 on development).
+  - **Why not a narrower fix:** of 758 chained calls on lines ending in `\times 100`, 384 were
+    followed by the 4B multiplying by 100 again and 374 were not. Neither stripping nor keeping
+    the factor is right for both, so the chained rule is switched off.
+- **Claim under test:** HE1: without the chained rule, the calculator no longer costs the 4B its
+  B2 points against 4C. HE2: with the inline rule alone, the 4B with the calculator is
+  non-inferior to the tool-free 4B on B2. The literal-conversion cost on B1 is the 4B's own and is
+  not addressed; it is reported.
+- **Why the answer is not obvious:**
+  - Development is small: 240 B2 items, of which 4C lost 6 and gained 3 against the 4B. The
+    inline-only run there (`dev_v1`) was ahead by 0.9 on B2, but that is within noise.
+  - Switching off the chained rule means fewer calls. On development, B2 calls fell from 96.7% to
+    42.5%, so more of the 4B's own arithmetic is back, and that may cost what the fix gains.
+  - The B2 test items are mostly the second phrasing (p2); development has only p1.
+- **Sample and scope, fixed here before looking:**
+  1. **Model.** Qwen3.5-4B, the revision of EXP-0014; no new download.
+  2. **Arm.** **4I**: the 4B with EXP-0016's calculator, inline rule only. Same standard prompt,
+     greedy, thinking off, at most 512 generated tokens (inserted tokens free), forced answer as
+     in EXP-0016. Everything except the rule is EXP-0016's code, imported.
+  3. **Test items.** EXP-0016's draw: 3,000 items, SHA-256 of the ids in draw order
+     `251720e6cb4727ed5f1bb37927b1312da5276aeb9bdcfbca16bc653937794460`. Comparators are EXP-0016's
+     responses for 4B, 4C and C (s1, s2), and EXP-0017's K2 (s1, s2) once scored. None is rerun.
+     Section A: EXP-0014's 100 items each of FinQA, CFA-Easy and FinanceIQ.
+  4. **Reproduction gate**, before any test item: 4I on the first 50 development items must
+     reproduce `dev_v1/4C.jsonl` (made by EXP-0016's code before the chained rule existed) in at
+     least 48 of 50 responses, character for character. Otherwise the run stops and the owner
+     decides.
+- **Criteria** (new family HE; α = 0.0125, as EXP-0014, EXP-0016 and EXP-0017; paired;
+  bootstrap over companies, 10,000 resamples, seed 20261123):
+  1. **HE1:** Δ = 4I − 4C on B2. Supported if the one-sided test of Δ > 0 rejects (p < 0.0125).
+     Refuted if the upper end of the 97.5% interval is at or below 0. Otherwise inconclusive.
+  2. **HE2:** Δ = 4I − 4B on B2. Non-inferior if the lower end of the 97.5% interval is above
+     −1.5 points (about half the cost EXP-0016 measured). Refuted if the upper end is below −1.5.
+     Otherwise inconclusive.
+  3. **Mechanisms, descriptive.** Items lost and gained against the tool-free 4B, for 4C and 4I,
+     by section and by the four detectors in the script: x100 twice; literal unit conversion;
+     extra rounding; cap hit with the answer forced. Fixed here as written in the script.
+- **Also reported, descriptive:**
+  - 4I − 4B and 4I − 4C on all items and on B1.
+  - 4I by section and metric; call rates; forced and invalid rates; EXP-0016's error categories.
+  - Section A.
+  - **Re-analyses, labelled secondary:** EXP-0016's HC2 with 4I in place of 4C (C − 4I), and
+    EXP-0017's HD3 with 4I (K2 − 4I). Both are reported beside the pre-registered verdicts and
+    never replace them.
+- **What follows from it:** if HE1 holds, 4I becomes S1's 4B-with-calculator comparator from here
+  on, including the planned reasoning section (`research/design/s1_reasoning_exam.md`). If not,
+  S1 reports against the tool-free 4B.
+- **Contamination label of the result:** clean (post-cutoff test companies; no model labels any
+  item). Test items reused from EXP-0016 and EXP-0017; this design was chosen after seeing
+  EXP-0016's test counts and its development answers, never a test item.
+- **Not in scope:**
+  - a prompt line telling the 4B that the calculator evaluates exactly what it writes, which
+    would address the B1 cost (a possible follow-up);
+  - rerunning the 0.8B arms, which the chained rule never touched;
+  - a new chained rule;
+  - new items.
+- **Estimated compute:** reproduction gate about 10 minutes; test about 4.2 hours (4C took 4 h 12 m
+  on the same items); section A about 10 minutes. About 4.5 hours, after EXP-0017.
+
 ## EXP-0017 — S1-c calculator distillation: the 4B's answers with the calculator, and more margins and losses (2026-11-22)
 
 ### PRE-REGISTRATION
@@ -1278,7 +1367,8 @@ can be regenerated.
   left once EXP-0014's and EXP-0016's releases are removed). Approved by the owner 2026-11-22
   ("批准开始实现"). Before the commit: the script was written (`exp0017_s1c_calc_distillation.py`),
   the masking checked and the label smoke run made (step 4 below, with results). Nothing is run
-  on a test item before the commit is pushed.
+  on a test item before the commit is pushed. Committed and pushed as `b9f97cd`; run 2026-11-22
+  to 23; verdict below.
 - **Claim under test:** EXP-0016 found that with the same calculator the distilled 0.8B (C) is
   2.6 points behind the 4B (4C) overall, ahead on lookups (B1) and 8.8 points behind on
   calculations (B2). Its wrong B2 answers now evaluate a wrong expression built from excerpt
@@ -1375,6 +1465,97 @@ can be regenerated.
 - **Estimated compute:** labels about 1.5 hours (3,596 items at 1.4 seconds, from the smoke
   run); four training runs of about 5 hours each; development about 1 hour (8 checkpoints); test
   about 35 minutes a run, 2.3 hours; section A about 30 minutes. About 25 hours.
+
+### VERDICT
+- **Pre-registration commit:** `b9f97cd` (pushed before any model saw a test item). Run
+  2026-11-22 12:51 to 2026-11-23 15:45 by `queue`, every step complete: labels 1.5 hours,
+  training 5.4 to 5.6 hours a run (peak 8.1 GiB), development 14 minutes a run, test 34 minutes a
+  run, section A 3 to 4 minutes a run. Output: `s1/exp0017/scores.json`.
+- **Labels and sets.** 3,596 training items: correct on the first attempt 3,317, on a later one
+  209, none 70; 33 dropped for passing 512 tokens and 16 for naming a later year; 3,477 kept. K1
+  takes 1,847 of D3's 1,850 items (611 B2, 119 operating margins, 579 negative golds); K2 holds
+  all 1,225 priority items (703 B2, 228 operating margins, 1,082 negative golds) and has 159
+  revenue items against K1's 314. Epochs chosen on development: K1-s1 2, K1-s2 1, K2-s1 2,
+  K2-s2 1 (development 87.7, 87.3, 89.3, 89.3; D3 with the calculator was not run on
+  development).
+- **Result** (EXP-0016's 3,000 test items, accuracy %, two-seed means; C, 4C and 4B are
+  EXP-0016's responses; intervals 97.5%, company bootstrap, 10,000 resamples):
+
+  | Arm | All | B1 (1,650) | B2 (1,350) | Seen | Unseen | Seeds (all) |
+  |---|---|---|---|---|---|---|
+  | C: D3 + calculator | 86.7 | 93.0 | 79.1 | 85.0 | 87.0 | 86.3 / 87.2 |
+  | K1: calculator labels, masked | 86.8 | 91.9 | 80.4 | 83.0 | 87.3 | 87.6 / 85.9 |
+  | K2: K1 + margins and losses | 87.4 | 91.7 | 82.2 | 83.4 | 88.0 | 88.2 / 86.6 |
+  | 4C: 4B + calculator | 89.4 | 90.6 | 87.9 | 84.9 | 90.0 | |
+  | 4B, no tool | 91.3 | 91.9 | 90.7 | 86.8 | 92.0 | |
+
+  Forced answers at most 0.2%, invalid 0.0% for K1 and K2. B2 answers with a call 97 to 99%, as
+  C.
+
+  1. **HD1 inconclusive.** K1 − C on B2 = +1.4 [−0.7, +3.5], one-sided p = 0.076. Below the
+     3-point bar, but the interval reaches past it, so not refuted.
+  2. **HD2 inconclusive.** K2 − K1 on B2 = +1.7 [−0.4, +3.9], p = 0.034. Same reading.
+  3. **HD3 inconclusive.** K2 − 4C on all items = −2.0 [−3.7, −0.2]. The lower bound is below
+     −3.0, so non-inferiority is not shown; the upper bound is above −3.0, so it is not refuted.
+     The difference is not zero. By section: B1 +1.1 [−0.8, +3.0], B2 −5.7 [−8.4, −3.0].
+- **Also reported:**
+  1. **The two steps together do help B2:** K2 − C on B2 = +3.1 [+0.9, +5.4], p = 0.0007; on
+     all items +0.7 [−0.6, +2.0]. B1 drops slightly: K1 − C = −1.1 [−2.2, +0.1], K2 − K1 = −0.3
+     [−1.6, +1.1]. K1 − 4C on all items = −2.6 [−4.3, −0.9], as C.
+  2. **Against the tool-free 4B** (post hoc, same bootstrap; the comparison that does not depend
+     on the calculator's bug, below): K2 − 4B = −3.9 [−5.6, −2.3] on all items, −0.2 [−2.0,
+     +1.6] on B1, −8.5 [−11.0, −6.0] on B2. K1 − 4B: −4.6, +0.1, −10.2.
+  3. **By B2 metric**, K2 against C (4C): operating margin, trained and up-weighted, 89.2 against
+     71.1 (94.1); net margin, held out, 84.0 against 58.9 (92.9; 84 items); gross margin, held
+     out, 74.4 against 77.7 (97.4); EPS change 78.4 against 77.6 (83.0); revenue growth 87.5
+     against 88.5 (86.1). The gain is in the margins whose row is often a loss; gross margin,
+     never negative, does not move.
+  4. **The dropped sign of a loss is gone:** wrong B2 answers that give the gold's magnitude with
+     the wrong sign, C 41 and 43, K1 3 and 2, K2 1 and 3.
+  5. **Section A**, 100 items each, seeds 1 / 2: FinQA K1 25 / 21, K2 27 / 20 (C 28 / 27);
+     CFA-Easy K1 37 / 12, K2 10 / 9 (C 20 / 13); FinanceIQ K1 23 / 14, K2 11 / 19 (C 28 / 23).
+     Untrained 0.8B (EXP-0014's D0): 38, 36, 27. Distilling again costs more of the off-target
+     exams, most for K2.
+- **Error analysis** (registered categories, B2 test counts; development read by Claude):
+
+  | Wrong B2 answers | C-s1 | C-s2 | K1-s1 | K1-s2 | K2-s1 | K2-s2 |
+  |---|---|---|---|---|---|---|
+  | total | 285 | 280 | 245 | 283 | 230 | 251 |
+  | no call | 9 | 11 | 9 | 19 | 16 | 10 |
+  | copying or rounding | 2 | 4 | 5 | 14 | 10 | 11 |
+  | sign or unit of the box | 49 | 52 | 15 | 18 | 6 | 11 |
+  | wrong setup: operand not in the excerpt | 0 | 1 | 1 | 0 | 0 | 1 |
+  | wrong setup: excerpt operands, wrong formula | 225 | 212 | 215 | 232 | 198 | 218 |
+
+  1. **What the new labels fixed is the sign; what is left is the reading.** Sign or unit
+     errors fall from about 50 to 6 to 18; wrong setups from excerpt numbers stay at 198 to 232,
+     about 85% of what is wrong. B1 lookups wrong without a call rise from 71 and 68 (C) to 80 to
+     118.
+  2. **On development** (K2-s1 epoch 2 and K2-s2 epoch 1, 64 wrong answers each, 36 and 46 of
+     them B2), Claude read 12 wrong B2 answers of K2-s1 and four excerpts. The common failure is
+     the column, not the row or the formula: in a table with five quarterly columns, or a quarter
+     beside a sequential quarter and nine- or six-month columns, the model takes the sequential
+     quarter (Q3 2026 against Q2 or Q1 2026) or the year-to-date columns instead of the same
+     quarter a year earlier. Others: the three-month column for a fiscal-year question; two
+     columns in different units (millions in one, thousands in the other). EPS change accounts
+     for 20 and 23 of the 36 and 46 wrong B2 answers.
+- **The comparator is handicapped.** After this run was set up, the owner asked why the
+  calculator costs the 4B points; the analysis (EXP-0018's pre-registration) found that the
+  chained rule hands the 4B a value already multiplied by 100 and the 4B multiplies again in
+  about half of those calls, which neither 0.8B arm ever triggers. A rough count puts 4C about
+  2 points too low on all items and 3 on B2. HD3 and K1 − 4C are therefore easier for the 0.8B than they look;
+  the tool-free 4B, above, is the fairer reference until EXP-0018 has run.
+- **Leakage sign-off:** the teacher labelled training items only (training companies,
+  pre-cutoff); test items are EXP-0016's, reused as stated; scripts printed counts and rates
+  only. Claude read development answers and training labels only. Clean.
+- **Verdict:** HD1, HD2 and HD3 all inconclusive. Labels written with the calculator, values
+  masked, and a set shifted towards margins and losses together raise the 0.8B's calculations by
+  3.1 points (K2 − C), about the number of losses whose sign C dropped; neither step alone
+  clears the 3-point bar. The distilled 0.8B with the calculator is 2.0 points behind the 4B
+  with the calculator and 3.9 behind the tool-free 4B: level on lookups, 6 to 8 points behind on
+  calculations. What is left is reading the right column of a wide table (the same quarter a year
+  earlier, not the sequential quarter or the year to date), which no change of labels has
+  touched, and the off-target exams fall further. Next steps go to the owner.
 
 ## EXP-0016 — S1-c calculator: the distilled 0.8B and the 4B, both with a calculator (2026-11-21)
 
