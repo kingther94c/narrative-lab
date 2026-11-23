@@ -347,7 +347,18 @@ can be regenerated.
   pre-cutoff and contaminated by definition. Training and development companies only. One
   change to the tests, from EXP-0042's Stride case: a full Alpha Vantage text that passes the
   same-call test against the company's IR transcript counts as usable even when the year test
-  fails, since the IR file names and dates the call.
+  fails, since the IR file names and dates the call. **Run 2026-11-23 05:40 UTC:** the first
+  request was refused with Alpha Vantage's limit message, though US Eastern midnight had
+  passed: its day is not the Eastern day (the 25 requests of 2026-11-22 Eastern were sent
+  04:30 to 04:40 UTC, so its count runs by Pacific day, UTC day or a rolling 24 hours). The
+  limit message quotes the key, and the script wrote it into the drive ledger; that line was
+  redacted by hand the same minute. Fixed forward in EXP-0044.
+- **EXP-0044** — S2-a Alpha Vantage collection, third fix forward (EXP-0043 unchanged in
+  scope, order and tests). `fetch` runs EXP-0043's fetch and then replaces any occurrence of
+  the key in the ledger with "***"; before it starts it does the same, so nothing the server
+  echoes stays in a log. The daily run is a scheduled task at 16:20 local time (UTC+8, 08:20
+  UTC): after Pacific midnight and 24 hours from the previous run, so it fits a Pacific day, a
+  UTC day or a rolling window; a refusal stops the run and costs one ledger line.
 
 ## Entries
 

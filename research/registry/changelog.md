@@ -31,6 +31,10 @@ Newest first. What changed, why, on what evidence, and what it affects.
   and November 2026 calls of the clean companies (the prospective arm), to a daily scheduled
   run, and to committing. EXP-0043 widens the targets (clean, then 183 next-quarter calls,
   then the old 60; 407 requests left, about 16 days at 25 a day).
+- **Same day, later:** Alpha Vantage's daily count does not reset at US Eastern midnight (a
+  request at 00:40 Eastern was refused), and its limit message quotes the key, which EXP-0043
+  wrote into the drive ledger; redacted at once, and EXP-0044 scrubs it after every run. Daily
+  scheduled task "narrative-lab-av-transcripts-daily" at 16:20 local time (08:20 UTC).
 
 ## 2026-11-23 — Owner: IR-site transcripts may be used; count 8-K exhibits first; date a call by its release
 
