@@ -2,6 +2,61 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-23 — Owner: IR-site transcripts may be used; count 8-K exhibits first; date a call by its release
+
+- **What:** the owner's answers to the IR survey's open points: vendor-copyright transcripts on
+  companies' IR sites may be used ("我们完全可以使用官网上的这个供应商版权的 transcript"); count the
+  company-written 8-K exhibits first ("可以先从这边数一下八K的附件"); past calls first, dated by
+  the release they follow ("我们先看过去的……earning call 一般都是紧跟着这个 earning release 的，所以我们
+  可以先用这个去定时间").
+- **How it is applied:** transcript files stay on the drive and never enter git (rule 12); a call
+  is matched to the earnings release it follows and takes that release's date, with a call dated
+  more than three days after its release flagged for a look. The exhibit count is EXP-0037 (cached
+  index pages, no network) and EXP-0038 (the exhibits EXP-0037 could not label, 500 largest
+  companies only).
+- **Assets affected:** data audit §2; skill v1 Part D; S2 plan (call module).
+- **Result of the exhibit count (EXP-0037, EXP-0038, same day):** 17 of the 498 largest training
+  and development companies furnish call text with any cached earnings 8-K (under 2% of filings;
+  8 of the 190 companies in EXP-0036's clean episodes). Too few for a call module; IR-site
+  transcripts are the source.
+- **Owner, same day ("开始"):** approved collecting IR-site call text for the 190 companies of
+  EXP-0036's clean episodes (EXP-0039; about 90 files expected, under 100 MB, drive only) and
+  installing `pdfminer.six` in the `nlab` environment to read the PDFs. The question of also
+  collecting the 60 old episodes' calls was left open.
+
+## 2026-11-23 — EXP-0036: code facts help the earnings-side calls, not revenue; the brief fails
+
+- **What:** EXP-0036 run (1,118 Opus calls, headless, every canary present). On 197 clean
+  episodes the raw release with skill v1's considerations calls revenue acceleration at 0.72
+  (code baseline 0.59 on this quarter). Code-stated facts: revenue undecided (+0.006 readout);
+  gross margin +0.013, operating margin +0.032, net income +0.013, all passing
+  Benjamini-Hochberg at q = 0.10. The facts-and-form brief stops the measured leak (old minus
+  clean 0.02) but loses 0.05 to 0.09 readout on every label and is recognised in half the old
+  episodes: not a replay input. Exploratory: the reader's "does not recur" tags point the way the
+  owner expected (a one-off lift is followed by deceleration in 10 of 12 tags), on few tags.
+- **Shortfalls of the frozen script:** criterion 4's interval and the reliability part of Brier
+  were not computed; reported as such.
+- **Why it matters:** the PM beats code on clean episodes, and facts in code help exactly where
+  the model has to find a year-ago base itself (margins, net income). Blinding by rewrite has now
+  failed three times (EXP-0031, 0032, 0036) at the same place: signal lost.
+- **Assets affected:** experiment registry (EXP-0036 results); S2 analyst skill (Part A earns
+  its place for earnings labels); roadmap S2 row.
+
+## 2026-11-22 — IR-site survey: half of 24 S&P 500 companies post full call transcripts
+
+- **What:** at the owner's request, 24 S&P 500 investor-relations sites checked by reading pages
+  only (`research/design/s2_ir_transcript_survey.md`). 12 post full transcripts, 3 prepared
+  remarks or CFO commentary only, 9 nothing beyond release, slides and webcast. 14 of the 15 that
+  post text have it for the July to September 2026 call, so the clean window is covered where text
+  exists. Company-written text is sometimes furnished as an 8-K exhibit (NVIDIA's CFO commentary,
+  Netflix's letter), with an EDGAR timestamp; vendor transcripts are not.
+- **Caveats:** most transcripts are vendor-made (FactSet CallStreet, LSEG, S&P Global) and carry
+  the vendor's copyright; posting on an IR site grants no reuse right; collection needs per-site
+  adapters, a PDF extractor and a dating rule; coverage is self-selected.
+- **Open for the owner:** whether internal research use of such files is acceptable (they would
+  stay on the drive, never in git, rule 12); whether to count company-written 8-K exhibits first.
+- **Assets affected:** data audit §2; skill v1 Part D.
+
 ## 2026-11-22 — Owner: EXP-0036 approved; one-off versus recurring across lines; IR survey
 
 - **What:** the owner approved EXP-0036 at the proposed scale (about 1,100 calls); asked that the

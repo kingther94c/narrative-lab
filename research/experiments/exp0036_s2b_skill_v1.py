@@ -275,11 +275,12 @@ def p1(x: float) -> str:
 
 def bucket(d: float) -> tuple[str, float, float]:
     """d = g(t-4) - g(t-3): how much easier next quarter's comparison is, in growth points."""
-    for lo, hi, text in ((0.10, 9, "lower by 10 points or more"), (0.03, 0.10, "lower by 3 to 10 points"),
-                         (-0.03, 0.03, "within 3 points"), (-0.10, -0.03, "higher by 3 to 10 points"), (-9, -0.10, "higher by 10 points or more")):
+    mid = "the two figures were within 3 points of each other"
+    for lo, hi, text in ((0.10, 9, "the first was lower than the second by 10 points or more"), (0.03, 0.10, "the first was lower than the second by 3 to 10 points"),
+                         (-0.03, 0.03, mid), (-0.10, -0.03, "the first was higher than the second by 3 to 10 points"), (-9, -0.10, "the first was higher than the second by 10 points or more")):
         if lo <= d < hi:
             return text, lo, hi
-    return "within 3 points", -0.03, 0.03
+    return mid, -0.03, 0.03
 
 
 def facts(ep: dict, series: list[dict], lines: dict, eps: list[dict], form: dict | None, release: str) -> tuple[str, dict]:
@@ -302,7 +303,7 @@ def facts(ep: dict, series: list[dict], lines: dict, eps: list[dict], form: dict
         text, lo, hi = bucket(g[4] - g[3])
         ref = [p["y"]["revenue"] for p in past if p["y"]["revenue"] is not None and None not in (p["g"][3], p["g"][4]) and lo <= p["g"][4] - p["g"][3] < hi]
         if len(ref) >= 50:
-            S.append(f"- In {len(ref):,} past episodes of other companies, outcomes known before this release, where the first of those two figures was {text} than the second, "
+            S.append(f"- In {len(ref):,} past episodes of other companies, outcomes known before this release, where {text}, "
                      f"next-quarter growth came in higher than the reported quarter's in {p0(statistics.mean(ref))}.")
             used["revenue_reference"] += 1
         used["comparison_base"] += 1

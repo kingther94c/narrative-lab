@@ -174,6 +174,57 @@ can be regenerated.
   calls of EXP-0026 made before the fix (three with EXP-0025, four with a first form of this
   script) are voided and kept in `s2/dispatch/exp0026/voided_*`. Every S2 result from this
   transport is a result for a model that is told the date and its own cutoff.
+- **EXP-0037** — S2-a census of company-written text furnished with earnings 8-Ks (owner,
+  2026-11-23: "可以先从这边数一下八K的附件"). Reads the filing index pages already cached on the
+  drive for the training and development companies' earnings 8-Ks (EXP-0020's release list); no
+  network, no model. For each filing, every exhibit other than the press release EXP-0003's rule
+  picks, XBRL files and graphics is classed by its description and file name (rules fixed in the
+  script before the run): call commentary (prepared remarks, CFO commentary, shareholder letter,
+  script, transcript), presentation, supplemental financial data, other, unlabelled. Counts of
+  filings and companies by class, before and after the cutoff, for the 500 largest companies and
+  the rest. An engineering measurement with no hypothesis and no verdict; it decides whether a
+  pull of index pages for the full 2019 to 2025 history of the companies that furnish commentary
+  is worth asking for. Run 2026-11-23: 5,764 index pages found (2,486 for the 500 largest
+  companies, 498 of them). Named call commentary is rare: 13 of the 498 largest companies (12 of
+  1,047 others), e.g. Edison International's prepared remarks every quarter; but 1,208 of the
+  extra exhibits carry no description beyond "EX-99.2" and file names cut to 25 characters, so
+  the count is a lower bound. Output `s2/exp0037/census.json`.
+- **EXP-0038** — S2-a census, second step (fix forward of EXP-0037's unlabelled exhibits; within
+  the owner's approval of 2026-11-23 to count 8-K exhibits). For the 500 largest training and
+  development companies only, fetches from EDGAR each EX-99 exhibit that EXP-0037 left
+  unlabelled (one request each, about 400 to 500, through edgartools with the contact string
+  from `EDGAR_IDENTITY`) and classes it by its text with rules fixed in the script before the run:
+  transcript, prepared remarks or script, CFO commentary, shareholder letter, presentation,
+  supplemental financial data, another press release, other; PDFs are counted, not read. Thirty
+  exhibits drawn by seed are checked by hand against the rules. Exhibits stay on the drive. An
+  engineering measurement with no hypothesis and no verdict. Run 2026-11-23: 552 fetched, 7 PDFs
+  (Constellation Brands) counted. Classes: other 205, presentation 172, supplemental financial
+  data 104, another press release 63, transcript 4, shareholder letter 3, prepared remarks 1. Hand
+  check of 30: 21 right; the 9 wrong are all confusions among presentation, supplement, press
+  release and other; none is call text missed or call text claimed. All 8 exhibits classed as
+  call text read by hand: 7 right (FTI Consulting furnishes its FactSet call transcript, three
+  quarters of 2026; DoorDash and Opendoor letters; an L3Harris investor letter), 1 wrong (a
+  Flutter press release, classed transcript). A scan of the other 545 texts for call markers found
+  no missed call text. Joined with EXP-0037 and the Flutter exhibit dropped: 17 of the 498 largest
+  companies (16 company groups; Edison International files under two CIKs) furnish call text in
+  at least one of their cached earnings 8-Ks, in 26 of 1,520 pre-cutoff and 17 of 966
+  post-cutoff filings: prepared remarks or scripts (Edison International, Terex, Philip Morris,
+  Starbucks, Snap, Match Group, Seagate), shareholder letters (Etsy, DoorDash, Warner Bros.
+  Discovery, Maplebear, Unity, Opendoor, L3Harris), CFO commentary (Columbia Sportswear),
+  transcripts (FTI Consulting). 8 of the 190 companies in EXP-0036's clean episodes are among
+  them. Output `s2/exp0038/census.json`. Reading (ours): 8-K exhibits carry call text for about 3%
+  of large companies, too few for a call module; IR-site transcripts (about half the companies,
+  `research/design/s2_ir_transcript_survey.md`) are the source.
+- **EXP-0039** — S2-a collection of earnings-call text from company IR sites for EXP-0036's clean
+  episodes (owner, 2026-11-23: "开始", approving the plan put to him the same day). Scope: the 190
+  companies of EXP-0036's 197 clean episodes; for each, the call that followed the clean-window
+  release. Subagents (at most three at a time, batches of about 24 companies) look only on the
+  company's own IR site and the hosts it links its files from, return file addresses and stop at
+  any refusal (403, bot check); no third-party transcript site, no log-in. The script downloads
+  the files to the drive (never git, rule 12), extracts text (pdfminer.six for PDFs), reads the
+  call date and producer from the first page and flags a call dated more than one day before or
+  three days after its release (owner's dating rule). An engineering collection with no
+  hypothesis and no verdict; the experiment that uses the text is pre-registered separately.
 
 ## Entries
 
@@ -236,6 +287,63 @@ can be regenerated.
   0.03 to 0.04; prompt-placement effects of the size in stream 12 are not.
 - **Not in scope:** placement variants of the checklist; call transcripts (owner asked for an IR
   survey first); tuning the skill.
+
+### RESULTS
+- **Run:** 2026-11-22 to 2026-11-23, Opus through EXP-0027's headless transport, three workers;
+  1,118 calls (R 257, A0 257, A1 257, B 257, attacker 90), every canary present, no reader reply
+  unparsed, every A0 probability readable (gross margin NA in 61, operating margin NA in 6).
+  Skill block hash 638f5e7f2a783553. Reader form: 1,117 recurrence entries kept (one dropped for
+  a quote not found), exit rate stated in 15 releases, inventory or channel in 43; code facts:
+  comparison base 241, revenue reference rate 238, inventory 121, contract liabilities 58,
+  guidance 26 next quarter and 67 full year, rest of year 56. Clean revenue base rate 104 of 197
+  accelerate (0.53). Output `s2/exp0036/score.json`.
+- **Criterion 1 (L1 revenue, clean, A1 minus A0, paired):** +0.006 [-0.003, +0.016], n 197:
+  **undecided**. The code facts did not measurably move the revenue call.
+- **Criterion 2 (L1, clean, B minus A1, paired):** -0.059 [-0.072, -0.046]: **loses**.
+- **Criterion 3 (B as a replay input):** B's old-minus-clean readout +0.021 [-0.025, +0.067], no
+  leak detected; attacker top-1 on B 0.42 [0.33, 0.51] of 90 (old 0.50, clean 0.27):
+  **undecided**. Not a usable replay input, because it loses the signal.
+- **Criterion 4 (old minus clean, L1):** A0 +0.122 [+0.082, +0.161], A1 +0.100 [+0.061, +0.140],
+  B +0.021. A1's gap minus A0's: -0.022. The frozen script reports this difference as a point
+  estimate only; the interval named in the criterion was not computed.
+- **Criterion 5 (against code, clean, L1):** accuracy / Brier: A0 0.72 / 0.177, A1 0.75 / 0.173,
+  B 0.66 / 0.214, code baseline 0.59 / 0.239 (n 182; readout 0.53). Averaging with code lowers
+  each arm (A1 + code 0.71 / 0.197). 250 largest, readout: A0 0.594, A1 0.592, B 0.537, code
+  0.514. On this clean quarter the code baseline, 0.68 out of fold before the cutoff (EXP-0035),
+  falls to 0.59; the model's lead over code is one quarter's and may not generalise.
+- **Criterion 6 (secondary labels, clean; Benjamini-Hochberg, q = 0.10, all three pass):**
+  - L2 gross margin: A1 minus A0 +0.013 [+0.001, +0.026], n 110, p 0.072; B minus A1 -0.047
+    [-0.062, -0.032]; accuracy / Brier A0 0.79 / 0.153, A1 0.87 / 0.139, B 0.75 / 0.171, code
+    0.75 / 0.188.
+  - L3 operating margin: +0.032 [+0.018, +0.046], n 149, p < 0.0001 (no draw at or below 0); B
+    minus A1 -0.059 [-0.076, -0.043]; A0 0.78 / 0.157, A1 0.79 / 0.140, B 0.76 / 0.174, code 0.76 /
+    0.179.
+  - L4 net income: +0.013 [+0.002, +0.023], n 180, p 0.040; B minus A1 -0.088 [-0.102, -0.073];
+    A0 0.82 / 0.148, A1 0.82 / 0.140, B 0.67 / 0.196, code 0.71 / 0.182.
+  - A1's old-minus-clean gap minus A0's: gross margin +0.018, operating margin -0.044, net income
+    +0.001 (point estimates).
+- **Calibration:** mean probability of "yes", clean, A0 / A1 / B: revenue 0.42 / 0.42 / 0.42
+  against a base rate of 0.53; gross margin 0.52 / 0.52 / 0.53; operating margin 0.54 / 0.55 /
+  0.54; net income 0.60 / 0.60 / 0.58. The frozen script does not split Brier into its
+  reliability part, which the pre-registration named.
+- **Criterion 7 (exploratory, clean; reader tags, counted per tag, not per episode; share of
+  "yes" next quarter):** revenue raised this quarter by an effect tagged "does not recur" 0.17 (12
+  tags), lowered and "does not recur" 0.82 (11), raised and "recurs" 0.51 (51), lowered and
+  "recurs" 0.54 (13). Operating costs (sign turned to the margin): margin lowered, "does not
+  recur" 0.69 (16), lowered, "recurs" 0.44 (16), raised, "does not recur" 0.40 (5), raised,
+  "recurs" 0.64 (11). Gross margin and net income cells have 2 to 10 tags each.
+- **Reading (ours):** on 197 clean episodes Opus reading the raw release with skill v1's
+  considerations calls revenue acceleration at 0.72, against 0.59 for the code baseline on this
+  quarter and in line with EXP-0026's raw view (0.77 on 30 clean); without a no-skill arm the
+  level cannot be credited to the skill. Code-stated facts did not move the revenue call but
+  improved all three earnings-side calls, most for operating margin (+0.03 readout, Brier 0.157
+  to 0.140), where they give the margin's own year-ago base and reference rate. The brief made of
+  facts and form only stops the measured leak (gap 0.02) but loses 0.05 to 0.09 of readout on
+  every label and is still recognised half the time on old episodes, so it fails as a replay
+  input, like EXP-0031 and EXP-0032's briefs. The reader's tags of what does not recur point the
+  way the owner expected (a one-off lift is followed by deceleration in 10 of 12 tags, a one-off
+  drag by acceleration in 9 of 11), on few tags and without an interval; a pre-registered test
+  needs more clean episodes or a feature built from the tags.
 
 ## EXP-0035 — S2-a: do as-filed accounting items add to the comparison base? (2026-11-22)
 
