@@ -2,6 +2,36 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-23 — Owner: Alpha Vantage's free key for call transcripts
+
+- **What:** after EXP-0039's low yield (37 of 190), the owner offered a free-tier Alpha Vantage
+  key ("此外我会给你free tier alpha vantage api （25 use per day in US timzeone）") and asked
+  for a look at a tool he called "GLOOM CLI" ("GLOOM CLI看起来可能可以直接下载，去试试").
+- **Evidence:** Alpha Vantage's documentation lists `EARNINGS_CALL_TRANSCRIPT` (any quarter
+  since 2010Q1, by symbol and fiscal quarter) without the "Premium" mark its paid endpoints
+  carry. One reply to the documentation's own demo request (IBM, 2024Q1, demo key, none of
+  the owner's quota) came back as 37 speaker turns, about 51,000 characters, each turn with
+  speaker, title, text and a sentiment score; it carries no call date. No tool called "GLOOM
+  CLI" was found by web search; the owner is asked for its name or address.
+- **How it is applied:** EXP-0040 (registry, Reserved): one request per clean episode, at most
+  25 a US Eastern day, the key in the `nlab` environment as `ALPHA_VANTAGE_API_KEY` set by the
+  owner, never in git or a log; replies on the drive only (rule 12).
+- **Assets affected:** S2 call module (sample size); experiment registry (EXP-0040 to 0049 held
+  for S2).
+- **Owner, same day:** gave the key and asked that it be kept locally, unencrypted, out of git
+  ("不需要加密，保存在本地，不要git进去"). Stored as `ALPHA_VANTAGE_API_KEY` in the `nlab`
+  environment's own settings (outside the repository); the scripts read it from there.
+- **First day (EXP-0040, 0041; 25 requests on 2026-11-22 US Eastern):** 15 usable transcripts
+  for 16 clean episodes, all among the 250 largest; 14 of the 19 companies without IR text had
+  one. Two defects found and fixed forward: EXP-0040's fetch did not pause after validation nor
+  skip a repeat (Tesla asked twice); EXP-0041's retry under the calendar year returned the
+  previous fiscal year's call for Modine and Flex, caught by reading the opening lines (void).
+  EXP-0042 adds a year test and drops retries. Call text now covers 53 of 197 clean episodes.
+- **Owner, same day ("都好的"):** yes to collecting the 60 old episodes' calls and the October
+  and November 2026 calls of the clean companies (the prospective arm), to a daily scheduled
+  run, and to committing. EXP-0043 widens the targets (clean, then 183 next-quarter calls,
+  then the old 60; 407 requests left, about 16 days at 25 a day).
+
 ## 2026-11-23 — Owner: IR-site transcripts may be used; count 8-K exhibits first; date a call by its release
 
 - **What:** the owner's answers to the IR survey's open points: vendor-copyright transcripts on
@@ -23,6 +53,11 @@ Newest first. What changed, why, on what evidence, and what it affects.
   EXP-0036's clean episodes (EXP-0039; about 90 files expected, under 100 MB, drive only) and
   installing `pdfminer.six` in the `nlab` environment to read the PDFs. The question of also
   collecting the 60 old episodes' calls was left open.
+- **Collection result (EXP-0039, same day):** 37 of the 190 companies post a full transcript of
+  the July or August 2026 call on their IR site or file host (one more only as an 8-K exhibit,
+  included), 42 any call text; 53 sites refused the fetch tool and were left alone. Far below the
+  survey's half: the survey leaned to the largest companies, and S2's clean companies run to
+  rank 500. The call experiment on 38 clean episodes can show only large effects.
 
 ## 2026-11-23 — EXP-0036: code facts help the earnings-side calls, not revenue; the brief fails
 

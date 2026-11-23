@@ -225,6 +225,129 @@ can be regenerated.
   call date and producer from the first page and flags a call dated more than one day before or
   three days after its release (owner's dating rule). An engineering collection with no
   hypothesis and no verdict; the experiment that uses the text is pre-registered separately.
+  First pass, 2026-11-23 (eight batches; from batch 4 on, the subagents had to open the IR
+  results or events page before saying "none found"): of 190 companies, 29 found, 5 prepared
+  remarks or letter only, 103 none found, 53 refused (HTTP 403). 42 files downloaded (13 MB, one
+  address 404): 31 companies with a full transcript, every one with Q&A markers, 36 with any call
+  text; producers seen: FactSet CallStreet 11, S&P Global 4, ViaVid 3, LSEG 2, the rest
+  unstated. Every dated file is the July or August 2026 call, 1 day before to 1 day after its
+  release; every undated one names the right company and quarter. Batch 2 searched less (no page
+  opened for 11 companies) and 39 negatives elsewhere rest on pages built by JavaScript or
+  addresses that did not resolve; these 56 are rechecked in the built-in browser (found_9). LCI
+  Industries' transcript and Terex's prepared remarks exist only as 8-K exhibits.
+  Browser recheck, same day: 5 more transcripts (W. R. Berkley, Northern Oil & Gas, OPENLANE,
+  Lincoln Electric, Lincoln National) and Palantir's letter, whose page renders its text by
+  script and gave none; no page showed a bot check. LCI's transcript taken from its 8-K exhibit
+  (Item 7.01, filed 2026-08-07). Final: 37 companies with a full transcript (38 clean episodes;
+  Stride's call belongs to one of its two releases), 42 with any call text; 18 of the transcript
+  companies are among the 250 largest; producers seen FactSet CallStreet 12, S&P Global 6, LSEG
+  3, ViaVid 3. 53 companies refused the fetch tool (28%) and were left alone. Output
+  `s2/exp0039/summary.json`, `extracted.jsonl`, `texts/`.
+- **EXP-0040 to EXP-0049** — held for sub-study S2 as well (2026-11-23; the block EXP-0030 to
+  EXP-0039 is used up). S1 continues from EXP-0019 and skips S2's blocks.
+- **EXP-0040** — S2-a collection of earnings-call transcripts from Alpha Vantage for EXP-0036's
+  clean episodes (owner, 2026-11-23: "此外我会给你free tier alpha vantage api （25 use per day in
+  US timzeone）"). Scope: the 197 clean episodes (190 companies); one request to
+  `EARNINGS_CALL_TRANSCRIPT` per episode, for the fiscal quarter that the company's own 10-Q or
+  10-K reporting the episode's quarter labels (`fy`, `fp` in the company-facts snapshot of
+  2026-11-14; `FY` read as the fourth quarter). Order, fixed before any request: three
+  validation episodes among the 38 with an IR transcript from EXP-0039 (drawn by seed 20261125:
+  one whose fiscal quarter is the calendar quarter, two whose fiscal quarter is not, where there
+  are such), then the 159 episodes without an IR transcript by revenue rank, then the other 35
+  with one. At most 25 requests a US Eastern day, counted in a local ledger, 15 seconds apart;
+  a reply that reports the request limit stops the run and is not recorded as data. The key is
+  read from `ALPHA_VANTAGE_API_KEY` in the `nlab` environment, set there by the owner; it never
+  enters git, a log or a printed line. Raw replies stay on the drive (rule 12). Checks on every
+  reply: full transcript = at least 10 speaker turns and 5,000 characters; the company's name or
+  ticker in the first 5,000 characters; the ordinal quarter named most often in the first 6,000
+  characters equals the requested fiscal quarter; question-and-answer markers. Where an IR
+  transcript exists, the share of Alpha Vantage's word 8-grams found in the IR text; 0.5 or more
+  counts as the same call. Stop rule: if two of the three validation episodes fail the quarter
+  check or the same-call check, no further request is made and the owner is told. Alpha Vantage
+  states no call date; the call takes its release's date (owner's dating rule of 2026-11-23),
+  and a date printed in the text, if any, is flagged when it falls outside one day before to
+  three days after the release. Not in scope without the owner's word: the 60 old episodes and
+  the October and November 2026 calls. About eight days at 25 a day. An engineering collection
+  with no hypothesis and no verdict; the experiment that uses the text is pre-registered
+  separately. Output `s2/exp0040/`. `targets` built 2026-11-23, before any request, after two
+  fixes to the first draft: a quarter ending in the first days of July (52/53-week years) is the
+  calendar second quarter (the quarter end moved back 15 days), and Stride's IR call covers both
+  of its releases for the same quarter. Result: 197 episodes, 187 distinct requests (five
+  companies filed two releases for one quarter); three subsidiary filers with no listed ticker
+  of their own (Novelis, Evergy Kansas Central, Oklahoma Gas & Electric) are left out; 23
+  episodes have a fiscal quarter other than the calendar one. Validation draw: Coupang 2026Q2
+  (calendar), Modine 2027Q1 and Stride 2026Q4 (fiscal).
+  **Run 2026-11-22 (US Eastern), with a defect:** `fetch` neither paused after the validation
+  episodes nor dropped a request already sent in the same run, so it went past the validation
+  stage before `check` and asked for Tesla's call twice; stopped by hand after 20 requests.
+  Validation: Coupang and Stride pass (quarter named; 8-gram share in the IR text 0.72 and 0.60);
+  Modine comes back empty. One failure of three, so the stop rule does not apply. Of the 17
+  requests past validation, 12 distinct full transcripts (Apple, Tesla, Sunoco, General
+  Dynamics, World Kinect, Philip Morris, CRH, US Foods, Amphenol, Cummins, RGA, Union Pacific),
+  every one naming the company and with question-and-answer markers; empty for Energy Transfer,
+  SUNC, Plains GP and Flex. Flags read by hand: General Dynamics opens with "Second Quarter
+  2026" but names "first quarter" more often in the first 6,000 characters (rule's false
+  alarm); Apple's flagged date is the quarter end ("quarter ended June 27, 2026"), not the
+  call. Modine and Flex, both empty, are the two whose fiscal-year label runs ahead of the
+  calendar year. Fixed forward in EXP-0041.
+- **EXP-0041** — S2-a Alpha Vantage collection, fix forward of EXP-0040 (same scope, targets,
+  ledger and daily limit; output in `s2/exp0040/`). Changes, written after EXP-0040's 20
+  requests and before any further one: (1) a request sent in this run is not sent again, and
+  the run pauses after the validation stage; (2) for an episode whose fiscal-year label runs
+  ahead of the calendar year of its quarter end (nine episodes, e.g. Modine 2027Q1 for the
+  quarter ending June 2026) and whose fiscal-label request came back empty, one more request
+  with the calendar year of the quarter end and the fiscal quarter number (Modine 2026Q1);
+  Modine and Flex are asked first, and if both come back empty no other episode is retried;
+  a retry counts only if its quarter check and name check pass; (3) the quarter check reads
+  the first quarter named in the first 600 characters (the operator's or host's opening line)
+  and falls back to EXP-0040's most-frequent rule only when the opening names none; both
+  results are reported. Duplicate requests are counted once in the results.
+  **Run 2026-11-22 (US Eastern), 5 requests (25 that day with EXP-0040's 20):** both retries
+  returned a transcript and passed the quarter-number check, but read by hand both are the
+  wrong year: "Modine's First Quarter Fiscal 2026" and "Flex's First Quarter Fiscal 2026" are
+  the calls on the quarters ending June 2025; the episodes need fiscal 2027's first quarter.
+  Modine's retry shares 0.03 of its 8-grams with Modine's 2026 IR transcript (same-call bar
+  0.5). The check had no year test, so the retry rule would have let a year-old call in. Both
+  retries are void; Alpha Vantage labels these companies by their own fiscal year, and its
+  empty reply means it has not got the call. Also McDonald's (full transcript) was flagged
+  "name missing" because "McDonald's" carries an apostrophe the name test did not strip. The
+  other three requests: McDonald's and Global Partners full, Freddie Mac empty. Fixed forward
+  in EXP-0042.
+- **EXP-0042** — S2-a Alpha Vantage collection, second fix forward (same scope, targets, ledger,
+  limit and folder as EXP-0040; written after EXP-0041's run and before any further request).
+  (1) No retry with another quarter label for any episode; EXP-0041's two retries are void.
+  (2) A year test joins the quarter test: the first year printed in the first 600 characters
+  must equal the fiscal year asked for (`fy`); if the opening prints no year, the year printed
+  most often in the first 6,000 characters is used; a transcript is usable only if company,
+  quarter and year all pass and it is full. (3) The name test strips apostrophes from both the
+  name and the text. Everything else as in EXP-0041 (no request sent twice; the opening line
+  read first for the quarter).
+  **Check of the first day's replies, 2026-11-23 (before any EXP-0042 request):** 22 of 187
+  distinct requests made; 16 full transcripts, 15 usable by every test (16 episodes, all among
+  the 250 largest; Tesla's two releases share one call); 6 empty (Modine and Flex, both
+  fiscal-ahead; Energy Transfer, SUNC, Plains GP, Freddie Mac). Stride fails only the year test
+  (its opening prints no year and the fallback picks 2018), but shares 0.60 of its 8-grams with
+  Stride's 2026 IR transcript, so it is the right call; it has the IR text either way. With
+  EXP-0039's IR transcripts, 53 of 197 clean episodes now have call text (33 among the 250
+  largest). Of the 19 companies without IR text asked so far, 14 have a full transcript.
+- **EXP-0043** — S2-a Alpha Vantage collection, scope widened (owner, 2026-11-23: "都好的", to
+  the questions on the 60 old episodes and the October and November 2026 calls, and to a daily
+  scheduled run). One self-contained script replaces EXP-0042's fetch and check; same ledger,
+  limit (25 a US Eastern day), folder and tests as EXP-0042 (full; company; quarter from the
+  opening line; fiscal year; no retry under another label; no request sent twice). Targets in
+  `targets_all.jsonl`, asked in this order: (1) EXP-0040's 197 clean rows, unchanged; (2)
+  "next": for each clean company with a ticker, the following fiscal quarter (Q4 rolls to Q1
+  of the next fiscal year), where its next earnings release (quarter end 60 to 120 days after
+  the clean one) is already in EXP-0020's release list, filed by 2026-11-11 (183 of 187); the
+  other four wait for the December submissions snapshot; by revenue rank; dated by that
+  release; (3) "old": EXP-0036's 60 old episodes (2019 to 2025), fiscal labels from the company
+  facts as in EXP-0040, current tickers, by rank (one has no ticker). `targets` run 2026-11-23:
+  429 distinct requests in all, 407 still to make, finished around 2026-12-09. The "next" calls feed the prospective arm, whose forecasts are sealed before each
+  company's following release (pre-registered separately, with EXP-0001); the "old" calls are
+  pre-cutoff and contaminated by definition. Training and development companies only. One
+  change to the tests, from EXP-0042's Stride case: a full Alpha Vantage text that passes the
+  same-call test against the company's IR transcript counts as usable even when the year test
+  fails, since the IR file names and dates the call.
 
 ## Entries
 

@@ -81,12 +81,13 @@ def targets(_: argparse.Namespace) -> None:
 
 
 def found() -> list[dict]:
-    out = []
-    for p in sorted(OUT.glob("found_*.json")):
+    """Subagents' answers; a later pass (found_9 onward, the browser recheck) replaces a company's earlier entry."""
+    out: dict[str, dict] = {}
+    for p in sorted(OUT.glob("found_*.json"), key=lambda p: int(p.stem.split("_")[1])):
         for r in json.loads(p.read_text(encoding="utf-8")):
             r["batch"] = p.stem
-            out.append(r)
-    return out
+            out[r["cik"]] = r
+    return list(out.values())
 
 
 def file_path(cik: str, kind: str, n: int, url: str) -> Path:
@@ -160,10 +161,10 @@ def first_date(text: str) -> dt.date | None:
 def extract(_: argparse.Namespace) -> None:
     need_drive()
     TEXTS.mkdir(parents=True, exist_ok=True)
-    tg = {}
+    tg: dict[str, list[dict]] = collections.defaultdict(list)
     for line in open(OUT / "targets.jsonl", encoding="utf-8"):
         t = json.loads(line)
-        tg.setdefault(t["cik"], t)
+        tg[t["cik"]].append(t)
     recs = {}
     for line in open(OUT / "fetch_log.jsonl", encoding="utf-8"):
         r = json.loads(line)
@@ -175,11 +176,16 @@ def extract(_: argparse.Namespace) -> None:
         text = to_text(p, r.get("content_type"))
         (TEXTS / (p.stem + ".txt")).write_text(text, encoding="utf-8")
         d = first_date(text)
-        rel = dt.date.fromisoformat(tg[r["cik"]]["release_date"]) if r["cik"] in tg else None
+        rels = [dt.date.fromisoformat(t["release_date"]) for t in tg.get(r["cik"], [])]
+        rel = min(rels, key=lambda x: abs((d - x).days)) if d and rels else (rels[0] if rels else None)  # nearest listed release
         delta = (d - rel).days if d and rel else None
         low = text.lower()
-        rows.append({"cik": r["cik"], "kind": r["kind"], "file": name, "chars": len(text), "call_date": d.isoformat() if d else None,
+        name = (tg[r["cik"]][0]["name"] or "") if r["cik"] in tg else ""
+        word = next((w for w in re.findall(r"[a-z]+", name.lower()) if len(w) > 2 and w not in ("the", "inc", "corp", "group", "company")), "")
+        tickers = [x.lower() for x in (tg[r["cik"]][0]["tickers"] if r["cik"] in tg else [])]
+        rows.append({"cik": r["cik"], "kind": r["kind"], "file": name and r["path"] or r["path"], "chars": len(text), "call_date": d.isoformat() if d else None,
                      "release_date": rel.isoformat() if rel else None, "days_after_release": delta,
+                     "name_seen": bool(word and word in low[:5000]) or any(re.search(rf"\b{re.escape(x)}\b", low[:5000]) for x in tickers),
                      "date_flag": delta is None or not (-1 <= delta <= 3),
                      "qa_markers": len(re.findall(r"question-and-answer|questions? and answers?|\boperator\b", low)),
                      "producer": sorted({m.lower() for m in PRODUCERS.findall(text[:6000] + text[-3000:])})})
