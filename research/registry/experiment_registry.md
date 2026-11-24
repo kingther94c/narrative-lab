@@ -473,7 +473,14 @@ can be regenerated.
   2027-01-10. **Progress 2026-11-24:** reader on the 180 releases done (180 replies, every canary
   present, none unparsed); code facts built from the November series (current-quarter growth
   missing in 16 of 180, as 23 of 257 in EXP-0036, by the same "number shown in the release"
-  rule); A1 forecasts (180 calls) sent the same day. A1C waits for the calls.
+  rule); A1 forecasts (180 calls) made the same day: every canary present, every probability
+  readable (gross margin NA in 42, operating margin NA in 4). A1C waits for the calls.
+  **Interim seal, 2026-11-24 09:38 UTC** (owner: "好的"): `seal` dropped 8 companies that filed
+  another earnings 8-K after the release used (TSLA, PRU, TEX, UWMC, AVNT, NOG, JKHY, SSP, all
+  2026-10-21 to 11-06: second filings on the same September quarter, not December-quarter
+  results; dropped because the rule counts any later Item 2.02); 172 A1 forecasts sealed;
+  manifest `research/registry/seals/exp0048_manifest.json` (forecasts file SHA-256 311201b0...).
+  The final seal, with A1C, follows the call collection.
 - **Claim under test:** on a quarter whose outcome does not yet exist anywhere, (1) the PM with
   the release and code facts (EXP-0036's A1) beats the code baseline, as it did on the July and
   August releases; (2) the call adds to it, as EXP-0047 asks on the clean quarter. A second clean

@@ -1,0 +1,929 @@
+{
+ "experiment": "EXP-0048",
+ "sealed_utc": "2026-11-24T09:38:34+00:00",
+ "forecasts": 172,
+ "episodes": 172,
+ "dropped_for_later_release": [
+  {
+   "episode": "next_192",
+   "symbol": "TSLA",
+   "later_8k": [
+    "2026-10-21"
+   ]
+  },
+  {
+   "episode": "next_135",
+   "symbol": "PRU",
+   "later_8k": [
+    "2026-11-03"
+   ]
+  },
+  {
+   "episode": "next_83",
+   "symbol": "TEX",
+   "later_8k": [
+    "2026-10-30"
+   ]
+  },
+  {
+   "episode": "next_237",
+   "symbol": "UWMC",
+   "later_8k": [
+    "2026-11-04"
+   ]
+  },
+  {
+   "episode": "next_134",
+   "symbol": "AVNT",
+   "later_8k": [
+    "2026-11-04"
+   ]
+  },
+  {
+   "episode": "next_119",
+   "symbol": "NOG",
+   "later_8k": [
+    "2026-11-05"
+   ]
+  },
+  {
+   "episode": "next_93",
+   "symbol": "JKHY",
+   "later_8k": [
+    "2026-11-03"
+   ]
+  },
+  {
+   "episode": "next_99",
+   "symbol": "SSP",
+   "later_8k": [
+    "2026-11-06"
+   ]
+  }
+ ],
+ "forecasts_file_sha256": "311201b09cd099d71e11b1e52aae5b1f8a30fdc1ed33c7cf22b260fa72afa0ae",
+ "items_file_sha256": "ccbfbe929cfbb256cde3b0863655c2a7c299a99556a41dafe286035651173c00",
+ "skill_block_sha256_16": "638f5e7f2a783553",
+ "per_forecast": [
+  {
+   "id": "a000",
+   "episode": "next_89",
+   "reply_sha256": "08818b28ae84ac13db05d671b11cbddf6c22c874a967fa7ee477b724a924b19e"
+  },
+  {
+   "id": "a001",
+   "episode": "next_193",
+   "reply_sha256": "b117ca193d30c569ca0a4d8de4a3d6eb7ecd0713384fd8df00f2933bb373a116"
+  },
+  {
+   "id": "a002",
+   "episode": "next_166",
+   "reply_sha256": "470c05efe56dc6efcfb4bbba20895260e1ee9f25a58f1e1c96e6dd608db12c32"
+  },
+  {
+   "id": "a003",
+   "episode": "next_90",
+   "reply_sha256": "bb298933f61f18934aaeb7be3b0a2e1624b5ff6feb35a479d08c13307aa832be"
+  },
+  {
+   "id": "a005",
+   "episode": "next_197",
+   "reply_sha256": "2d0c338e32061b67fb4b31e35752d5d6c12076cd537f79bafd6a74e4f6299e30"
+  },
+  {
+   "id": "a006",
+   "episode": "next_184",
+   "reply_sha256": "151113f9f18bdd543e03991831aa9224dae99750f1c5a7644af6ed756e227fc4"
+  },
+  {
+   "id": "a007",
+   "episode": "next_256",
+   "reply_sha256": "111f8ae322d6e20005ec4076110a727085302383862cf122c08ec0214ffd268f"
+  },
+  {
+   "id": "a008",
+   "episode": "next_132",
+   "reply_sha256": "eb3a14d5507e670e0352c84f9840526969b4f5942d3b48fefbdee95def5d6287"
+  },
+  {
+   "id": "a009",
+   "episode": "next_143",
+   "reply_sha256": "66bba1dca34690154b002fc30bc13c74b152adb2a895d79126025d8c5ba83849"
+  },
+  {
+   "id": "a011",
+   "episode": "next_182",
+   "reply_sha256": "bda8e4d8b98431fd24b34b8d9ea4bd259b675b33dd936bc823f82206fc9984e9"
+  },
+  {
+   "id": "a012",
+   "episode": "next_70",
+   "reply_sha256": "93c9633652b287f1a1ff0f32d570328a9f8626afeec5411c00298bd67e5ad3e0"
+  },
+  {
+   "id": "a013",
+   "episode": "next_95",
+   "reply_sha256": "22e416cc4d5a4d639c4d5ce8e20ecf3ecdaa411164ab34db4195ff4fd0c4e6ff"
+  },
+  {
+   "id": "a014",
+   "episode": "next_60",
+   "reply_sha256": "c56e69b34b72a2a026c6e619309a00e3a774132869ef45d9a84cdbd0d0e50afb"
+  },
+  {
+   "id": "a015",
+   "episode": "next_195",
+   "reply_sha256": "3e657a6c1eac18d8019ebbec347c03bce7e23761dfdd6bbc632b8562feda291b"
+  },
+  {
+   "id": "a016",
+   "episode": "next_202",
+   "reply_sha256": "a735a7d2b23eed6484e1b896cabd47c13a9f12f55cf7e73330b30d6ab15cabfe"
+  },
+  {
+   "id": "a017",
+   "episode": "next_229",
+   "reply_sha256": "fb3985238c617bdbd61b64d8a28bfe9486c8aa210516b53e15702b2dc7d3aff5"
+  },
+  {
+   "id": "a018",
+   "episode": "next_243",
+   "reply_sha256": "1b35944b8b19922727a5a3d4b47c73ac543f8789cefafb9fe17d9c41ba686cf1"
+  },
+  {
+   "id": "a019",
+   "episode": "next_123",
+   "reply_sha256": "9289532a9b95c20728268c74dd40ee5f827a5ec0c87e4dc448fb6d65822b9ca7"
+  },
+  {
+   "id": "a020",
+   "episode": "next_242",
+   "reply_sha256": "9e13c4939b65faca99f34bba3a2a62f61d16b187e8e2b65fb23b975b646dcd2b"
+  },
+  {
+   "id": "a021",
+   "episode": "next_67",
+   "reply_sha256": "a4206d3bdc96888b4167de2292310330ebfcc53d312f77cc5eddb906ffc5c89a"
+  },
+  {
+   "id": "a022",
+   "episode": "next_102",
+   "reply_sha256": "02d010ff4555f924e40bc7bb8935cdc8e012d81a634f4ac0abc559c86e1f48b4"
+  },
+  {
+   "id": "a023",
+   "episode": "next_106",
+   "reply_sha256": "e924d4b633693fc6c5f4d02e3ba1d4588fea42d55399bb5eeba5d0799ddcdc29"
+  },
+  {
+   "id": "a024",
+   "episode": "next_86",
+   "reply_sha256": "24cc5da6c9fb9ca02b30aa95d018121ee24fb40d197ecd8e1eece1562ef3c00d"
+  },
+  {
+   "id": "a025",
+   "episode": "next_75",
+   "reply_sha256": "82f07d7c12bc99d1d4ee88e1565c976f7387c34a849523d71714b53059a062bf"
+  },
+  {
+   "id": "a026",
+   "episode": "next_111",
+   "reply_sha256": "b2dbe90849167f0e43a78499cc1b46bee0eb31acf7ebac012ba7ad92b0bc0715"
+  },
+  {
+   "id": "a027",
+   "episode": "next_129",
+   "reply_sha256": "e441345fb3866d454b57ebdfaf987b00e448baa166132b1efb1573ad92665726"
+  },
+  {
+   "id": "a028",
+   "episode": "next_244",
+   "reply_sha256": "3e4db2765aeeca683dfcb0df9a10c55c73acae8840741fd3fa21735059b5c5ce"
+  },
+  {
+   "id": "a029",
+   "episode": "next_176",
+   "reply_sha256": "b8aab419b692a14eb2926513aa7908e1b4992e62f1476b66b7b27801b27aeacf"
+  },
+  {
+   "id": "a030",
+   "episode": "next_68",
+   "reply_sha256": "73ea59438aaaa95b459ab0acb19c4567bcaee45faa5dd6b166e1cc1d7a154a75"
+  },
+  {
+   "id": "a031",
+   "episode": "next_61",
+   "reply_sha256": "fefbafadb6f50004d1bb8d3df4b370b52f106d9cd471f7bd3fd234aa6102ee4a"
+  },
+  {
+   "id": "a032",
+   "episode": "next_85",
+   "reply_sha256": "abcc2190b9f156242430ada3db2973ff82e56da360547c5d92b64ad6898516df"
+  },
+  {
+   "id": "a033",
+   "episode": "next_159",
+   "reply_sha256": "1cc7cc803463fc221cb6dd3829f23e4d496ed627a9df513daa874e652935867d"
+  },
+  {
+   "id": "a034",
+   "episode": "next_73",
+   "reply_sha256": "d4c289fbf955caf8d4ee9fdf0859992c157084d51142d116c7c7c84a7e909f7d"
+  },
+  {
+   "id": "a035",
+   "episode": "next_113",
+   "reply_sha256": "9adde0d7ebaf4c77fe180b3cfab158e395c987e15abd9fba403cead7d73b24da"
+  },
+  {
+   "id": "a036",
+   "episode": "next_97",
+   "reply_sha256": "bebdcf899c31a8d8bb6aa254a110693c33d5f8dba79811faf12f8d6468ba29d6"
+  },
+  {
+   "id": "a037",
+   "episode": "next_115",
+   "reply_sha256": "66a918512d8574a1a4b8976bef8d9280066b962859bd3c9093f149f1dc2a942b"
+  },
+  {
+   "id": "a039",
+   "episode": "next_221",
+   "reply_sha256": "77b5b711c0e0b3db279d5f9ba3c54a15fd83337b34cd598425bede6dc240ce84"
+  },
+  {
+   "id": "a040",
+   "episode": "next_142",
+   "reply_sha256": "e07c52ef9183e01bbdd1024ce137c03618747f54ac74520df7fdb204d0d77152"
+  },
+  {
+   "id": "a042",
+   "episode": "next_198",
+   "reply_sha256": "78c7244e1eda6bc962e4314cb03c292f8d3d58dea662bdb239432fd2b05f98d4"
+  },
+  {
+   "id": "a043",
+   "episode": "next_255",
+   "reply_sha256": "28bd5b3d96f74a264bf1a3743f457d2850b8144760ed34d8e7f0a135bb1db0ee"
+  },
+  {
+   "id": "a044",
+   "episode": "next_121",
+   "reply_sha256": "8d903a758da4cc88677510f1ef85e89fbda3aaa30768bb9a631430fa1a9b8071"
+  },
+  {
+   "id": "a045",
+   "episode": "next_136",
+   "reply_sha256": "64ef63e240673d08c0dd368677daacd95e86f7f2ed83c0c58ec906fac5b24dbc"
+  },
+  {
+   "id": "a046",
+   "episode": "next_155",
+   "reply_sha256": "dee798277efd082ad79401205fdbe9b3758cbbd3f50ee184cea5d944faf3ded3"
+  },
+  {
+   "id": "a047",
+   "episode": "next_172",
+   "reply_sha256": "896aaf59d8a632b1d49064bd7edb4f1e9666faaf2bfd1ec4b678af7986dc2acb"
+  },
+  {
+   "id": "a048",
+   "episode": "next_82",
+   "reply_sha256": "43298ae764e0d2881385afeb7c6d50a8210b66dc3d2400fcb502400241d30fea"
+  },
+  {
+   "id": "a049",
+   "episode": "next_151",
+   "reply_sha256": "c444c469da3ae6b5cee6f79c9b7d4f178df83a3da3e96e9cbc9fd5d2cba26a0d"
+  },
+  {
+   "id": "a050",
+   "episode": "next_63",
+   "reply_sha256": "f5deef508abc9886d815dd5b2b791f8cd8b99b5f7eeda0a74fa710381241c10f"
+  },
+  {
+   "id": "a051",
+   "episode": "next_183",
+   "reply_sha256": "e6a9846b4eb61badafa61ec2d2d9dcde62977558c975f527490eda132193c32c"
+  },
+  {
+   "id": "a052",
+   "episode": "next_94",
+   "reply_sha256": "840d56943213bc9b9b918be5069f210dc5a9a505c07a8a40f3502cb0db951017"
+  },
+  {
+   "id": "a053",
+   "episode": "next_203",
+   "reply_sha256": "0891ddf65b46f4ce91972cad2fe26178c7598a9c84cf6af8135176d4363646a0"
+  },
+  {
+   "id": "a054",
+   "episode": "next_194",
+   "reply_sha256": "bb67f99db53ce6ff80bf14c87d07deb116158363a166b59443c997c640dbc4ac"
+  },
+  {
+   "id": "a055",
+   "episode": "next_112",
+   "reply_sha256": "1d037bd3805e04b1c8edef75326b5d3afd68d4c46f54c60a01e583a2176dcb5f"
+  },
+  {
+   "id": "a056",
+   "episode": "next_146",
+   "reply_sha256": "b65464fe9fc04c6a0d50044b097ee9be5a2bb59f9b426633c85852d2ed644108"
+  },
+  {
+   "id": "a057",
+   "episode": "next_104",
+   "reply_sha256": "1297149de9026e968fea18b8ceb521d66bdc5faea9480858774d64e5fc491275"
+  },
+  {
+   "id": "a058",
+   "episode": "next_107",
+   "reply_sha256": "118a5ab45ca17005a87d725018faa7031ca08a09a97276461817a325e03a2dba"
+  },
+  {
+   "id": "a059",
+   "episode": "next_126",
+   "reply_sha256": "592f8256d06ba5e599f86b346613346d9809db76936f1c3b83baa7f760090f93"
+  },
+  {
+   "id": "a060",
+   "episode": "next_144",
+   "reply_sha256": "1812e0fce21622edbb4d03aadc8b3ab2c0eed226da7db6e9f0e4a1be84c223ed"
+  },
+  {
+   "id": "a061",
+   "episode": "next_128",
+   "reply_sha256": "48f2eb2602bb0d235adcac7f3bbe6051bd20485afd485d5889eb0db53d0759ee"
+  },
+  {
+   "id": "a062",
+   "episode": "next_206",
+   "reply_sha256": "a91ded78619d05929aa46f5fb530aec95bb2608489d874da50b5b36a0c2c51fc"
+  },
+  {
+   "id": "a063",
+   "episode": "next_76",
+   "reply_sha256": "e3dd6011ab8a8668bf4139e29534d3e7898e6b1b14e0c3ab28166968ecd815da"
+  },
+  {
+   "id": "a064",
+   "episode": "next_62",
+   "reply_sha256": "c4f8320ec113686230573a85481272ffe71f0b3f52aced934fed3f4ad128bafe"
+  },
+  {
+   "id": "a065",
+   "episode": "next_254",
+   "reply_sha256": "5235c92bc7a233738be814719f01f7f80d1d2825597a63b8a4a736dfc1c37409"
+  },
+  {
+   "id": "a066",
+   "episode": "next_152",
+   "reply_sha256": "df458b1f27acf62a671802b1bdf19dd1e1f59fdf70d46fcd55b4e5e9c23af755"
+  },
+  {
+   "id": "a067",
+   "episode": "next_170",
+   "reply_sha256": "446a6bee00c6b16d10ba5ccbf66554b2ad73cf9f24cebf777acec6af0267abfa"
+  },
+  {
+   "id": "a069",
+   "episode": "next_125",
+   "reply_sha256": "ccdd9097cb73e2ef2bb4bc37b05f44ab330e531e14fc8d9476e8c5c8a16f48cd"
+  },
+  {
+   "id": "a070",
+   "episode": "next_248",
+   "reply_sha256": "6e5f76e98ac48069ff4a313fa80ae3e57a291a9aa65671341a1f280d2052732b"
+  },
+  {
+   "id": "a071",
+   "episode": "next_179",
+   "reply_sha256": "a091b5b499792cb1dbb377997340e6884530531e80cd3acfbf06343cab419390"
+  },
+  {
+   "id": "a072",
+   "episode": "next_210",
+   "reply_sha256": "b50bb461d7e2b4ccd218e6997e193cbd288e593a7fe0019f5b593642f17d2790"
+  },
+  {
+   "id": "a073",
+   "episode": "next_114",
+   "reply_sha256": "55768f7b75ddfd19221ba9aafc4eb4559c3471abb541128ebcac0724ae3a061b"
+  },
+  {
+   "id": "a074",
+   "episode": "next_222",
+   "reply_sha256": "609741a289006e77f5dc063c664735c606fbba2ad5d59b87e70810d1e4732e0c"
+  },
+  {
+   "id": "a075",
+   "episode": "next_218",
+   "reply_sha256": "c1fa009c55a9a012a8d86278a30c13bdf3e9dc26705395eed0c35ccec858e56d"
+  },
+  {
+   "id": "a076",
+   "episode": "next_199",
+   "reply_sha256": "c582295f4c764602880b03b38bf1cb9902ae49221dd9b9987c6911b3bc214f4a"
+  },
+  {
+   "id": "a077",
+   "episode": "next_154",
+   "reply_sha256": "7453b585431931ea4251ca61def9cf3e94d1b4f81e942cdf12f3b4135e73ea5f"
+  },
+  {
+   "id": "a078",
+   "episode": "next_214",
+   "reply_sha256": "fc864310d885ca4b78c84e4238335886c09b992d0451f0313a9d6f846b4a7091"
+  },
+  {
+   "id": "a079",
+   "episode": "next_171",
+   "reply_sha256": "fc39336ad12cbb8c67f6230668bc3bb3c95e4e25d43791829e37a111a87b4421"
+  },
+  {
+   "id": "a080",
+   "episode": "next_231",
+   "reply_sha256": "3507b3ca38292ddddabf27b9eecd1136112f81ddfcef284cd94d980af785fe78"
+  },
+  {
+   "id": "a081",
+   "episode": "next_100",
+   "reply_sha256": "385ebcb7676afe7a1fdd0ed4165404844412f00c6df952d96f60f909d1f906a3"
+  },
+  {
+   "id": "a083",
+   "episode": "next_77",
+   "reply_sha256": "498c35391b7b79fefb435fda8a3ebbcc509face7293d1c5467dae1fcf967a5cb"
+  },
+  {
+   "id": "a084",
+   "episode": "next_108",
+   "reply_sha256": "f00f1c7c32f6ecf669d3e05b0abb554032efad20f870bcc68f39b828de714aa9"
+  },
+  {
+   "id": "a085",
+   "episode": "next_116",
+   "reply_sha256": "485f7b8a9f9adec32460e9af134b0cf90680044dbd3e57cfef474ad20a1f9f92"
+  },
+  {
+   "id": "a086",
+   "episode": "next_186",
+   "reply_sha256": "ebebf3a80cf397a49f62d68c925a49f321a6fc7846f26bfa766223fd4862c192"
+  },
+  {
+   "id": "a087",
+   "episode": "next_178",
+   "reply_sha256": "dff5bddb5d4978acc0a71fc6c11481e294b6830b603e5ed1239cfeb69afff6fe"
+  },
+  {
+   "id": "a088",
+   "episode": "next_232",
+   "reply_sha256": "cb775398d6eb6382c97c7acaf19ef3f3acdbe59690e60935e78f6d711c235c72"
+  },
+  {
+   "id": "a089",
+   "episode": "next_251",
+   "reply_sha256": "6115332de5772b19d1861cd9b8e70f7900bf056bf409a4c42c43d955d21d1f2c"
+  },
+  {
+   "id": "a090",
+   "episode": "next_185",
+   "reply_sha256": "801cf7eed6db159889f1eedcf6eb763ca221ed159c984dcbc3f0ebb873a645c3"
+  },
+  {
+   "id": "a091",
+   "episode": "next_131",
+   "reply_sha256": "7e3204bd8c1a2b493dbeff94501881207a97e49339ab680bc0510639c49f6c53"
+  },
+  {
+   "id": "a092",
+   "episode": "next_105",
+   "reply_sha256": "c473cf24581e90e07d6729f8391955e9b9c059ded61c38eb694a4926c94bae27"
+  },
+  {
+   "id": "a093",
+   "episode": "next_212",
+   "reply_sha256": "08111cf2f109428aca119888a43d13ae0edd195715574d272a5a1a0c02460a0e"
+  },
+  {
+   "id": "a094",
+   "episode": "next_213",
+   "reply_sha256": "eb1896659d30f25f7c5aa589534573c4027b7eb050b6d079287a65856d077fc0"
+  },
+  {
+   "id": "a095",
+   "episode": "next_148",
+   "reply_sha256": "4aced9e54958ee2e3c1771a7388102a37328b03f1d012cb6e958f09503511d9f"
+  },
+  {
+   "id": "a096",
+   "episode": "next_177",
+   "reply_sha256": "9803828b319d3eaf446fc4ecd6a14f79745a9e41403f00f186a03df4b9b584f5"
+  },
+  {
+   "id": "a097",
+   "episode": "next_88",
+   "reply_sha256": "9f711eccdd2fa832ab81ed303f03c9a266d47f71649c9fd4ff5e216b9cb11c62"
+  },
+  {
+   "id": "a098",
+   "episode": "next_161",
+   "reply_sha256": "9792f6e9a8a3b99963ff864ece0617ebcb556b011b99168e1d211d81c3e9c2b5"
+  },
+  {
+   "id": "a099",
+   "episode": "next_141",
+   "reply_sha256": "b49da95828f24e871775449d476032d2126b163ce9f828a5f7dce6b39472cec8"
+  },
+  {
+   "id": "a100",
+   "episode": "next_80",
+   "reply_sha256": "ecd35ff70bb518046577a0cb566c51a4a0a3adf70ffdb7a646d8dfddf03ce945"
+  },
+  {
+   "id": "a101",
+   "episode": "next_158",
+   "reply_sha256": "0d5386cf3ecae8d61e54349d490bedd88df5877c5d1922ffbce68ea0f3a3b896"
+  },
+  {
+   "id": "a102",
+   "episode": "next_204",
+   "reply_sha256": "f4eaca5d4ebc261117e1ad206897604e4cdc312610fb721d4341a6fefe6a11bb"
+  },
+  {
+   "id": "a103",
+   "episode": "next_252",
+   "reply_sha256": "db45936ac6e4a7d4a25285179d2a02c4e47fbeea8970f3f029fdcffd451a3842"
+  },
+  {
+   "id": "a104",
+   "episode": "next_201",
+   "reply_sha256": "edad8a7c99f99bc3e917b4fcd3e0919b42d3286e7807142a6b8bc5ecf36e9a97"
+  },
+  {
+   "id": "a105",
+   "episode": "next_173",
+   "reply_sha256": "4cb6f2bc9a5d99858c4a52e2bbe952a76a350890f06484c8f2919cd290921b24"
+  },
+  {
+   "id": "a106",
+   "episode": "next_87",
+   "reply_sha256": "656e295ea7da0142db2d8e5f455651beedc50eb1c8990caa0424fe7a5d7fc3e6"
+  },
+  {
+   "id": "a107",
+   "episode": "next_81",
+   "reply_sha256": "1db2469e4e37af0f4a0b78b9cd16f43625f756369ba5bf6631c900f75fdbfb17"
+  },
+  {
+   "id": "a108",
+   "episode": "next_216",
+   "reply_sha256": "65389adc324526c5b5885278740f2bc5a000a6aafa504cca434f179f09a6036d"
+  },
+  {
+   "id": "a109",
+   "episode": "next_180",
+   "reply_sha256": "2f494cb337b78e756a7a5bbe09f52cc53d1e3ff6c966661c32f517d676fb4ded"
+  },
+  {
+   "id": "a110",
+   "episode": "next_215",
+   "reply_sha256": "6cf2e52ae9984cb7af2810440b422011a999f3ed509734f6dbebb0de72352ac8"
+  },
+  {
+   "id": "a111",
+   "episode": "next_190",
+   "reply_sha256": "09c3f8ae8054f9ab7b4c047e01cb89a3f617b716f3dd78d54815131048da4550"
+  },
+  {
+   "id": "a112",
+   "episode": "next_225",
+   "reply_sha256": "8debf8b040e21acc995e5edce169fc4b8ce7f1fd678af0a70c29d43706259679"
+  },
+  {
+   "id": "a114",
+   "episode": "next_200",
+   "reply_sha256": "7b0ce4bf89b974e8991bf02d510068f65c71afc3033955417007cf16e2879011"
+  },
+  {
+   "id": "a115",
+   "episode": "next_187",
+   "reply_sha256": "67fc6b7070ac9bb4f28decba57c50613024cee595d0a31a0b14a5d13cfa88f9c"
+  },
+  {
+   "id": "a116",
+   "episode": "next_96",
+   "reply_sha256": "77ed44c4077b062b36064875fdea8ec7647a09b27cf4c018c269c6e82073984f"
+  },
+  {
+   "id": "a117",
+   "episode": "next_72",
+   "reply_sha256": "4e55248af81d0f75d1d4781d679f3109b7452346f7e8c0ec2cffd7c5b4a7ad2a"
+  },
+  {
+   "id": "a118",
+   "episode": "next_153",
+   "reply_sha256": "91d5e1641f20a0e1c1c2e03c2c0c669a171554a3e38aa4daf766c1ed626f7099"
+  },
+  {
+   "id": "a119",
+   "episode": "next_209",
+   "reply_sha256": "004f3daf7759823452fba3e2bb0cc5065498bad26a58e0ac8070ab6af0286b7d"
+  },
+  {
+   "id": "a120",
+   "episode": "next_234",
+   "reply_sha256": "d9b52d3d0893c116b985bfd9b196bd4d1b53e81b98950221736387bcbbd58223"
+  },
+  {
+   "id": "a121",
+   "episode": "next_249",
+   "reply_sha256": "c1793e9989f167e09a19f989f5ac200d69425e4e3039edba3647a25ebb7a5dd7"
+  },
+  {
+   "id": "a122",
+   "episode": "next_147",
+   "reply_sha256": "75d755b1de0a9dfeb706673edc420864b14817006eecb7d625b9ddf127c787c2"
+  },
+  {
+   "id": "a123",
+   "episode": "next_188",
+   "reply_sha256": "63db65cbcabf97cd26165c34bd63e69e86cce0384cf07f28915e31bc9aedb169"
+  },
+  {
+   "id": "a124",
+   "episode": "next_92",
+   "reply_sha256": "dc615af1bd45cfc1012ad6abdcd61f21a43eae70cd9709546c0cde15e398b775"
+  },
+  {
+   "id": "a125",
+   "episode": "next_71",
+   "reply_sha256": "cc6d496be3dc4a3b88d72e83e150450a2f94cdaae0d2ca91702363963d243dc4"
+  },
+  {
+   "id": "a126",
+   "episode": "next_78",
+   "reply_sha256": "afa27f918071dc9d4c95aa256e463fba28bd54e8bdcf85e766706c62f155dbee"
+  },
+  {
+   "id": "a127",
+   "episode": "next_181",
+   "reply_sha256": "44254c2889e4729abcde8870b304b154f412f30f7731d4160a8c8f05e0f5d17e"
+  },
+  {
+   "id": "a128",
+   "episode": "next_127",
+   "reply_sha256": "571dac6463ff091d903e7bb5d134b55ed361488c3c30aea3c71d6cb3c8f60e00"
+  },
+  {
+   "id": "a129",
+   "episode": "next_239",
+   "reply_sha256": "d2b7fa1a05a76606c70c2b4e08f706542508c66cb9c89804cf9cb5149998860e"
+  },
+  {
+   "id": "a130",
+   "episode": "next_236",
+   "reply_sha256": "7e76c13acd6fa07bfb93d25b78aade99bf2c7cb1cdda7ce8c167c5cfef97ae43"
+  },
+  {
+   "id": "a131",
+   "episode": "next_117",
+   "reply_sha256": "84074292ca53d3aae76d8a2e9a707d8efe976ef1bdf0f1fa4863e5071ea95184"
+  },
+  {
+   "id": "a132",
+   "episode": "next_145",
+   "reply_sha256": "bdfb8118d475c8ba0316abc3be252268aec628ba5f9625953e2cade5630526b8"
+  },
+  {
+   "id": "a133",
+   "episode": "next_118",
+   "reply_sha256": "6b55096232c85b79c9bf0e66e90e675de1ab05ac9fdf273c76456b32e1bb763f"
+  },
+  {
+   "id": "a134",
+   "episode": "next_124",
+   "reply_sha256": "96d42447d40b114984c7b858504849064269169be6a63c0d4d978c17724eb504"
+  },
+  {
+   "id": "a135",
+   "episode": "next_207",
+   "reply_sha256": "ab8ab637d9494cb84e6e35e5fe28fb2f15813d41404b048b6b6e1c095f58f3d4"
+  },
+  {
+   "id": "a136",
+   "episode": "next_66",
+   "reply_sha256": "45cfabfc2b59cbbeef957f5656cf8998dbbb26eb449adda303ee72c52674957f"
+  },
+  {
+   "id": "a137",
+   "episode": "next_149",
+   "reply_sha256": "41e91992bf072cb4a4362bd3ad52c9243bdfe169b592a6f14e4d4e3e310ed71f"
+  },
+  {
+   "id": "a138",
+   "episode": "next_101",
+   "reply_sha256": "2f8e376536c3d623e997c116c6f884286f577e53e1c20f2a3f62952ebb034b72"
+  },
+  {
+   "id": "a139",
+   "episode": "next_133",
+   "reply_sha256": "16fa899238a99d1d85ea19e83f1495364cd688c6740d924bd2349881c626c078"
+  },
+  {
+   "id": "a140",
+   "episode": "next_208",
+   "reply_sha256": "632dac2fcc7ae20b1eb6baccddc0b9837bcb1cec1ab7c615def5a34105e714f1"
+  },
+  {
+   "id": "a143",
+   "episode": "next_174",
+   "reply_sha256": "4f9654dfb9ee6ff426dcdf6cd31c313a13e26aa8d82dd59c14288e355dd2346a"
+  },
+  {
+   "id": "a144",
+   "episode": "next_223",
+   "reply_sha256": "47bb45c1bad6a68ffc9e61888f3739ab6cc3b8aa7e9e6e12e54b548971a22351"
+  },
+  {
+   "id": "a145",
+   "episode": "next_64",
+   "reply_sha256": "f1b2f02846c14231cae46b55a27ee9409f22765509b429f861aa7422e5408557"
+  },
+  {
+   "id": "a146",
+   "episode": "next_189",
+   "reply_sha256": "60af00bf936f26829232ece40820acadc97491c7923e4c3db1f9949e445062c4"
+  },
+  {
+   "id": "a147",
+   "episode": "next_224",
+   "reply_sha256": "7c49efb89deb851cda241b63847f0dd80440eea71ba590a18aed0aa54ef32f2d"
+  },
+  {
+   "id": "a148",
+   "episode": "next_245",
+   "reply_sha256": "42148e04ca9b8ac46ac623e865324c3115f03149123505be0216afa847dbbcf2"
+  },
+  {
+   "id": "a149",
+   "episode": "next_157",
+   "reply_sha256": "8c222f46a90c7af7c8ed2caf35e377f1093d1b2a60b9bb9de2721e30435e166d"
+  },
+  {
+   "id": "a150",
+   "episode": "next_219",
+   "reply_sha256": "57c08b856d119e73bf3e0b809ddf582ce95d3835defca5513b93fc30c4ee20de"
+  },
+  {
+   "id": "a151",
+   "episode": "next_235",
+   "reply_sha256": "b5729fc998a7a644943c25c44a843e854f27c3b280b4fe823cf701aebd935fbe"
+  },
+  {
+   "id": "a152",
+   "episode": "next_167",
+   "reply_sha256": "ed4aabf79b093af00f729d6864d06540ffa8bb4b05f787651d4cc50361bc3fe2"
+  },
+  {
+   "id": "a154",
+   "episode": "next_241",
+   "reply_sha256": "d07dc70a7cd04d622db39dffa015d7e385f879f0c775089231119daf8425536c"
+  },
+  {
+   "id": "a155",
+   "episode": "next_156",
+   "reply_sha256": "165ff0fd3727d76bc18e6fd8bedd26731856d1e6e45fe79b83836ede95755d01"
+  },
+  {
+   "id": "a156",
+   "episode": "next_238",
+   "reply_sha256": "29c9286850ea7e34b212a79e04e6c92bb0dc8bfccc5859f40f22299ad20110c1"
+  },
+  {
+   "id": "a157",
+   "episode": "next_168",
+   "reply_sha256": "f42cd559c9dc6804d359a0d13484d0d73e42e765db2b63213c332b529317abb0"
+  },
+  {
+   "id": "a158",
+   "episode": "next_230",
+   "reply_sha256": "5a413ca5dfc85dea43f5517ae8c5437d823589d2a18b5226be6f7cdbdd0988a7"
+  },
+  {
+   "id": "a159",
+   "episode": "next_98",
+   "reply_sha256": "40b8cd4a3b7578387b69c551ffeac35c51c321a49aa2aeb2e3dedcf59ad8eb68"
+  },
+  {
+   "id": "a161",
+   "episode": "next_74",
+   "reply_sha256": "484913b83e55a350e9c8df188ab58d9aeb7d44ca923e7bdbe60a9a864cb0fcbe"
+  },
+  {
+   "id": "a162",
+   "episode": "next_109",
+   "reply_sha256": "d981284a3b7b762e4af737da28277a68bb5f42c1e274897c8d70385ba76b65af"
+  },
+  {
+   "id": "a163",
+   "episode": "next_253",
+   "reply_sha256": "ef0178bb2f585ea06226733c16b2f4d2bd3fe6cf55e70d15fa84e19939587a2d"
+  },
+  {
+   "id": "a164",
+   "episode": "next_220",
+   "reply_sha256": "ea49525dc289271eb9a64ecc8845600ddc5b3204025d2a604e8c9b058ecc35c5"
+  },
+  {
+   "id": "a165",
+   "episode": "next_138",
+   "reply_sha256": "688fee2561d320e787cf5ace2423813aeab1040b573cc0cb817f0587a520b11b"
+  },
+  {
+   "id": "a166",
+   "episode": "next_164",
+   "reply_sha256": "db0ce0c108ba7d945596e92d1e0188ae23668b452bd3e80c4007ecd203333ea2"
+  },
+  {
+   "id": "a167",
+   "episode": "next_211",
+   "reply_sha256": "1dbf03d06db228218ef470a11c2bd17916f0ae1fe48c1afdbad2a7e75b8c2316"
+  },
+  {
+   "id": "a168",
+   "episode": "next_217",
+   "reply_sha256": "e86d8bfd239ecd21bd51cd78f84d09f772a0488165fe3fc781e9a45f060e9ff1"
+  },
+  {
+   "id": "a169",
+   "episode": "next_137",
+   "reply_sha256": "7cde62e3306fdc575295a1294bc4d9543419425842804ea8f98849d3859293c7"
+  },
+  {
+   "id": "a170",
+   "episode": "next_69",
+   "reply_sha256": "1ef002473e1a457e72d90041259e928d5540e582c7454268495008f5ab8a2f23"
+  },
+  {
+   "id": "a171",
+   "episode": "next_247",
+   "reply_sha256": "d32db36b29a978ecb4a2c731c28cbbaa86b5cf6d07e2b9c62a501208d4a72902"
+  },
+  {
+   "id": "a172",
+   "episode": "next_240",
+   "reply_sha256": "59d512228c0f61854a8c41a2bfc35021d96039adfb37d3ddce034289a52f57db"
+  },
+  {
+   "id": "a173",
+   "episode": "next_205",
+   "reply_sha256": "75e3c2293491e83af15570e1566c2714b504ebba6bba5f2e2b65f845ccb02e44"
+  },
+  {
+   "id": "a174",
+   "episode": "next_227",
+   "reply_sha256": "bd1f452c21b842534eefab4ab4fe9d9d77bbcb8c630719b4b0f76396b6a55e0e"
+  },
+  {
+   "id": "a175",
+   "episode": "next_120",
+   "reply_sha256": "8f27570ccc0916357d0795623ff5702a555e971712e814d2288d56997a1d29df"
+  },
+  {
+   "id": "a176",
+   "episode": "next_233",
+   "reply_sha256": "959c9a76b56e64dcfd879885da7ac7c4cfcfe559d50505c47bbae623c2267e9a"
+  },
+  {
+   "id": "a177",
+   "episode": "next_91",
+   "reply_sha256": "39f44cc8af562dce2efe907b269d38009c5d992733aa1454e14e52a320d940a4"
+  },
+  {
+   "id": "a178",
+   "episode": "next_226",
+   "reply_sha256": "897a65f6ce02287796889d4813127054ed09c9941aaf630954908b3f9ab16405"
+  },
+  {
+   "id": "a179",
+   "episode": "next_162",
+   "reply_sha256": "d54fdbf287c117b111d4940b01483b76f7110fde19475f9990bad2be20e2db47"
+  },
+  {
+   "id": "a180",
+   "episode": "next_191",
+   "reply_sha256": "2c6bad440e12bbdf719a3390fe6e7624ddac8ac61bf42ce644e8b543c31db41c"
+  },
+  {
+   "id": "a181",
+   "episode": "next_122",
+   "reply_sha256": "90979f9dcf15a3c0a1e50070831cbfde91f48f6ea81045d250063d21c92981c7"
+  },
+  {
+   "id": "a182",
+   "episode": "next_175",
+   "reply_sha256": "f0c7126fb0da135e5c6f413d56b15d50719595d4707d501bb9f5e72290888486"
+  }
+ ]
+}

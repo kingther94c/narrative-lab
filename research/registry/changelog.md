@@ -2,6 +2,19 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-24 — S2: EXP-0048's A1 forecasts made and sealed (interim)
+
+- **What:** 180 A1 forecasts on the October and November 2026 releases (every canary present,
+  every probability readable). At the owner's word ("好的") an interim seal before the final one:
+  EDGAR was checked for later earnings 8-Ks, 8 companies with a second filing on the same
+  September quarter were dropped by the registered rule, and the SHA-256 manifest of the 172
+  remaining forecasts is committed in `research/registry/seals/exp0048_manifest.json` (hashes
+  only; the forecasts stay on the drive). The push is the time stamp: the December-quarter
+  outcomes do not exist yet.
+- **Next:** A1C once the October and November calls are collected (about 2026-12-08), then the
+  final seal before 2027-01-10.
+- **Assets affected:** experiment registry (EXP-0048); `research/registry/seals/`.
+
 ## 2026-11-24 — S1 reasoning exam: section R items built (EXP-0019, step R-a)
 
 - **What:** nine multi-fact templates (R1.1 to R1.9) and their twins, generated from the
