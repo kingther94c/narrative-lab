@@ -290,7 +290,7 @@ In order of urgency.
 
 ## Links
 
-All sources are in `research/literature/matrix.csv`: the 86 of the first pass and the 19 rows of stream 08 (sub-study S2). Links the plan cites directly:
+All sources are in `research/literature/matrix.csv`: the 86 of the first pass, and for sub-study S2 the 19 rows of stream 08 and the 92 of streams 09 to 12 (merged 2026-11-24). Links the plan cites directly:
 
 - [mlx-community/Qwen2.5-7B-Instruct-4bit](https://huggingface.co/mlx-community/Qwen2.5-7B-Instruct-4bit)
 - [Tang, Yao, Zarowin: Once Is Not Enough](https://www.stern.nyu.edu/sites/default/files/assets/documents/Michael%20Tang.pdf)

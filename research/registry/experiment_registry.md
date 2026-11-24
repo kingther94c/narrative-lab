@@ -399,6 +399,28 @@ can be regenerated.
   after; 184 of 187, missing MWH, ARXS, BAM), keeps the clean and old rows and their order, and
   saves EXP-0043's file as `targets_all_exp0043.jsonl`. EXP-0044's daily fetch reads the
   rewritten file.
+- **EXP-0049** — S2-a December company-facts snapshot and series (approved by the owner
+  2026-11-20 with decision 4 of the S2 plan, "同意1 和2"). `fetch` downloads SEC's bulk
+  `companyfacts.zip` (about 1.3 GiB) to `edgar/xbrl/companyfacts-<date>.zip` with the contact
+  string from `EDGAR_IDENTITY`, in early December, and records its size and SHA-256. `series`
+  rebuilds EXP-0020's quarterly series (same code, first filing of each quarter, training and
+  development companies only) from it into `s2/exp0049/series.jsonl`. `compare` counts, for
+  EXP-0048's episodes, how many September quarters the new series has that the November one
+  lacked, and lists any quarter whose first-filed values differ between the two (they should
+  not). Not needed for EXP-0048's build (the November series already has all 180 September
+  quarters); kept for label coverage of smaller filers and the later December-quarter labels.
+  No model; an engineering step with no hypothesis.
+- **EXP-0060 to EXP-0069** — held for sub-study S2 (2026-11-24; EXP-0050 to 0059 are S1's).
+- **EXP-0060** — S2-a name test v2 for the Alpha Vantage replies (fix forward of EXP-0042's test,
+  used by EXP-0043/0044's `check`). The 2026-11-23 batch flagged two right transcripts as
+  "name missing": Fidelity National Financial, whose call opens "welcome to FNF's Second
+  Quarter" (EXP-0042 strips apostrophes, so "FNF's" became "fnfs"), and Westinghouse Air
+  Brake, whose call says "Wabtec". The name test now passes if the name word or a ticker
+  appears in the first 5,000 characters of either the apostrophe-stripped text or the text with
+  possessive 's removed, or if an alias from `s2/exp0060/aliases.json` does; an alias is added
+  only after the opening line is read by hand, and the file keeps that line beside it. Everything
+  else is EXP-0043's check. `check` writes `s2/exp0040/checked_v4.jsonl`; `calls` runs
+  EXP-0045's build on it (same output folder). The daily fetch is unchanged.
 
 ## Entries
 
@@ -407,7 +429,10 @@ can be regenerated.
 ### PRE-REGISTRATION
 - **Status:** approved by the owner 2026-11-24 ("呃，批准"); not yet run, no call made. The
   forecasts are made once the next-stage collection is done (about 2026-12-08) and sealed before
-  2027-01-10.
+  2027-01-10. **Progress 2026-11-24:** reader on the 180 releases done (180 replies, every canary
+  present, none unparsed); code facts built from the November series (current-quarter growth
+  missing in 16 of 180, as 23 of 257 in EXP-0036, by the same "number shown in the release"
+  rule); A1 forecasts (180 calls) sent the same day. A1C waits for the calls.
 - **Claim under test:** on a quarter whose outcome does not yet exist anywhere, (1) the PM with
   the release and code facts (EXP-0036's A1) beats the code baseline, as it did on the July and
   August releases; (2) the call adds to it, as EXP-0047 asks on the clean quarter. A second clean
@@ -418,8 +443,16 @@ can be regenerated.
   development companies; the release after each clean one, filed 2026-10-01 to 2026-11-11, all
   on the drive). A1 for all; A1C where EXP-0045 holds a full call document at sealing time.
 - **Calls:** A1 and A1C exactly as EXP-0047 (same skill block, questions and transport), one item
-  per call; at most 368. Code baseline: EXP-0036's per-label logistic models, refitted only on
-  outcomes filed before 2026-11-12.
+  per call. EXP-0036's code facts take guidance from its reader's form, so EXP-0036's reader (R)
+  runs first on the 184 releases and the facts are built from its replies, as in EXP-0036; at
+  most 552 calls (added 2026-11-24, before any call, once the dependence was found). The facts
+  are built from EXP-0020's November series: it already holds the September quarter's first
+  filing for all 180 companies (large filers file 10-Qs within 40 days). A1 runs once the reader
+  is in; A1C once the October and November calls are collected. Code baseline: EXP-0036's
+  per-label logistic models, refitted only on outcomes filed before 2026-11-12.
+  Episodes whose release text is not on the drive are dropped (2026-11-24, before any call: the
+  first `prepare_r` stopped on the first of them): REGN, VG, FG (filed 2026-10-05 to 10-07,
+  likely not the full earnings release) and JAZZ; 180 remain.
 - **Sealing:** forecasts stay on the drive; a manifest of SHA-256 hashes (one per forecast file,
   plus the prompt and skill hashes) is committed and pushed before 2027-01-10 and before the
   first next release of any company in the sample; a company that reports before the push is
@@ -438,7 +471,10 @@ can be regenerated.
 
 ### PRE-REGISTRATION
 - **Status:** approved by the owner 2026-11-24 ("呃，批准"); not yet run, no call made. Runs
-  once the clean stage of the Alpha Vantage collection is done (about 2026-11-30).
+  once the clean stage of the Alpha Vantage collection is done (about 2026-11-30). Script
+  `exp0047_s2b_call_pilot.py` written 2026-11-24; `prepare --dry` on the 58 documents then
+  available: A is EXP-0036's A1 prompt verbatim in 58 of 58; prompts about 14,700 tokens (A),
+  27,900 (A1C) and 27,300 (reader), medians.
 - **Claim under test:** (1) adding the call (prepared remarks and Q&A, EXP-0045's document) to
   EXP-0036's A1 prompt raises the PM's readout on clean episodes; (2) exploratory: skill v1 Part D
   features read from the call relate to next-quarter outcomes.

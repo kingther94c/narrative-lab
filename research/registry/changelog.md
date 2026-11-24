@@ -16,6 +16,20 @@ Newest first. What changed, why, on what evidence, and what it affects.
   is scored): tone of management's prepared remarks against the release, and negative and
   uncertainty shares in management's answers.
 - **Assets affected:** experiment registry (EXP-0047, EXP-0048).
+- **Same day, after the approval:** EXP-0047's script written (`prepare --dry`: A is EXP-0036's
+  A1 prompt verbatim in 58 of 58); it runs when the clean collection ends (about 2026-11-30).
+  EXP-0048: the code facts take guidance from EXP-0036's reader, so the reader runs first (at
+  most 552 calls instead of 368, recorded before any call); four episodes without release text
+  dropped (180 remain); the November series already holds all 180 September quarters, so no
+  wait for the December snapshot; reader stage started (180 calls). EXP-0049 (December
+  snapshot and series, approved 2026-11-20) written for label coverage. Literature: S2's
+  streams 09 to 12 (92 rows) merged into `matrix.csv`.
+- **Collection, 2026-11-24 (12:42 local):** 23 requests, all full transcripts. The name test
+  flagged two right ones (FNF's possessive, Wabtec's brand name); EXP-0060 fixes the test, and
+  EXP-0045's documents rebuilt on it give 76 clean episodes with a full call (from 53). EXP-0050
+  to 0059 are S1's, so S2 continues at EXP-0060.
+- **Owner, same day ("1 递交 2 学术研究"):** commit the second batch; narrative-lab is academic
+  research, so the Loughran-McDonald lists' free academic licence applies.
 
 ## 2026-11-24 — S1-c calculator fixed (EXP-0018): the 4B with the calculator is level with the 4B without it on calculations
 
