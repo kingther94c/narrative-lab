@@ -227,7 +227,20 @@ S1 takes EXP-0019, then the block EXP-0050 to EXP-0059 (registry, Reserved).
 Licence check for D4 (2026-11-23, web pages only, nothing downloaded):
 - **XFinBench:** MIT (Hugging Face `Zhihan/XFinBench` and the GitHub LICENSE), not gated; 4,235
   items (validation 1,000, test 3,235), about 9.5 MB; test answers released 2026-02-04; the
-  source of the questions is not stated. Download pending the owner's go-ahead on the file.
+  source of the questions is not stated. Downloaded with the owner's go-ahead ("下载"),
+  2026-11-24: revision `9eb2a9d985e7a30de55b21de84eba176961453e0`, 9.5 MB, on the drive at
+  `narrative_lab/external/xfinbench/` (not in git). SHA-256:
+  `test_set.csv` `693ce71a283245cdf324e47bfd33af0714029f73683e8e2d9890528c4f9e5b8e`,
+  `validation_set.csv` `c5769cef57e5b4a6f4d7f2edb789d64ad9b4aaba99924fd16d5704407bbce119`,
+  `knowledge_bank.csv` `4ca105835c62d8148d9ec20953f6b3ef650ce8dfbfcb1bd375d06a590385d62c`.
+  Contents, counts only for test: validation 1,000 (true/false 435, calculation 396, multiple
+  choice 169; 22 with a figure); test 3,235 (1,360, 1,283, 592; 124 with a figure), every row
+  with its answer. Capability tags on test: terminology 1,736, temporal reasoning 558, numerical
+  modelling 444, scenario planning 134, forecasting 116, the rest two tags. Claude read four
+  validation items: textbook-style statements and questions (monetary economics, inventory
+  policy, futures trading), not company filings. So XFinBench is an out-of-format probe of
+  general financial reasoning, like section A, not a test of reading a release; its temporal
+  reasoning, scenario and forecasting tags are the parts closest to section R.
 - **FinIndices:** no licence stated (Hugging Face `Findata/Finindice`, empty README, no code
   repository found); 640 test rows, 27.8 MB, answers public; the statements are Chinese A-share
   companies'. With no licence, it is not downloaded; it could only be cited, or the authors
