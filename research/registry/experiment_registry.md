@@ -465,6 +465,117 @@ can be regenerated.
 
 ## Entries
 
+## EXP-0050 — S1 reasoning exam, step R-b: headroom on development section R items (2026-11-24)
+
+### PRE-REGISTRATION
+- **Status:** draft, 2026-11-24. The owner asked for R-b's pre-registration after EXP-0019 was
+  committed ("A"). Before the commit: the script is written (`exp0050_s1r_headroom.py`), its
+  checks pass (15 grader cases, 6 figure-matching cases, and EXP-0018's 22 parser cases), the draw
+  is made (ids only, no model run), and `score` was dry-run on synthetic responses in a scratch
+  folder. No model is run before the owner approves and the commit is pushed. Approved by the
+  owner 2026-11-24 ("A": approve, commit, push, run).
+- **Claim under test:** descriptive, not a hypothesis (design §6, step R-b). On development items
+  of section R: how far the distilled 0.8B is behind the 4B when the task needs several facts and
+  a rule rather than one lookup or one calculation; whether a one-line hint closes that distance;
+  how each model handles the twins; whether any template's gold looks wrong; and how large R-c's
+  test must be. R-c's hypotheses are written from this run.
+- **Why the answer is not obvious:**
+  - On B development items the gap is small: 4I − K2 = 1.5 points (90.8 against 89.3, the
+    responses already on disk). R items need two to six figures, and the 0.8B's main B error is
+    reading the wrong column, which R makes it do several times per item.
+  - The distilled 0.8B arms were trained to box one number. R mostly asks for a label, so C and
+    K2 may lose to format rather than to reasoning; the untrained 0.8B (B0) shows that cost.
+  - Hints may help the small model most, or not at all (design §7).
+  - The 4B itself may be weak on some templates. That is either a gold problem or a ceiling for
+    R-d's teacher, and only reading answers tells which.
+- **Sample and scope, fixed here before looking:**
+  1. **Items.** Section R v0 development items (EXP-0019, `exam_r_v0/items_dev.jsonl`) from
+     releases accepted after 2026-06-30 (3,017 base items). Question phrasing p1 only (as B's
+     development items); p2 is kept for R-c.
+  2. **Draw.** 50 base items per template, nine templates. Items are ordered by SHA-256 of
+     `"exp0050:" + id` and taken in round robin over the gold label (label templates) or the
+     variant (R1.7, R1.8, R1.9), so labels are as balanced as the pool allows. An item is
+     skipped if its company already has 2 items of the template or its release already has one.
+     Result (made 2026-11-24, no model run): 450 base items from 202 companies, every template 50,
+     40 to 48 companies each; R1.6 has 7 R&D golds (all the pool allows after the caps). SHA-256 of
+     the base ids in draw order `4e7f3b2fe9e12ef38135cfac7cdcedf9279b0023078a6d5115a247ffbb916258`.
+  3. **Conditions.** *plain*: the 450 base items. *hint*: the 400 base items of R1.1 to R1.8, with
+     `Hint: <the template's hint>` after the question (R1.9 has none). *twin*: every twin of the
+     base items, no hint: 237 flip, 450 hold, 150 mirror; SHA-256 of their ids
+     `43c233e4b245dee036acfb3265b1216f93a44e35165d7cb41aa2f49e0d7661e2`. 1,687 responses per arm.
+- **Method and baseline:**
+  1. **Arms**, the S1 checkpoints already on the drive, no download:
+     - **4B**: Qwen3.5-4B (4-bit, EXP-0014's revision), no tool;
+     - **4I**: the 4B with EXP-0018's calculator, inline rule only;
+     - **B0**: Qwen3.5-0.8B as released, no tool;
+     - **C**: EXP-0014's D3-s1 (its chosen epoch) with the calculator, inline rule only;
+     - **K2**: EXP-0017's K2-s1 (its chosen epoch) with the calculator, inline rule only.
+     One seed per distilled arm. The chained rule is off for every arm (it never fired for the
+     0.8B; EXP-0018).
+  2. **Prompts.** The arm's own instruction from B, with "final number" changed to "final answer":
+     4B, 4I and B0 `Reason briefly, then give the final answer in \boxed{}.`; C and K2 the terse
+     instruction with the same change. No other change.
+  3. **Decoding.** Thinking off, greedy, at most 512 generated tokens for every arm (inserted
+     values free), then EXP-0007's forced answer if no box was written. One MLX job, within
+     12 GiB. Run order B0, C, K2, 4B, 4I; within an arm plain, hint, twin.
+  4. **Grading** by rule (`grade_r`). Labels: the last box, normalised (LaTeX text commands,
+     case and punctuation removed), must equal one option, or contain exactly one option as a
+     phrase; anything else is invalid and wrong. "cannot be determined" anywhere in the box is that
+     answer. Numbers: EXP-0010's `read_number` and the item's tolerance.
+  5. **Score.** Per template: balanced accuracy (the mean of the per-label accuracies) for label
+     templates, accuracy for R1.7, R1.8 and R1.9. The R score is the mean over templates. Raw
+     accuracy is reported beside it.
+  6. **Baselines.** Chance (one over the number of options; a constant answer scores the same
+     balanced accuracy) and the majority class, per label template. Code on XBRL scores 100 by
+     construction.
+  7. **Intervals.** 95%, bootstrap over companies, 10,000 resamples, seed 20261124. Every arm and
+     both sections share the same resamples, so differences are paired.
+  8. **B reference.** Each arm's responses on the 600 B development items, already on disk, graded
+     by `exp0010.grade`: 4B and B0 from EXP-0011, 4I from EXP-0016's run made before the chained
+     rule existed, C from the same EXP-0016 run, K2 from EXP-0017's development run of its chosen
+     epoch. Their caps were B's (160 tokens for C and K2, 256 for B0, 512 for the 4B).
+- **Criteria** (decision rules, not hypothesis tests):
+  1. **R-d gate.** R-d (distillation on R) is put to the owner only if 4I − K2 on the plain R
+     score is at least 5.0 points and the 95% interval lies above 0. Otherwise it is not proposed,
+     and R-c is run as the main result.
+  2. **Item validity.** A template is flagged if the better of 4B and 4I scores below 60 on it,
+     or if more than 20% of its base items are wrong for all five arms. Claude reads up to 10 such
+     items per flagged template, with their responses, and sorts them into wrong gold, ambiguous
+     question, or model error. A template with a wrong gold is fixed forward by a new builder
+     before R-c and stays out of R-c until then.
+  3. **Ceiling and floor** (S1 plan §3, rule 7). A template on which a model scores above 95 or
+     below 20 is dropped from that model's contrasts in R-c.
+  4. **R against B.** For 4I − K2, 4I − C and 4B − B0: the gap on R (plain), the gap on B, and
+     their difference, with intervals. Descriptive; it sets R-c's hypothesis and its margin. The R
+     score is balanced and B's is plain accuracy, so the raw-accuracy gap on R is shown too.
+  5. **R-c size.** For 4I − K2 and 4I − C: d, the share of plain base items on which the two
+     disagree on correctness, and DE, the company-bootstrap variance of the paired difference over
+     its independent variance. n = DE × (z(1 − 0.0125/2) + z(0.80))² × d / 0.03². The larger n is
+     R-c's number of base test items. If it is above 3,000, the owner decides before R-c is
+     pre-registered (the 4B arms cost about 7 seconds an item).
+- **Also reported, descriptive:**
+  - every arm by template and condition; the hint gain (hint − plain, R1.1 to R1.8) with
+    intervals;
+  - twins: accuracy on each kind; on flip twins, the share answered right when the base was
+    right; on hold twins, the share with the same answer as the base; on mirror twins, the
+    contradiction rate (the same label for both questions);
+  - step accuracy on plain base items: the share of the step chain's figures that appear in the
+    response (as shown, or divided or multiplied by 1,000), and right answers written with
+    figures missing;
+  - forced and invalid rates, the share of responses with a calculator call, generated tokens,
+    and the share of responses longer than 160 tokens (the distilled arms' B cap);
+  - seconds per item, hours, peak memory.
+  Claude reads development responses (all of them are development) to explain the gaps.
+- **Contamination label of the result:** clean. Development companies, releases accepted after
+  2026-06-30; the released checkpoints predate that date, and the distilled ones were trained
+  only on pre-cutoff releases of training companies; no model labels any item.
+- **Not in scope:** test items (R-c); the p2 phrasing; a second seed of C and K2; thinking on;
+  a code baseline that reads the release text through the B parser (deferred to R-c, where it is
+  reported beside the models); section A; any training.
+- **Estimated compute:** from B development timings (4B 4.7 s an item at 465 prompt tokens, B0
+  2.7 s, C and K2 0.7 s) scaled to R's longer excerpts: 4B and 4I about 3.3 hours each, B0 about
+  1.6 hours, C and K2 about half an hour each. About 9 hours in all.
+
 ## EXP-0048 — S2 prospective arm: sealed calls on the October and November 2026 releases (2026-11-23)
 
 ### PRE-REGISTRATION

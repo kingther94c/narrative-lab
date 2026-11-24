@@ -2,6 +2,25 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-24 — S1 reasoning exam: R-b pre-registered (EXP-0050)
+
+- **What:** the headroom step of section R, written as a pre-registration with its script
+  (`exp0050_s1r_headroom.py`) and its development draw: 450 base items (50 per template, labels
+  balanced as far as the pool allows, 202 companies) and their 837 twins, in three conditions
+  (plain, with a one-line hint, twins). Five arms: the 4B with and without the calculator, the
+  untrained 0.8B, C and K2. Not yet run.
+- **Why:** the owner asked for it after R-a ("A"). R-b decides whether R-d (distillation on R)
+  is worth proposing, flags templates whose gold may be wrong, and sizes R-c's test.
+- **Decision rules fixed before any model runs:** R-d is put to the owner only if 4I − K2 is at
+  least 5 points on the plain R score with its 95% interval above 0 (on B development items the
+  same gap is 1.5); a template is checked by hand if the 4B scores below 60 on it or every arm
+  misses more than 20% of it; R-c's size comes from the disagreement rate, with the owner
+  deciding if it passes 3,000 base items.
+- **One change to the prompts:** "final number" becomes "final answer" in each arm's B
+  instruction, since most R items want a label.
+- **Assets affected:** registry (EXP-0050); S1 roadmap row; reasoning exam design §6; experiments
+  README.
+
 ## 2026-11-24 — S2: EXP-0048's A1 forecasts made and sealed (interim)
 
 - **What:** 180 A1 forecasts on the October and November 2026 releases (every canary present,

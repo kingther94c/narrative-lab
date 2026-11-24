@@ -202,6 +202,10 @@ twins), dev 4,289 from 295, train 3,352 from 621; every template has at least 26
 companies. Flip twins swap the two years in the column headings rather than edit one figure
 (registry entry for why). Yield per template and losses in the registry.
 
+**R-b pre-registered** (EXP-0050, 2026-11-24, not yet run): 450 development base items, 50 per
+template, plus 837 twins; five arms (4B, 4I, B0, C, K2); R-d is put to the owner only if 4I − K2
+is at least 5 points on the plain R score with its interval above 0.
+
 The MLX machine is S1's until 2026-12-15. R-a to R-c fit in that window. R-d fits only if R-b
 shows a gap worth closing.
 
