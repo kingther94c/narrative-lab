@@ -2,6 +2,21 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-24 — Owner: EXP-0047 and EXP-0048 approved; Loughran-McDonald dictionary downloaded
+
+- **What:** the owner approved the call pilot (EXP-0047) and the prospective arm (EXP-0048), the
+  download of a word list for code-scored tone, and committing ("呃，批准，并且资料下载，然后呃也可以
+  交替", the last word read as 提交, commit).
+- **Download:** Loughran-McDonald Master Dictionary 1993-2025 (CSV, updated March 2026), from the
+  link on sraf.nd.edu (a Google Drive file); 9.1 MB, 86,553 words with sentiment flags; SHA-256
+  e2d1328682bab7d2187684fb9f5420bb730401c9eefc00daf835edd203f4859d. Stored on the drive at
+  `corpora/lexicons/loughran_mcdonald/`, not in git. The page states the lists are free for
+  academic research and asks for a licence for commercial use; the owner is told.
+- **How it is applied:** EXP-0047 criterion 7 (exploratory, pre-registered before any call text
+  is scored): tone of management's prepared remarks against the release, and negative and
+  uncertainty shares in management's answers.
+- **Assets affected:** experiment registry (EXP-0047, EXP-0048).
+
 ## 2026-11-24 — S1-c calculator fixed (EXP-0018): the 4B with the calculator is level with the 4B without it on calculations
 
 - **What:** the 4B rerun with the calculator's inline rule only (4I), on EXP-0016's 3,000 test
@@ -14,6 +29,22 @@ Newest first. What changed, why, on what evidence, and what it affects.
   behind on calculations; EXP-0016's and EXP-0017's gaps of 2.6 and 2.0 were flattered by the
   bug (secondary re-analyses; the registered verdicts stand).
 - **Assets affected:** S1 roadmap row; the comparator for the reasoning exam (section R).
+
+## 2026-11-23 — S2: daily run unblocked; call texts in one form; drafts of the call pilot and the prospective arm
+
+- **What:** the owner asked that the daily scheduled run need no permission prompt and that work
+  go on meanwhile ("能不能怎么改一下，让我们它可以不需要经过确认权限确认……看看还有什么其他可以做的
+  啊，不要干等着"). The first scheduled run (16:27 local) had stopped on two prompts and sent
+  nothing. The two exact commands are now allowed in the project's local Claude Code settings
+  (`.claude/settings.local.json`, kept out of git through `.git/info/exclude`); the task's prompt
+  asks for exactly those strings. A hand run at 13:40 UTC was refused by Alpha Vantage: its count
+  runs by UTC day or a rolling 24 hours, which the 08:20 UTC schedule fits.
+- **Done meanwhile:** EXP-0045 puts call text from both sources into one form (58 clean documents,
+  Q&A found in every full transcript); EXP-0046 fixes EXP-0043's next-quarter targets, which had
+  taken the quarter before (found before any request; 184 October-November releases, all on the
+  drive). Drafts for the owner: EXP-0047 (does the call add to the release, clean quarter, about
+  450 calls) and EXP-0048 (prospective arm, sealed before 2027-01-10).
+- **Assets affected:** experiment registry (EXP-0044 to 0048); S2 call module.
 
 ## 2026-11-23 — Owner: a reasoning exam for S1 (section R), and EXP-0018 approved
 

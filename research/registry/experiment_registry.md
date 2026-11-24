@@ -362,8 +362,128 @@ can be regenerated.
   echoes stays in a log. The daily run is a scheduled task at 16:20 local time (UTC+8, 08:20
   UTC): after Pacific midnight and 24 hours from the previous run, so it fits a Pacific day, a
   UTC day or a rolling window; a refusal stops the run and costs one ledger line.
+  **2026-11-23 13:40 UTC:** a run by hand was refused again, after Pacific midnight: Alpha
+  Vantage counts by UTC day or a rolling 24 hours, both of which the 08:20 UTC run fits. The
+  scrub removed the key the refusal quoted. The scheduled run of 08:27 UTC the same day sent no
+  request: it stopped on Claude Code's permission prompt; the two commands are now allowed in
+  the project's local settings (not in git).
+- **EXP-0045** — S2-a call texts in one form (engineering; no model, no network). For every
+  EXP-0043 target with call text (clean, next and old stages), one document: Alpha Vantage's
+  text where it passed EXP-0043's tests, else EXP-0039's IR transcript (clean stage only), else
+  EXP-0039's prepared remarks, CFO commentary or letter, marked partial. Alpha Vantage turns are
+  rendered as "[name, title]: text" without its sentiment scores; the questions-and-answers part
+  starts at the operator turn before the first turn whose title names an analyst. IR text loses
+  lines of vendor boilerplate (copyright, page numbers, vendor headers) and a closing disclaimer;
+  its questions-and-answers part starts at a section heading ("Question and Answer", "Questions
+  and Answers") or else at the operator's first-question line. Each document records its source,
+  whether it is partial, the length of each part and a token estimate (characters / 4).
+  `check` counts documents by stage and source, the share with a question-and-answers part,
+  boilerplate left over, and prints ten documents' openings drawn by seed 20261126 for a hand
+  check. Rebuilt as collection goes on. Whether raw call text reaches the PM is decided per
+  experiment: skill v1 Part D gives none on replayed (old) history. Output `s2/exp0045/`, drive
+  only (rule 12).
+  Development builds, 2026-11-23 (the first three on the drive, superseded): IR files that came
+  out of the PDF as a few lines of thousands of characters lost whole lines to the boilerplate
+  rule (Omnicom and LCI emptied); fixed by removing the phrases inside lines over 300 characters.
+  Also added before the record build: NFKC (ligatures), spaced headings ("Q U E S T I O N S"),
+  four more phrases that open the Q&A searched after the first 15% of the text, and a fallback
+  for files that hold the Q&A session only (Hershey, Snap). Record build the same day: 58
+  documents for clean episodes (18 Alpha Vantage, 35 IR transcripts, 5 partial); every full
+  transcript has a Q&A part; no boilerplate left; median 13,300 tokens, largest 26,100.
+- **EXP-0046** — S2-a fix forward of EXP-0043's next-quarter targets. EXP-0043's code took the
+  release whose quarter ended 60 to 120 days *before* the clean quarter (the arguments of
+  `exp0005.days` reversed), so its 183 "next" rows carry the April-to-June 2026 releases'
+  dates, accessions and quarter ends; their Alpha Vantage labels (the following fiscal
+  quarter) were right. Found before any next-stage request. This script rewrites
+  `targets_all.jsonl` with the next rows rebuilt the intended way (quarter end 60 to 120 days
+  after; 184 of 187, missing MWH, ARXS, BAM), keeps the clean and old rows and their order, and
+  saves EXP-0043's file as `targets_all_exp0043.jsonl`. EXP-0044's daily fetch reads the
+  rewritten file.
 
 ## Entries
+
+## EXP-0048 — S2 prospective arm: sealed calls on the October and November 2026 releases (2026-11-23)
+
+### PRE-REGISTRATION
+- **Status:** approved by the owner 2026-11-24 ("呃，批准"); not yet run, no call made. The
+  forecasts are made once the next-stage collection is done (about 2026-12-08) and sealed before
+  2027-01-10.
+- **Claim under test:** on a quarter whose outcome does not yet exist anywhere, (1) the PM with
+  the release and code facts (EXP-0036's A1) beats the code baseline, as it did on the July and
+  August releases; (2) the call adds to it, as EXP-0047 asks on the clean quarter. A second clean
+  quarter also separates "after the cutoff" from "this particular quarter" (roadmap item 11).
+- **Why the answer is not obvious:** EXP-0036's clean quarter is one quarter; its edge over code
+  (0.72 against 0.59) may belong to that quarter's conditions.
+- **Sample, fixed here before looking:** EXP-0046's 184 "next" episodes (training and
+  development companies; the release after each clean one, filed 2026-10-01 to 2026-11-11, all
+  on the drive). A1 for all; A1C where EXP-0045 holds a full call document at sealing time.
+- **Calls:** A1 and A1C exactly as EXP-0047 (same skill block, questions and transport), one item
+  per call; at most 368. Code baseline: EXP-0036's per-label logistic models, refitted only on
+  outcomes filed before 2026-11-12.
+- **Sealing:** forecasts stay on the drive; a manifest of SHA-256 hashes (one per forecast file,
+  plus the prompt and skill hashes) is committed and pushed before 2027-01-10 and before the
+  first next release of any company in the sample; a company that reports before the push is
+  dropped and listed. Sealed together with EXP-0001 if that is ready.
+- **Labels:** L1 to L4 as EXP-0036, from the first filing of the December 2026 quarter (a company
+  facts snapshot after the 10-K season, about March 2027).
+- **Criteria (scored once, after labels exist):** 1. A1 minus code baseline, L1, accuracy and
+  Brier, 90% bootstrap intervals (episodes, seed 20261127). 2. A1C minus A1, paired, L1 (primary
+  of the call question on this quarter), L2 to L4 with Benjamini-Hochberg q = 0.10. 3. The
+  same differences on EXP-0036's clean quarter beside these, descriptive.
+- **Contamination label of the result:** prospective.
+- **Not in scope:** test companies (Claude does not read post-cutoff test items; a scripted path
+  would be needed); price reactions.
+
+## EXP-0047 — S2-b: does the earnings call add to the release? Clean-quarter pilot (2026-11-23)
+
+### PRE-REGISTRATION
+- **Status:** approved by the owner 2026-11-24 ("呃，批准"); not yet run, no call made. Runs
+  once the clean stage of the Alpha Vantage collection is done (about 2026-11-30).
+- **Claim under test:** (1) adding the call (prepared remarks and Q&A, EXP-0045's document) to
+  EXP-0036's A1 prompt raises the PM's readout on clean episodes; (2) exploratory: skill v1 Part D
+  features read from the call relate to next-quarter outcomes.
+- **Why the answer is not obvious:** the release already holds the numbers and most guidance;
+  the call adds outlook talk and answers under questioning, which the literature finds
+  informative (stream 11: `druz-2020`, `bochkay-2020`), but a prompt of 30,000 to 40,000 tokens
+  may dilute rather than add (stream 12), and EXP-0036's code facts moved the revenue call by
+  only +0.006.
+- **Sample, fixed here before looking:** EXP-0036's 197 clean episodes that have a full call
+  document (not partial) in EXP-0045 at the run; now 53, expected about 150. Partial documents
+  (prepared remarks or letters only, 5 now) are run and reported apart.
+- **Calls (Opus through EXP-0027's isolated headless transport, one item per call):**
+  - A1, re-run: EXP-0036's A1 prompt unchanged, so that both arms come from one run.
+  - A1C: A1 plus, after the release, "The earnings call (transcript):" and the call document.
+  - RC, reader on the call (PM definition, no probability asked): Part D form, each answer with
+    a quote checked against the text: D1 management more downbeat than the release's numbers /
+    in line / more upbeat; D2 extreme negative words used by management (quotes); D3 answers that
+    read as scripted (share of answers); D4 analysts' tone (negative / neutral / positive); D5
+    direct refusals to answer (count, with quotes).
+  About 450 calls at about 150 episodes.
+- **Labels:** L1 to L4 as EXP-0036 (L1 primary).
+- **Criteria (readout = probability on the realised direction; 90% intervals from 10,000
+  bootstrap draws of episodes, seed 20261128):**
+  1. Primary, L1: A1C minus A1, paired. "Helps" if the interval is above 0, "hurts" if below,
+     otherwise undecided.
+  2. L2 to L4: the same, Benjamini-Hochberg across the three (q = 0.10).
+  3. Accuracy and Brier of A1, A1C and the code baseline, per label.
+  4. Run-to-run noise: A1 here against EXP-0036's A1 on the same episodes (agreement and mean
+     absolute probability difference), descriptive.
+  5. Slices, descriptive: source (Alpha Vantage, IR file), size (250 largest or not).
+  6. Exploratory: D1 and D2 against the L1 and L4 outcomes; D5 against the spread of the PM's
+     probabilities.
+  7. Exploratory, scored by code with the Loughran-McDonald Master Dictionary 1993-2025 (owner,
+     2026-11-24; file SHA-256 e2d13286...4859d): words upper-cased and matched whole; tone =
+     (positive - negative) / words. "Gloom beyond the release" = tone of management's prepared
+     remarks minus tone of the release text; also the negative and uncertainty shares of
+     management's answers in the Q&A (Alpha Vantage documents, where speakers are labelled).
+     Each against the L1 and L4 outcomes (difference in outcome rates between the lowest and the
+     highest third) and against A1C minus A1 per episode; reported beside the reader's D1 and D2.
+     No threshold; nothing from it feeds the primary.
+- **Contamination label of the result:** clean (vendor-stated cutoff).
+- **Power:** at about 150 episodes a paired difference of about 0.03 is detectable; at the 53
+  available now, about 0.06.
+- **Not in scope:** old (replayed) episodes: skill v1 Part D gives no raw call text there, since
+  style re-identifies the company (their code-scored tone may be added later as a feature).
 
 ## EXP-0036 — S2-b: code-stated facts, the analyst skill, and a blinded brief, on clean episodes (2026-11-22)
 
