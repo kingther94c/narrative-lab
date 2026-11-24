@@ -2,6 +2,22 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-24 — S1 reasoning exam: section R items built (EXP-0019, step R-a)
+
+- **What:** nine multi-fact templates (R1.1 to R1.9) and their twins, generated from the
+  EarningsExam releases under the same two-source rule, with 800-token excerpts. Test: 16,329
+  base items from 1,548 companies, 40,538 with twins; dev 4,289 (295 companies); train 3,352
+  (621). Claude read about 20 train and dev items and found no wrong gold; test counts only.
+- **Departures from the design draft:** flip twins swap the two years in the column headings
+  (every column stays consistent) instead of editing one figure and its totals; R1.4 does not
+  verify the diluted share count.
+- **Why it matters:** every template has at least 260 test companies, more than the design's
+  target of 1,500 items from 400 companies; labels are unbalanced, so sampling per template is
+  fixed in the next pre-registration. Excerpts reach 800 tokens (median 676 on test), so the
+  memory check for a 1,024-token training sequence stays a precondition of R-d.
+- **Assets affected:** S1 roadmap row; the reasoning exam design (§6); the next step, R-b
+  (headroom on dev), to be pre-registered.
+
 ## 2026-11-24 — Owner: EXP-0047 and EXP-0048 approved; Loughran-McDonald dictionary downloaded
 
 - **What:** the owner approved the call pilot (EXP-0047) and the prospective arm (EXP-0048), the

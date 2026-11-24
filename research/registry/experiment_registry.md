@@ -83,6 +83,47 @@ can be regenerated.
   exploratory check of wrong B2 answers (does the student's own one-line expression evaluate to
   the gold?). Read-only, no model run, counts only; results in the EXP-0014 verdict. Run
   2026-11-20.
+- **EXP-0019** — EarningsExam section R v0 generator, step R-a of the S1 reasoning exam
+  (`research/design/s1_reasoning_exam.md`; owner, 2026-11-23: decisions D1 to D5 as recommended;
+  2026-11-24: "开始"). `exp0019_s1r_build.py`. An engineering measurement with no hypothesis and
+  no verdict; no model run. It reuses EarningsExam's releases, sides, parser, XBRL period and
+  two-source rule (every figure shown in a labelled row at the table's scale and equal to XBRL's
+  first-filed value; prior-year figures in the same row and equal to XBRL's prior-year value), adds
+  seven line items (cost of revenue, R&D, SG&A, total operating expenses, total costs and
+  expenses, income before taxes), and raises the excerpt budget to 800 tokens (D2). Templates
+  R1.1 to R1.9 and twins (flip by swapping the two years in the column headings; hold by an added
+  employee-count row; mirror by swapping the question's subjects), with every rule as written in
+  the script's docstring. Two departures from the design: the flip twin swaps the period labels
+  instead of editing one figure and its totals (that cannot be done reliably in raw release
+  text; a swap keeps every column consistent), and R1.4 uses EPS and net income without
+  verifying the diluted share count. Every R question ends with the same "cannot be determined"
+  sentence, whatever the gold.
+  Run 2026-11-24 (fixed rule and swap cases pass). Claude read about 20 train and development
+  items across every template and twin kind and found no wrong gold; two fixes were made before
+  the test side was built (growth questions now say a smaller decline counts as faster growth;
+  the hold row moved from a random position, where it could split a subtotal, to the end of the
+  table). Yield, base items (companies), with twins in all:
+
+  | Side | Base items | Companies | Releases | All items with twins |
+  |---|---|---|---|---|
+  | train | 3,352 | 621 | 621 | 8,814 |
+  | dev | 4,289 | 295 | 713 | 10,903 |
+  | test (counts only) | 16,329 | 1,548 | 2,654 | 40,538 |
+
+  Test base items by template: R1.1 2,923 (975 companies), R1.2 1,203 (733), R1.3 520 (323),
+  R1.4 376 (260), R1.5 684 (465), R1.6 617 (382), R1.7 4,487 (1,252), R1.8 1,916 (828), R1.9
+  3,603 (1,204). Labels are unbalanced (test R1.1: expanded 1,597, contracted 998, flat 328; R1.2:
+  both rose 707 of 1,203; R1.6: R&D 28 of 617), so balanced sampling per template is fixed in the
+  pre-registration that uses them. Test excerpts: median 676 tokens, 90th percentile 791. The
+  main losses, of 4,265 test releases: a figure not found in a labelled row at XBRL's value
+  (revenue 919, net income 1,070, income before taxes 1,064), losses
+  in either year (R1.4, R1.5), excerpts over 800 tokens or without a column heading (R1.1 loses
+  1,403 candidates on test), heading years not symmetric (no flip twin; 349 for R1.1 on test).
+  The identity checker found no twin to reject; on base excerpts it applies to about 40% and
+  fails on 4%, all parser artefacts in the cases read (footnote markers read as −1, a component
+  line matched before the total), not gold errors, since gold rows are matched to XBRL. Output
+  `s1/exam_r_v0/items_{train,dev,test}.jsonl`, `yield_*.json`; SHA-256 of the test ids in file
+  order `a281dcf6b9e9d3d54ad7633b1619ea41620601cfdc113df5c56f26f56a415c96`.
 - **EXP-0030 to EXP-0039** — held for sub-study S2 as well (2026-11-21; the first block is used up).
 - **EXP-0020 to EXP-0029** — held for sub-study S2 (`research/design/substudy_s2_blind_replay.md`),
   so that S1 and S2, worked on in separate sessions, do not take the same number. S1 continues

@@ -197,6 +197,11 @@ close to S2's ground, so S2 should be consulted before it is built.
 | R-d | Distillation on R: 4B-written labels on train R items, held-out families on test, short and mixed reasoning chains (`li-2025`) | MLX | about 20–25 h |
 | R-e | R4 batch 1 (second quarter to third quarter), descriptive, against baselines | CPU + MLX | about 4 h |
 
+**R-a done** (EXP-0019, 2026-11-24): test 16,329 base items from 1,548 companies (40,538 with
+twins), dev 4,289 from 295, train 3,352 from 621; every template has at least 260 test
+companies. Flip twins swap the two years in the column headings rather than edit one figure
+(registry entry for why). Yield per template and losses in the registry.
+
 The MLX machine is S1's until 2026-12-15. R-a to R-c fit in that window. R-d fits only if R-b
 shows a gap worth closing.
 
