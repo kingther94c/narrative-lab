@@ -2,6 +2,19 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-24 — S1-c calculator fixed (EXP-0018): the 4B with the calculator is level with the 4B without it on calculations
+
+- **What:** the 4B rerun with the calculator's inline rule only (4I), on EXP-0016's 3,000 test
+  items, after a reproduction gate (50 of 50 identical). B2 90.8% against 4C's 87.9% (HE1
+  supported, +3.0 [+1.9, +4.1]) and the tool-free 4B's 90.7% (HE2 non-inferior). The B2 items
+  lost to the doubled ×100 fall from 41 to 0. The 1.3-point cost on lookups stays: the 4B writes
+  unit conversions it does not mean, and the calculator evaluates them.
+- **Why it matters:** 4I replaces 4C as S1's 4B-with-calculator comparator. Against it, the
+  distilled 0.8B with the calculator is 3.3 (K2) to 4.0 (C) points behind overall and 8.6 to 11.7
+  behind on calculations; EXP-0016's and EXP-0017's gaps of 2.6 and 2.0 were flattered by the
+  bug (secondary re-analyses; the registered verdicts stand).
+- **Assets affected:** S1 roadmap row; the comparator for the reasoning exam (section R).
+
 ## 2026-11-23 — Owner: a reasoning exam for S1 (section R), and EXP-0018 approved
 
 - **What:** the owner holds that lookups and arithmetic are what code already does and that an

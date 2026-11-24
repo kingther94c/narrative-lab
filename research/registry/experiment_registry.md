@@ -1282,7 +1282,8 @@ can be regenerated.
   cases unchanged, every chained case now finds nothing), and its scoring was dry-run with 4C's
   test responses standing in for 4I (it reproduces EXP-0016's 4C − 4B figures). No model is run
   before approval, and nothing on a test item before the commit is pushed. EXP-0017's K2 test
-  files now exist, so the K2 − 4I re-analysis is computed.
+  files now exist, so the K2 − 4I re-analysis is computed. Committed and pushed as `45a2899`;
+  run 2026-11-23 to 24; verdict below.
 - **What was found, post hoc, on EXP-0016's responses.** Claude read the 25 development items
   where 4C and the tool-free 4B disagree. On test, the same comparison was made by program,
   counts only, with the detectors that `mechanisms()` in this experiment's script fixes; its
@@ -1356,6 +1357,55 @@ can be regenerated.
   - new items.
 - **Estimated compute:** reproduction gate about 10 minutes; test about 4.2 hours (4C took 4 h 12 m
   on the same items); section A about 10 minutes. About 4.5 hours, after EXP-0017.
+
+### VERDICT
+- **Pre-registration commit:** `45a2899` (pushed before 4I saw a test item). Run 2026-11-23 21:34
+  to 2026-11-24 02:18 by `queue`, every step complete: reproduction gate 4 minutes, test 4.1
+  hours, section A 35 minutes. Output: `s1/exp0018/scores.json`.
+- **Reproduction gate passed:** 50 of 50 development responses identical to `dev_v1/4C.jsonl`,
+  character for character (gate 48).
+- **Result** (EXP-0016's 3,000 test items, accuracy %; intervals 97.5%, company bootstrap,
+  10,000 resamples):
+
+  | Arm | All | B1 (1,650) | B2 (1,350) |
+  |---|---|---|---|
+  | 4B, no tool | 91.3 | 91.9 | 90.7 |
+  | 4C: 4B + calculator, both rules | 89.4 | 90.6 | 87.9 |
+  | 4I: 4B + calculator, inline rule only | 90.7 | 90.6 | 90.8 |
+
+  1. **HE1 supported.** 4I − 4C on B2 = +3.0 [+1.9, +4.1], one-sided p < 0.0001. Without the
+     chained rule the calculator no longer costs the 4B its B2 points.
+  2. **HE2 non-inferior.** 4I − 4B on B2 = +0.1 [−0.2, +0.6]; the lower end is above −1.5.
+  3. **Mechanisms**, items against the tool-free 4B: on B2, 4C lost 44 and gained 6 (x100 twice
+     in 41 of the 44 lost); 4I lost 2 and gained 4, none with x100 twice. On B1, 4I and 4C are
+     identical item for item (the chained rule never fired there): lost 43, gained 22; literal
+     unit conversion in 40 of the 43 lost, extra rounding in 38.
+- **Also reported:**
+  1. 4I − 4B on all items −0.6 [−1.3, 0.0], on B1 −1.3 [−2.4, −0.2]: the B1 cost is the 4B's own
+     (it writes a conversion it does not mean), not addressed here. 4I − 4C on all items +1.3
+     [+0.9, +1.8], on B1 0.0.
+  2. **The fix is in revenue growth:** by B2 metric, 4I (4C, 4B): revenue growth 94.7 (86.1,
+     95.0), net margin 95.2 (92.9, 95.2), operating margin 94.1 (94.1, 92.8), gross margin 97.4
+     (97.4, 97.4), EPS change 83.4 (83.0, 83.2).
+  3. **4I calls the calculator on 47.4% of B2 items** (4C 97.9%; 0.59 calls each against 1.5).
+     On the other half the 4B's layout is not caught by the inline rule and it does its own
+     arithmetic, as the pre-registration expected; that costs nothing here.
+  4. Forced 2.3%, invalid 0.1% (4B 2.3 and 0.1, 4C 3.6 and 0.1). B2 errors of 4I: no call 57,
+     wrong setup from excerpt numbers 48, copying or rounding 7, operand not in the excerpt 6,
+     sign or unit 4, no number 2. Section A: FinQA 66, CFA-Easy 68, FinanceIQ 50 (4C 65, 68, 49).
+  5. **Re-analyses, secondary** (they never replace the pre-registered verdicts): EXP-0016's HC2
+     with 4I, C − 4I = −4.0 [−5.7, −2.2] on all items, −11.7 [−14.3, −9.2] on B2 (registered: C −
+     4C −2.6). EXP-0017's HD3 with 4I, K2 − 4I = −3.3 [−4.9, −1.7] on all items, −8.6 [−11.1,
+     −6.2] on B2 (registered: K2 − 4C −2.0). Both stay inconclusive by their own margins of −3.0,
+     but the point estimates now lie beyond the margin.
+- **Leakage sign-off:** no model labelled a test item; scripts printed counts and rates only;
+  Claude read development responses only. Clean.
+- **Verdict:** HE1 supported, HE2 non-inferior. With the chained rule off, the 4B with the
+  calculator matches the tool-free 4B on calculations (90.8 against 90.7) and keeps a 1.3-point
+  cost on lookups that comes from its own writing. 4I is S1's 4B-with-calculator comparator from
+  here on. Against it, the distilled 0.8B with the calculator is 3.3 to 4.0 points behind
+  overall and 8.6 to 11.7 behind on calculations; the earlier gaps of 2.0 to 2.6 were flattered
+  by the bug.
 
 ## EXP-0017 — S1-c calculator distillation: the 4B's answers with the calculator, and more margins and losses (2026-11-22)
 

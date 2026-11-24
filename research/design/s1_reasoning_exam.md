@@ -222,8 +222,18 @@ Decided 2026-11-23, every recommended option ("D 全按推荐"): **D1** R1 + R2,
 descriptive, R5 later; **D2** excerpt cap raised to about 800 tokens for R items, with a memory
 check of a 1,024-token training sequence before R-d; **D3** no segments in v1; **D4** licence
 check first, then download FinIndices and XFinBench if the licences allow research use; **D5**
-S1 takes EXP-0019, then the block EXP-0050 to EXP-0059 (registry, Reserved). The options as put
-to the owner:
+S1 takes EXP-0019, then the block EXP-0050 to EXP-0059 (registry, Reserved).
+
+Licence check for D4 (2026-11-23, web pages only, nothing downloaded):
+- **XFinBench:** MIT (Hugging Face `Zhihan/XFinBench` and the GitHub LICENSE), not gated; 4,235
+  items (validation 1,000, test 3,235), about 9.5 MB; test answers released 2026-02-04; the
+  source of the questions is not stated. Download pending the owner's go-ahead on the file.
+- **FinIndices:** no licence stated (Hugging Face `Findata/Finindice`, empty README, no code
+  repository found); 640 test rows, 27.8 MB, answers public; the statements are Chinese A-share
+  companies'. With no licence, it is not downloaded; it could only be cited, or the authors
+  asked.
+
+The options as put to the owner:
 
 - **D1. Families in v1:** R1 + R2 (recommended), with R4 batch 1 descriptive and R5 later.
 - **D2. Excerpt cap:** R1 items need two to three tables (the income statement, sometimes the
