@@ -2,6 +2,20 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-25 — S1 reasoning exam: R-b run (EXP-0050)
+
+- **What:** the five arms on 450 development R base items and 837 twins, with and without hints.
+  Plain R score: 4B 82.0, 4I 82.2, untrained 0.8B 55.9, C 0.9, K2 0.7.
+- **Finding:** the distilled 0.8B checkpoints box a number on 291 and 300 of the 300 label
+  items, in the layout they were trained on, so the R-d gate (4I − K2 = 81.5) passes on format,
+  not reasoning. Against the untrained 0.8B the 4B is 26 points ahead on R and 34 on B. No wrong
+  gold; R1.7 is at every arm's floor because its escape clause reads as "not stated". Hints help
+  the 4B on R1.7 only and do not help the 0.8B. R-c's size rule gives about 9,400 base items.
+- **Why it matters:** R-c cannot use C and K2 as trained (floor on every template), and an R-d
+  run would need a control for learning the answer format.
+- **Assets affected:** registry (EXP-0050 verdict); S1 roadmap row; reasoning exam design §6;
+  experiments README. Owner decisions pending: R-c's arms, size and template fixes; R-d.
+
 ## 2026-11-24 — S1 reasoning exam: R-b pre-registered (EXP-0050)
 
 - **What:** the headroom step of section R, written as a pre-registration with its script

@@ -576,6 +576,101 @@ can be regenerated.
   2.7 s, C and K2 0.7 s) scaled to R's longer excerpts: 4B and 4I about 3.3 hours each, B0 about
   1.6 hours, C and K2 about half an hour each. About 9 hours in all.
 
+### VERDICT
+- **Pre-registration commit:** `43cb4f5` (pushed before any arm ran). Run 2026-11-24 18:00 to
+  2026-11-25 04:10 by `queue`, every arm complete (1,687 responses each). 10.1 hours of
+  generation, against 9 estimated (B0 2.1, C 0.5, K2 0.5, 4B 3.3, 4I 3.7); peak 3.5 GiB. Output:
+  `s1/exp0050/scores.json`.
+- **Result** (plain R score: mean over the nine templates of balanced accuracy or accuracy, %;
+  95% intervals, company bootstrap, 10,000 resamples; B = the arm's accuracy on B development
+  items, from disk):
+
+  | Arm | R, plain | Raw accuracy | Hint − plain (R1.1–R1.8) | B |
+  |---|---|---|---|---|
+  | B0: 0.8B as released | 55.9 [51.5, 60.2] | 55.8 | +1.9 [−3.8, +7.7] | 57.2 |
+  | C: D3-s1 + calculator | 0.9 [0.2, 1.8] | 0.9 | +0.2 [−0.7, +1.3] | 87.5 |
+  | K2: K2-s1 + calculator | 0.7 [0.0, 1.5] | 0.7 | −0.5 [−1.3, 0.0] | 89.3 |
+  | 4B, no tool | 82.0 [79.3, 84.6] | 82.0 | +8.5 [+4.7, +12.1] | 91.2 |
+  | 4I: 4B + calculator | 82.2 [79.5, 84.9] | 82.2 | +11.0 [+7.6, +14.3] | 90.8 |
+
+  By template, plain (B0 / 4B / 4I; C and K2 are 0 on every template but R1.7, where they score 8
+  and 6): R1.1 margin direction 63.6 / 89.7 / 91.8; R1.2 operating leverage 52.4 / 100 / 100;
+  R1.3 cost against sales 68 / 84 / 82; R1.4 EPS against net income 66 / 80 / 82; R1.5 tax line
+  50 / 92 / 88; R1.6 biggest mover 77.4 / 100 / 100; R1.7 derived period 2 / 10 / 10; R1.8
+  margin change 56 / 84 / 88; R1.9 not answerable 68 / 98 / 98.
+- **Criteria:**
+  1. **R-d gate: passes by its rule, but the gap is format, not reasoning.** 4I − K2 = 81.5
+     [78.9, 84.2], above 5.0 with the interval above 0, so R-d is put to the owner. But C and K2
+     put a number in the box on 291 and 300 of the 300 label base items (73.0% and 73.6% of all
+     their responses are invalid). Every response keeps the layout they were trained on (`Row;
+     Column; Calculation; \boxed{number}`): on R1.8 they box a margin level instead of its change,
+     on R1.9 a figure instead of "cannot be determined" (0 of 50). Distillation on B fixed the
+     0.8B into one answer shape; the hint does not move it. The gate number therefore measures
+     that, and says nothing about how far a small model is behind on reasoning. The untrained
+     0.8B is the reasoning reference: 4B − B0 = 26.1 [20.9, 31.4] (registered pair); 4I − B0 =
+     26.3 (exploratory).
+  2. **Item validity: R1.7 flagged; no wrong gold found.** R1.7 is flagged on both counts (best
+     of 4B and 4I 10.0; 43 of 50 base items wrong for all five arms). Ten of the 43 were read with
+     4I's plain and hint responses: 0 wrong gold (each gold is the year-to-date total minus the
+     quarter shown, equal to the XBRL fact for the earlier period), 9 ambiguous question, 1 model
+     error. In the 9 the 4B answers "cannot be determined" because no column shows the asked
+     period: it reads the escape clause, which R1.7 shares with R1.9, as "not stated" rather
+     than "not derivable". With the hint it does the subtraction (80 and 82 on the template). The
+     model error takes the year-ago quarter for the first quarter. Over all 50 R1.7 items the 4B
+     answers "cannot be determined" on 41 (4I 40, B0 31). With no wrong gold, no fix-forward is
+     required by the rule. Not flagged but read as well: R1.4's 5 all-wrong items (golds right;
+     the 4I reads another EPS column in 3, inverts the comparison of two declines in 1, writes no
+     box in 1) and R1.8's 4 (golds right by arithmetic; 3 are companies with almost no revenue,
+     e.g. revenue of $1.6 million against an operating loss of $149 million, where the gold
+     change is −3,684.8, −874.2 or +11,995.6 points and the 4I drops the ×100; the fourth reads
+     another period column).
+  3. **Ceiling and floor.** R1.7 is at the floor for every arm. R1.2, R1.6 and R1.9 are at the
+     ceiling for 4B and 4I. C and K2 are at the floor on all nine templates, so in their present
+     form they have no template left for R-c's contrasts. B0's only floor is R1.7. For 4B and 4I
+     against B0, R-c would keep R1.1, R1.3, R1.4, R1.5 and R1.8.
+  4. **R against B** (gap on R plain; gap on B; R − B):
+     - 4I − K2: 81.5 [78.9, 84.2] (raw 81.6); 1.5 [−1.5, 4.5]; 80.0 [76.2, 83.9].
+     - 4I − C: 81.3 [78.7, 83.9] (raw 81.3); 3.3 [0.0, 6.6]; 78.0 [73.9, 82.1].
+     - 4B − B0: 26.1 [20.9, 31.4] (raw 26.2); 34.0 [29.7, 38.2]; −7.9 [−14.5, −1.2].
+     For the two untrained models R does not widen the gap that B shows. B0's B score was made
+     under a 256-token cap and its R score under 512, which favours B0 on R.
+  5. **R-c size: above 3,000, so the owner decides.** 4I − K2: d 0.820, DE 0.92, n 9,357. 4I − C:
+     d 0.818, DE 0.92, n 9,349. The rule sizes a test for a 3-point difference, and d is high
+     because the distilled arms fail on format. Exploratory, for the owner's decision: 4I − B0
+     d 0.353, DE 1.10, n 4,796 (4B − B0 n 5,165). The 4B arms take 7 to 8 seconds an item.
+- **Also reported:**
+  1. **Hints help the 4B on one template only.** Almost all of the hint gain is R1.7 (4I 10 →
+     80). Without R1.7 (exploratory) the gain is +2.6 for 4I, −0.6 for 4B and −1.0 for B0. The
+     hint costs B0 16 points on R1.8 (56 → 40) and the 4B 8 (84 → 76). Design §7's working
+     hypothesis (hints keep the 0.8B close to the 4B) gets no support.
+  2. **Twins.** On flip twins (years swapped) the share right when the base was right: 4I 77.9,
+     4B 78.8, B0 49.7. Hold twins (an employee row added), same answer as the base: 4I 92.2, 4B
+     91.6, B0 71.3. Mirror twins (subjects swapped), the same label given to both: 4I 15.3%, 4B
+     17.3%, B0 38.0%. B0's answers follow the figures about half the time; the 4B's flip accuracy
+     is 13 points under its base accuracy (76.4 against 89.9).
+  3. **Steps.** Share of the step chain's figures written in the response: 4I 88.2%, 4B 87.7%,
+     B0 59.2%, C 31.8%, K2 35.1%. Right answers with a figure missing: B0 101 of 217, 4B 40 of
+     320, 4I 36 of 321. About half of B0's right labels are not backed by the figures.
+  4. **Operations.** Forced: B0 20.6%, 4B 9.5%, 4I 7.6%, C 2.5%, K2 0.5%. Invalid: B0 2.5%, 4B
+     0.7%, 4I 0.5% (C and K2 above). With a calculator call: 4I 72.4%, C 94.8%, K2 94.3%. Median
+     generated tokens: B0 407, 4B 367, 4I 350, C 69, K2 67; over 160 tokens: 4B and 4I 99.0%, B0
+     97.5%. Seconds per item: B0 4.55, C 1.08, K2 0.98, 4B 7.06, 4I 7.98.
+- **Leakage sign-off:** development items only; no model labelled an item; Claude read
+  development items and responses only. Clean.
+- **Verdict:** the R-d gate passes by its rule, but the 81-point gap is the distilled 0.8B
+  failing to give a label at all, not failing to reason: distillation on B left it able to box
+  one number and nothing else. The question R-b was meant to answer is better put against the
+  untrained 0.8B: the 4B is 26 points ahead on R, against 34 on B. R gives the 4B real headroom on
+  five of nine templates (R1.1, R1.3, R1.4, R1.5, R1.8, 80 to 92); R1.2, R1.6 and R1.9 are at its
+  ceiling. R1.7's golds are right, but its question sends every model to "cannot be determined";
+  as worded it is at the floor and drops out of R-c. Hints do not help the small model. R-c's size
+  rule gives about 9,400 base items, so the owner decides before R-c is written. Owner decisions
+  needed before R-c or R-d: (a) R-c's arms (C and K2 as trained score at the floor everywhere;
+  B0 is the small model with a reasoning score); (b) whether R1.7 is reworded by a new builder
+  (no escape clause on R1.7) and R1.8 restricted to margins a reader would use; (c) R-c's size;
+  (d) whether R-d is proposed, and if so with a control that separates learning the answer
+  format from learning to reason.
+
 ## EXP-0048 — S2 prospective arm: sealed calls on the October and November 2026 releases (2026-11-23)
 
 ### PRE-REGISTRATION

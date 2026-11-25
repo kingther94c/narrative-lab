@@ -202,9 +202,15 @@ twins), dev 4,289 from 295, train 3,352 from 621; every template has at least 26
 companies. Flip twins swap the two years in the column headings rather than edit one figure
 (registry entry for why). Yield per template and losses in the registry.
 
-**R-b pre-registered** (EXP-0050, 2026-11-24, not yet run): 450 development base items, 50 per
-template, plus 837 twins; five arms (4B, 4I, B0, C, K2); R-d is put to the owner only if 4I − K2
-is at least 5 points on the plain R score with its interval above 0.
+**R-b done** (EXP-0050, 2026-11-25): 450 development base items, 50 per template, plus 837
+twins; five arms. Plain R score: 4B 82.0, 4I 82.2, untrained 0.8B (B0) 55.9, C 0.9, K2 0.7. C and
+K2 box a number on 291 and 300 of 300 label items: distillation on B left them one answer shape,
+so the R-d gate (4I − K2 = 81.5) passes on format, not reasoning. 4B − B0 = 26.1 on R against
+34.0 on B. Headroom for the 4B on R1.1, R1.3, R1.4, R1.5 and R1.8; R1.2, R1.6 and R1.9 at its
+ceiling; R1.7 at everyone's floor (golds right, but the shared escape clause sends models to
+"cannot be determined"). Hints help only on R1.7, and not the 0.8B (§7's hint hypothesis
+unsupported). R-c's size rule gives about 9,400 base items, so the owner decides R-c's arms, size
+and template fixes before it is written.
 
 The MLX machine is S1's until 2026-12-15. R-a to R-c fit in that window. R-d fits only if R-b
 shows a gap worth closing.
