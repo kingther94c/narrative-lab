@@ -2,6 +2,31 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-26 — S1 re-plan: distilling financial analysis into the 0.8B (owner-approved)
+
+- **What:** the owner asked (2026-11-25) whether a larger model's way of reading a release and
+  reasoning about it can be distilled into a small model that is strong in this one domain
+  (verbatim in the re-plan doc), and approved the re-plan on 2026-11-26: "全案推荐来". The four
+  decisions, each as recommended:
+  1. The rest of S1's window (to 2026-12-15) goes to `research/design/s1_finance_distillation_replan.md`.
+     The 4B with the calculator writes step-verified analysis chains over training-company
+     releases; students start from the released 0.8B (arms P0, P2B, F1 answers only, F2 chains
+     at two sizes, F3 on-policy, +avg). "A framework, not a template" is tested by held-out R
+     families, held-out combinations, twins, within-release coherence and a whole-release
+     condition table, graded by rule. R-c and R-d as drafted are superseded, C and K2 retired,
+     S1-d (layer pruning) and S1-e (expert pruning) deferred beyond the window.
+  2. EDGAR pull of training-company earnings releases, 2019 to the cutoff, approved (EXP-0052).
+  3. Local open-weight teachers only: Qwen3.5-4B, with the 9B as a pilot.
+  4. Two diagnostics before any training (EXP-0051, pre-registered).
+- **Evidence:** EXP-0050 (C and K2 learned one answer shape, not a skill) and literature streams
+  14a to 14c (61 papers screened, 15 read closely): variety of tasks rather than volume cures
+  format specialisation, a close teacher beats a strong one below 3B, on-policy data limits
+  forgetting, step-verified chains distil a procedure (DianJin-R1), and below 3.8B nothing is
+  known for finance.
+- **Assets affected:** re-plan doc (approved); S1 roadmap row; reasoning exam design §6;
+  registry (EXP-0051 pre-registration, EXP-0052); experiments README; literature streams 14a to
+  14c and their deep notes (not yet merged into `matrix.csv` and `gaps.md`).
+
 ## 2026-11-25 — S1 reasoning exam: R-b run (EXP-0050)
 
 - **What:** the five arms on 450 development R base items and 837 twins, with and without hints.

@@ -212,6 +212,11 @@ ceiling; R1.7 at everyone's floor (golds right, but the shared escape clause sen
 unsupported). R-c's size rule gives about 9,400 base items, so the owner decides R-c's arms, size
 and template fixes before it is written.
 
+**R-c and R-d superseded** (owner, 2026-11-26, "全案推荐来"): the rest of S1's window goes to the
+distillation re-plan in `s1_finance_distillation_replan.md`. Section R stays the exam; its test
+items are used there after a new builder rewords R1.7 and limits R1.8 to sensible margins. C and
+K2 are retired as arms.
+
 The MLX machine is S1's until 2026-12-15. R-a to R-c fit in that window. R-d fits only if R-b
 shows a gap worth closing.
 

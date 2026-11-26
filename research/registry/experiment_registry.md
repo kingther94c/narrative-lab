@@ -462,8 +462,93 @@ can be regenerated.
   only after the opening line is read by hand, and the file keeps that line beside it. Everything
   else is EXP-0043's check. `check` writes `s2/exp0040/checked_v4.jsonl`; `calls` runs
   EXP-0045's build on it (same output folder). The daily fetch is unchanged.
+- **EXP-0052** — S1 pull of the training companies' earnings releases, 2019 to the cutoff, for the
+  re-plan's data factory (`research/design/s1_finance_distillation_replan.md` §4.1; owner,
+  2026-11-26, decision 2: "全案推荐来"). `exp0052_s1f_release_pull.py`. An engineering step with no
+  hypothesis and no model. Targets: 8-Ks with Item 2.02 in the bulk submissions archive
+  (2026-11-12; recent and overflow files), filed on or after 2019-01-01 and accepted on or before
+  2026-06-30, of companies on the split v1 "train" side under both EXP-0005's group map and one
+  rebuilt from every earnings 8-K in the archive; one copy per accession. The press release is
+  chosen as EXP-0003 chose it and parsed to text with edgartools; at most 4 requests a second,
+  identity from `EDGAR_IDENTITY`. XBRL company facts are already on the drive and not pulled.
+  Targets (2026-11-26): 40,266 releases from 1,862 companies, 5,076 to 5,741 a year for 2019 to
+  2025 and 2,529 for 2026. The design's "at least 30,301" counted recent files only; overflow
+  files and companies that no longer file add the rest. Texts go to `edgar/releases_train/`
+  (outside git), the log and counts to `s1/exp0052/`. Fetch started 2026-11-26 13:39, about
+  1.4 releases a second.
 
 ## Entries
+
+## EXP-0051 — S1 re-plan diagnostics: weight averaging and the 0.8B's sampling ceiling (2026-11-26)
+
+### PRE-REGISTRATION
+- **Status:** draft, 2026-11-26. Asked for by the owner on 2026-11-26 ("全案推荐来": decision 4 of
+  `research/design/s1_finance_distillation_replan.md` §5, run the two diagnostics now). Before
+  the commit: the script is written (`exp0051_s1f_diagnostics.py`) and `check` passes. Averaging
+  at a = 0 equals the released 0.8B and at a = 1 equals K2, tensor by tensor (maximum difference 0).
+  At a = 1 it reproduces K2's EXP-0050 response on the first R item and EXP-0017's on the first B
+  item. One batch of 8 samples takes 9.4 seconds at 6.1 GiB and is reproduced by its seed. No
+  other item has been run. Approved by the owner 2026-11-26 ("a": commit, push, run).
+- **Claim under test:** descriptive, not a hypothesis (re-plan §4.4). Two questions that set the
+  main experiment's arms before it is pre-registered:
+  1. Is the format lock of C and K2 (EXP-0050: a number boxed on label items, R under 1) cheap to
+     repair by averaging their weights with the released model, without losing what they learned
+     on B?
+  2. How much better than its greedy answer does the released 0.8B get when sampled? On-policy
+     distillation at 0.6B stays below the starting student's pass@n in all 27 settings of Li et
+     al. 2026 (`research/literature/papers/li-2026-on-policy-distillation-small-scale.md`), so this
+     bounds what F3 can add without off-policy data.
+- **Why the answer is not obvious:** averaging is the best forgetting trade-off among the methods
+  compared at 3B (stream 14b §2), but C and K2 were fully fine-tuned and their R failure is a
+  learned output format, which may survive at any a that keeps their B gain. Sampling may only
+  add guessing on label items, which is why the ceiling is read on the open templates.
+- **Sample and scope, fixed here:**
+  1. **Items.** EXP-0050's 450 plain development R base items (draw hash
+     `4e7f3b2f…6258`) and EXP-0007's 600 B development items (v0.2). No twin, hint, test or new
+     item.
+  2. **Diagnostic 1, averaged arms**, in this order: K2 at a = 0.25, 0.5, 0.75 and C at a = 0.5,
+     with W = (1 − a)·W_base + a·W_trained over every tensor in the checkpoint (EXP-0014's D3-s1
+     and EXP-0017's K2-s1, the chosen epochs), computed in float32 and stored in the checkpoint's
+     dtype. On R exactly as C and K2 in EXP-0050 (terse instruction with "final answer", inline
+     calculator, 512 tokens, forced answer, greedy). On B exactly as C and K2 on B (terse
+     instruction, inline calculator, 160 tokens, forced answer, greedy).
+  3. **Diagnostic 2, samples.** The released 0.8B as B0 in EXP-0050 (standard instruction with
+     "final answer", no tool, 512 tokens, forced answer greedy), 8 samples per R base item at
+     temperature 0.7 and top-p 0.95 (EXP-0014's sampling), seed 20261126 plus the item's index,
+     one batch of 8 per item (`mlx_lm.batch_generate`). 3,600 responses.
+  4. **References already on disk:** B0, C, K2 and 4I plain R responses (EXP-0050); B0, C and K2
+     B responses (EXP-0011, EXP-0016, EXP-0017). Their scores: R 55.9, 0.9, 0.7, 82.2; B 57.2,
+     87.5, 89.3.
+- **Method and grading:** EXP-0050's `grade_r` and R score (the mean over templates of balanced
+  accuracy for labels, accuracy otherwise); B by `exp0010.grade`. 95% intervals by company
+  bootstrap, 10,000 resamples, seed 20261124 (EXP-0050's), shared by every arm so differences are
+  paired. For samples: per item, the share of the 8 that are right; pass@8 (any right); maj@8
+  (the most frequent answer, ties to the earliest sample), each put through the same R score.
+  For label templates the chance pass@8, 1 − (1 − 1/m)^8, is shown beside it.
+- **Decision rules** (not hypothesis tests):
+  1. **Repair.** An averaged arm repairs the lock if its R score is at least B0's minus 5 points
+     and its B accuracy at least its source checkpoint's minus 3 points. If any arm does, "+avg"
+     is a full arm of the main experiment (tested with the others), and the general and B items
+     mixed into F1 to F3 are set at 10%. If none does, "+avg" is reported on development only, and
+     the mix is set at 20%.
+  2. **Room for on-policy.** On the open templates (R1.7, R1.8, R1.9: a number or "cannot be
+     determined", no options to guess), let room = B0's pass@8 − B0's greedy score. If room is at
+     least 10 points, F3 stays in the plan as designed and F2's checkpoint gets the same check
+     before F3 starts. If it is below 10, F3 is the first arm cut (it already is) and the owner is
+     told that this evidence points against it before any on-policy code is written.
+- **Also reported, descriptive:** each arm by template; the share of label items whose box holds a
+  number; forced rates and generated tokens; for samples, mean@8 and maj@8 against greedy for
+  every template and B0's pass@8 on the open templates against 4I's greedy score there; seconds
+  per batch (the data factory's speed estimate). Claude reads development responses to explain
+  the numbers.
+- **Contamination label of the result:** clean. Development companies, releases accepted after
+  2026-06-30; the released checkpoint predates that date, C and K2 were trained only on
+  pre-cutoff releases of training companies; no model labels any item.
+- **Not in scope:** test items, twins, hints, other values of a, averaging the 4B, a second seed,
+  thinking on, any training.
+- **Estimated compute:** averaged arms at most B0's 4.3 seconds an R item and about 1 second a B
+  item: at most 45 minutes each, 3 hours for four; samples about 10 seconds a batch, 1.3 hours.
+  About 4 to 4.5 hours, one MLX job. EXP-0052's network pull runs beside it and uses no MLX.
 
 ## EXP-0050 — S1 reasoning exam, step R-b: headroom on development section R items (2026-11-24)
 
