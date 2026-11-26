@@ -2,6 +2,43 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-26 — S1 factory: shorter sequences, smaller sizes, plain 4B teacher (owner-approved)
+
+- **What:** the owner approved three changes to the re-plan on 2026-11-26 ("全安推荐", meaning
+  "all as recommended"):
+  1. Training sequences at most 640 tokens (excerpts about 300 tokens, short teacher chains); F2
+     at 2,000 and 8,000 factory examples, one epoch each, in place of 5,000 and 20,000.
+  2. Teacher: the plain 4B, batched, arithmetic checked afterwards, in place of 4I; arm T is the
+     4B.
+  3. The 20% general data: half GSM8K training problems with the released 0.8B's own correct
+     answers, half B training items with the 4B's standard answers; no download.
+  R1.4 and R1.5 stay held out. Recorded as a dated decision in the re-plan's §4.5.
+- **Why:** EXP-0058 measured full fine-tuning at about 405 sequences an hour at 640 tokens and
+  262 at 768, and 896 tokens passed the 12 GiB budget; factory items as built ran about 1,300
+  tokens. EXP-0056's pilot showed the plain 4B, batched, keeps 52% of samples at about 1,070
+  samples an hour, against an untested batched calculator loop for 4I. EXP-0050 scored the 4B
+  and 4I level on R (82.0 and 82.2).
+- **Evidence:** `s1/exp0058/speed.json`; `s1/exp0056/speed/` and `pilot/verify_report.json`.
+- **Assets affected:** re-plan §4.1, §4.2 and §4.5 (superseded where they differ); the main
+  pre-registration (EXP-0059) sets exact counts and rules.
+
+## 2026-11-26 — S1 re-plan diagnostics run (EXP-0051); factory steps built; fine-tuning rate corrected
+
+- **What:** EXP-0051 ran (verdict in the registry). By its registered rules: weight averaging
+  does not repair C's and K2's lock (best R 25.9 against B0's 55.9), so "+avg" is reported on
+  development only and 20% general and B items are mixed into F1 to F3; B0's pass@8 exceeds its
+  greedy score by 20 points on the open templates, so F3 stays. Section R v1's builder
+  (EXP-0053; escape clause reworded on every template, R1.8 limited to margins within ±100%)
+  built train and development items; its probe (EXP-0057) is written, not run. Data factory
+  steps 1 to 3 (EXP-0054 to 0056) are written and checked on the releases fetched so far.
+- **Correction:** the re-plan's fine-tuning rate (1,260 examples an hour) is wrong; EXP-0017's
+  logs give about 680 sequences an hour at 512 tokens, and full fine-tuning at 1,024 tokens
+  needs 14.45 GiB, over the 12 GiB budget. The SFT sizes and sequence lengths are reset in the
+  main pre-registration (noted in the re-plan, §4.5).
+- **Evidence:** `s1/exp0051/scores.json`; EXP-0017's `train_log.json` files; `feasibility.md`.
+- **Assets affected:** registry (EXP-0051 verdict; EXP-0053 to 0057); re-plan §4.5; experiments
+  README.
+
 ## 2026-11-26 — S1 re-plan: distilling financial analysis into the 0.8B (owner-approved)
 
 - **What:** the owner asked (2026-11-25) whether a larger model's way of reading a release and

@@ -476,6 +476,98 @@ can be regenerated.
   files and companies that no longer file add the rest. Texts go to `edgar/releases_train/`
   (outside git), the log and counts to `s1/exp0052/`. Fetch started 2026-11-26 13:39, about
   1.4 releases a second.
+- **EXP-0053** — S1 section R v1 builder, the re-plan's "R test builder fix" (re-plan §4.3,
+  approved 2026-11-26). `exp0053_s1r_build_v1.py`. An engineering step with no hypothesis and no
+  model: EXP-0019's builder, imported unchanged, with two changes. (1) The escape clause, on every
+  template: v0 "If the excerpt does not give enough information to answer, answer
+  \boxed{cannot be determined}." becomes "If the answer can neither be read from the excerpt nor
+  worked out from its figures, answer \boxed{cannot be determined}." EXP-0050's verdict floated
+  dropping the clause from R1.7 alone; that would make the clause's presence a cue for R1.9's
+  gold, so the wording changes everywhere instead. (2) R1.8 keeps an item only if the margin is
+  within ±100% in both years. Ids hash "Rv1|…", so no v1 id equals a v0 id. Output
+  `s1/exam_r_v1/`. Claude reads train and development items only; test counts only.
+  Train and development built 2026-11-26 (checks pass). Only R1.8 changes: train 527 → 487
+  base items (44 dropped by the margin rule), development 594 → 545 (56 dropped); every other
+  template's count and label mix equals v0's. Read: one development R1.7 and one R1.8 item, new
+  clause in place. Test side not built yet. Validity probe planned before the test side is used (in the main experiment's
+  pre-registration): the 4I and the released 0.8B on development R1.7 and R1.9 v1 items, to see
+  that R1.7 leaves the floor and R1.9 does not fall.
+- **EXP-0054** — S1 data factory step 1: verified fact sheets of EXP-0052's releases.
+  `exp0054_s1f_sheets.py`. An engineering step with no hypothesis and no model. Section R v1's
+  builder (EXP-0053) is run over each training-company release with text, so every figure in a
+  sheet passed the two-source rule (a labelled table row at XBRL's first-filed value, prior year
+  in the same row at XBRL's prior-year value). A sheet keeps the period, the verified figures with
+  their rows and columns, and the gold, steps and needed rows of each R template the builder
+  could make; no question text and no excerpt, so the factory's own questions do not reuse R's
+  wording. Runs on the releases fetched so far and again with `--resume` once EXP-0052 is done.
+  Output `s1/exp0054/` (outside git). First run 2026-11-26 on the 6,872 releases fetched by
+  then (234 companies; texts are fetched in company order): 5,068 with at least one verified
+  figure, 3,718 with at least one R-template item; about 24 releases a second.
+- **EXP-0055** — S1 data factory step 2: varied training items from EXP-0054's sheets.
+  `exp0055_s1f_items.py`. An engineering step with no hypothesis and no model; every item is a
+  training company's before the cutoff, so Claude reads them. Diluted EPS and income before
+  taxes appear in no item (R1.4 and R1.5 held out, the re-plan's example; the main
+  pre-registration may change this, which would mean a new script). Twelve kinds under fixed
+  quotas (extract, growth, margin level, margin change, margin direction, co-movement, faster or
+  slower, true-or-false claim, biggest or smallest mover, derived period, cannot be determined,
+  whole-release condition table), golds by section R's rules over more line items and pairs.
+  Eight lead-ins, four comparison phrases, line names including the release's own row label
+  (not one containing "margin"), four option sets, four escape clauses (R's own not among them,
+  nor R's lead-ins) and four answer formats (\boxed{} 40%, "Answer:" line 25%, JSON 20%, one
+  sentence 15% for label items). Pool of 30,000, ranked, at most three items per release and
+  30 per company. Trial of 3,000 on the first run's sheets (2026-11-26): every quota filled,
+  189 companies, 2,639 distinct phrasing skeletons; about 20 items read, golds right after three
+  fixes (literal doubled braces in two format lines, a row labelled "Gross margin" used as the
+  name of gross profit, one ungrammatical question). The full pool waits for EXP-0052.
+- **EXP-0056** — S1 data factory step 3: teacher chains over EXP-0055's pool, verified by rule.
+  `exp0056_s1f_chains.py`. `check` (no model) passes 15 grading and arithmetic cases. A chain
+  is kept only if it finished, its final answer read in the item's format is right, every
+  calculation EXP-0018's inline rule finds shows the value the calculator computes (to the
+  precision written; a ratio may be written as a percentage), and each needed row has its
+  current or prior-year figure quoted; up to two distinct chains per item. Proposed teacher for
+  the main pre-registration: the released 4B without the calculator, sampled in batches,
+  thinking off, after a short procedure instruction the student never sees (EXP-0050: 4B 82.0
+  and 4I 82.2 on R plain; batching needs uninterrupted decoding, so arithmetic is checked
+  afterwards rather than during decoding). Before the pre-registration: `speed` (16 pool items
+  at batch 1, 8 and 16) and a pilot `generate` of 200 items × 4 samples on the trial pool, to
+  `s1/exp0056/pilot/`, for throughput and the keep rate by kind. Engineering only, training
+  items only; neither output is used for training.
+  Speed (2026-11-26, 16 items, cap 768): batch 1 348 samples an hour (51.4 tokens/s, 3.3 GiB),
+  batch 8 837 (136.6, 6.6 GiB), batch 16 1,074 (166.5, 7.2 GiB; one batch only). Pilot
+  (17:49 to 18:45, batch 8): 800 samples, 564 generated tokens each on average; 416 samples
+  (52%) pass all four checks; 169 of 200 items (85%) have a kept chain, 293 chains kept. One
+  fix after reading failures: the arithmetic check rejected the 4B's drift in the fifth or sixth
+  significant digit of long divisions (1017/6659 written 0.152724) and read dates (3/21/2020) as
+  divisions; it now allows 0.01% and skips date-shaped expressions (19 cases pass; the
+  remaining rejections read were real, e.g. −5.29% for −5.31%). About 15 failed answers read:
+  teacher errors (the year-ago column taken for the previous quarter, the JSON format ignored,
+  another row's figure); one suspicious gold (cost of revenue +167.7%) checked against the
+  release and right (the year-ago quarter predates a merger). Pass rate by kind: margin level
+  77%, mover 69%, margin direction 65%, claim 63%, faster or slower 56%, extract 54%, margin
+  change 51%, growth 50%, cannot be determined 47%, co-movement 46%, derived 18%, table 3%. The
+  last two, and a third of extract and cannot-be-determined samples, mostly run out of the 768
+  tokens (table 34 of 36 samples): the procedure instruction makes the 4B work through every
+  figure. Prompt plus chain is about 1,300 tokens, against 512 in EXP-0014 and EXP-0017; see the
+  main pre-registration for the sequence budget.
+- **EXP-0057** — S1 validity probe of section R v1's escape clause, development items only.
+  `exp0057_s1r_v1_probe.py`. Descriptive with a decision rule, so pushed before it runs (as
+  EXP-0051). The v1 counterparts of EXP-0050's 50 R1.7 and 50 R1.9 development base items (all
+  100 matched; excerpts identical; 22 R1.7 items ask in thousands where v0 asked in millions
+  or the reverse, because R1.7 draws the unit at random and R1.8's drops moved the draw order)
+  with EXP-0050's prompt, cap, grader and arms 4B, 4I and B0. Rule: the wording is kept if the
+  better of 4B and 4I reaches at least 50 on R1.7 (10 in EXP-0050) and neither falls by more than
+  10 points on R1.9 against its EXP-0050 score on the same items; otherwise a new builder
+  rewords it before any test item is built. About 35 minutes. Not yet run.
+- **EXP-0058** — S1 full fine-tuning speed and memory of the 0.8B at 640, 768 and 896 tokens.
+  `exp0058_s1f_sft_speed.py`. An engineering step with no hypothesis: EXP-0014's setup exactly
+  (every block trained, embeddings frozen, AdamW 1e-5 with warm-up, batch 1, gradient
+  checkpointing, prompt masked), 40 steps a length on EXP-0056's pilot chains cut or repeated to
+  the target length, the first 10 steps dropped; stops at a length whose peak passes 12 GiB. The
+  feasibility probe had only 512 and 1,024 tokens (7.17 and 14.45 GiB, 6.24 and 16.98 s a
+  step). Run 2026-11-26 after the pilot: 640 tokens 8.90 s a step (about 405 sequences an
+  hour), 8.69 GiB; 768 tokens 13.76 s (about 262 an hour), 10.43 GiB; 896 tokens passed 12 GiB
+  (12.30) at step 5 and stopped. So a training sequence must stay at or under about 768 tokens
+  in the 12 GiB budget, and at 640 it costs 1.4 times a 512-token step.
 
 ## Entries
 
@@ -549,6 +641,63 @@ can be regenerated.
 - **Estimated compute:** averaged arms at most B0's 4.3 seconds an R item and about 1 second a B
   item: at most 45 minutes each, 3 hours for four; samples about 10 seconds a batch, 1.3 hours.
   About 4 to 4.5 hours, one MLX job. EXP-0052's network pull runs beside it and uses no MLX.
+
+### VERDICT
+- **Pre-registration commit:** `e6fd926` (pushed before any arm ran). Run 2026-11-26 15:32 to
+  17:43 by `queue`, every arm complete (450 R and 600 B responses each; 3,600 samples). 2.2 hours
+  against 4 to 4.5 estimated: averaged arms about 15 minutes each, samples 8.34 seconds a batch
+  of 8. Output: `s1/exp0051/scores.json`.
+- **Result, averaging** (R: mean over the nine templates, development base items, plain; B:
+  accuracy on the 600 B development items; 95% intervals, company bootstrap as EXP-0050; the
+  averaged arms run as C and K2 ran in EXP-0050, terse prompt and inline calculator):
+
+  | Arm | R | R − B0 | B | B − source | Label items boxing a number |
+  |---|---|---|---|---|---|
+  | B0: 0.8B as released | 55.9 [51.5, 60.2] | — | 57.2 | — | 0% |
+  | K2 (a = 1, EXP-0050) | 0.7 | −55.2 | 89.3 | — | 100% |
+  | K2@0.75 | 2.7 [1.3, 4.3] | −53.2 [−57.8, −48.3] | 90.5 | +1.2 [−0.5, +2.8] | 91.7% |
+  | K2@0.5 | 25.9 [22.1, 30.1] | −30.0 [−35.8, −23.7] | 85.0 | −4.3 [−7.1, −1.7] | 15.0% |
+  | K2@0.25 | 25.8 [22.0, 29.7] | −30.1 [−35.7, −24.3] | 74.2 | −15.2 [−19.1, −11.4] | 0% |
+  | C@0.5 | 22.6 [19.4, 25.8] | −33.3 [−38.6, −28.0] | 83.5 | −4.0 [−6.4, −1.7] | 34.0% |
+
+  By template (K2@0.25 / K2@0.5 / C@0.5): R1.1 50.2 / 29.8 / 27.9; R1.2 26.8 / 19.6 / 13.5;
+  R1.3 26 / 52 / 40; R1.4 38 / 48 / 44; R1.5 28 / 52 / 48; R1.6 43.2 / 12.1 / 0; R1.7 2 / 6 / 6;
+  R1.8 18 / 14 / 24; R1.9 0 / 0 / 0.
+- **Result, sampling B0** (8 samples an item at temperature 0.7, top-p 0.95; greedy = EXP-0050's
+  plain run): open templates (R1.7, R1.8, R1.9) greedy 42.0, pass@8 62.0 [57.8, 65.9], 4I's
+  greedy 65.3. By template, greedy / mean@8 / maj@8 / pass@8 (4I): R1.7 2 / 1 / 0 / 4 (10); R1.8
+  56 / 32.5 / 46 / 82 (88); R1.9 68 / 68.2 / 96 / 100 (98). On the label templates pass@8 is 92 to
+  100, at or under chance pass@8 (90 to 99.6), so it says nothing there, as expected. Over all
+  templates: greedy 55.9, mean@8 47.3, maj@8 59.0. 30.6% of samples reached 512 tokens without a
+  box and took the forced answer; 404 generated tokens a sample on average.
+- **Decision rules:**
+  1. **Repair: no arm repairs.** The best R score of an averaged arm is 25.9 (K2@0.5), 30 points
+     under B0 (the rule asks for at most 5), and the one arm that holds B (K2@0.75, +1.2) keeps
+     the lock (R 2.7). So "+avg" is reported on development only, and the general and B items
+     mixed into F1 to F3 are set at 20%.
+  2. **Room for on-policy: 20 points, so F3 stays.** pass@8 − greedy on the open templates =
+     62.0 − 42.0 = 20.0 (at least 10). F2's checkpoint gets the same check before F3 starts. The
+     room is below the teacher (62.0 against 65.3) and lies on R1.8 and R1.9; R1.7 has none (4
+     against 2), which is the wording problem EXP-0057 probes.
+- **Also reported, read from development responses:**
+  1. **Averaging brings back the label words, not the reasoning.** On R1.9 every averaged arm
+     boxes a figure from a nearby row in K2's "Row; Column; Calculation" layout and never answers
+     "cannot be determined" (0 of 50 each). On label items the box holds a label word again (0 to
+     34% numbers, against 97 to 100% for C and K2), but mostly the same one: K2@0.5 boxes
+     "expanded" on 30 of 50 R1.1 items. Between a = 0.25 and 0.5 the R score does not move (25.8,
+     25.9) while B gains 11 points; above 0.5 R collapses. Averaging trades B for R along one line
+     rather than undoing format specialisation.
+  2. **B0's errors on R1.9 are unstable.** Majority over 8 samples lifts R1.9 from 68 to 96: the
+     released 0.8B usually knows when a figure is absent but does not say so every time.
+  3. **Sampling at 0.7 costs accuracy** (mean@8 47.3 against greedy 55.9), and 30.6% of samples
+     run out of tokens, so on-policy rounds need a longer cap or a terser student prompt.
+- **Not established:** the comparison with B0 mixes weights and prompt (averaged arms used the
+  terse prompt, B0 the standard one), as registered; no averaged arm was run with B0's prompt.
+  One seed of each source checkpoint.
+- **Contamination label:** clean.
+- **Consequences:** the main pre-registration mixes 20% general and B items into F1 to F3, keeps
+  F3 (subject to F2's own check) and reports "+avg" on development only. No general instruction
+  data is on disk; its source is a choice for that pre-registration.
 
 ## EXP-0050 — S1 reasoning exam, step R-b: headroom on development section R items (2026-11-24)
 

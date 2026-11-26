@@ -199,6 +199,37 @@ seconds an item (EXP-0050).
 The binding constraint is engineering, not machine time: the factory and the on-policy loop are
 new code. F3 is last and is dropped first if the calendar slips.
 
+**Correction (2026-11-26, after approval).** The fine-tuning rate above is wrong. EXP-0017's
+training logs give 3,700 steps (1,850 items, 2 epochs, batch 1, sequences of at most 512 tokens)
+in 19,500 to 20,000 seconds: about 680 sequences an hour, not 1,260, at 8.1 GiB peak. Full
+fine-tuning of the 0.8B at 1,024 tokens measured 14.45 GiB in the feasibility probes
+(`feasibility.md`), above the 12 GiB budget. Factory items as built (EXP-0055 trial: excerpts
+median 629 tokens, 90th percentile 789) plus a chain exceed 1,024 tokens. So the SFT line above
+(40 to 50 hours for F1 and F2 at 5,000 and 20,000) does not hold. The main pre-registration has
+to choose among shorter training sequences, smaller sizes, one epoch, or a larger memory budget,
+and set the sizes from measured chain lengths (EXP-0056's pilot). Until then the table above is
+superseded on this line.
+
+**Decision (2026-11-26, owner-approved after EXP-0056's pilot and EXP-0058).** Full fine-tuning
+measured about 405 sequences an hour at 640 tokens (8.69 GiB) and 262 at 768 (10.43 GiB); 896
+passed the budget. The owner chose all three recommendations ("全安推荐", meaning "all as
+recommended"):
+
+1. **Length and size.** Every training sequence is at most 640 tokens: excerpts cut to about 300
+   tokens (B's length), and the teacher asked for short chains (about 200 tokens at most). F2 is
+   trained at 2,000 and 8,000 factory examples, one epoch each, in place of 5,000 and 20,000.
+   About 40 hours of training and 15 of generation. Training excerpts are shorter than R's (test
+   median about 680 tokens); the gap is a stated limit, not tested.
+2. **Teacher.** The plain 4B (no calculator), batched, thinking off; every chain's arithmetic is
+   checked afterwards (EXP-0056's verifier), in place of 4I. Arm T is the 4B. The pilot kept 52%
+   of samples and gave 85% of items at least one chain.
+3. **General data (20% of each trained arm's examples).** Half GSM8K training problems (on disk)
+   with the released 0.8B's own correct answers, half B training items with the 4B's standard
+   answers. No download.
+
+R1.4 (EPS against net income) and R1.5 (tax line) stay held out of the factory. Exact counts,
+the mix's accounting and the decision rules are fixed in the main pre-registration (EXP-0059).
+
 ## 5. What this replaces, and decisions for the owner
 
 - **S1-d (layer pruning) and S1-e (expert pruning)** do not fit before 2026-12-15 with this
