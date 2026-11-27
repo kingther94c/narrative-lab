@@ -465,6 +465,18 @@ can be regenerated.
   only after the opening line is read by hand, and the file keeps that line beside it. Everything
   else is EXP-0043's check. `check` writes `s2/exp0040/checked_v4.jsonl`; `calls` runs
   EXP-0045's build on it (same output folder). The daily fetch is unchanged.
+  Alias added 2026-11-26 after reading the opening line: VVX ("V2X"). The daily scheduled run
+  uses this check from 2026-11-25 (its command added to the local allow list at the owner's
+  request, "你帮我加").
+- **EXP-0061** — S2-a year test v2 (fix forward of EXP-0042's year test inside EXP-0060's check).
+  Two right transcripts failed it on 2026-11-26: Packaging Corp of America ("Second Quarter 26")
+  and Lamb Weston ("Fourth Quarter and Full Year Fiscal 26"): the opening prints a two-digit
+  year, so the test fell back to the year printed most often in the first 6,000 characters (2025
+  and 2027, from comparisons and outlook). Now: a four-digit year in the first 600 characters as
+  before; else a two-digit year right after "quarter", "fiscal", "fiscal year", "FY" or "Q1" to
+  "Q4" there, read as 20xx; else the old fallback. `check` runs EXP-0060's check and redoes the
+  year test into `checked_v5.jsonl`; `calls` runs EXP-0045's build on it. The daily run keeps
+  EXP-0060's check (its report may list these two); experiments read this check.
 - **EXP-0052** — S1 pull of the training companies' earnings releases, 2019 to the cutoff, for the
   re-plan's data factory (`research/design/s1_finance_distillation_replan.md` §4.1; owner,
   2026-11-26, decision 2: "全案推荐来"). `exp0052_s1f_release_pull.py`. An engineering step with no

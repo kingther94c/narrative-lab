@@ -31,6 +31,18 @@ Newest first. What changed, why, on what evidence, and what it affects.
 - **Assets affected:** experiment registry (EXP-0052, EXP-0053, EXP-0054, EXP-0057, EXP-0059,
   EXP-0070, EXP-0071, the block note); `exp0059_s1f_main.py`; literature matrix and gaps; roadmap.
 
+## 2026-11-26 — S2: daily collection running unattended; two-digit years fixed (EXP-0061)
+
+- **What:** the scheduled run sent 25 requests on 2026-11-25 (25 full) and 25 on 2026-11-26 (23
+  full, 2 empty) with no permission prompt, using EXP-0060's check from 2026-11-25. Its report
+  named three right transcripts as not usable: Packaging Corp of America and Lamb Weston print a
+  two-digit year in the opening ("Second Quarter 26", "Fiscal 26"), and V2X's name has a digit.
+  EXP-0061 reads two-digit years; V2X joins EXP-0060's alias list after its opening was read.
+- **Result:** of 97 clean requests made, 88 usable, 9 empty; 127 of 197 clean episodes now have a
+  full call (Alpha Vantage 92, IR files 35). 333 requests left (clean 90, next 184, old 59): the
+  clean stage ends about 2026-11-30, when EXP-0047 runs.
+- **Assets affected:** experiment registry (EXP-0060, EXP-0061); call documents (EXP-0045 output).
+
 ## 2026-11-26 — S1 factory: shorter sequences, smaller sizes, plain 4B teacher (owner-approved)
 
 - **What:** the owner approved three changes to the re-plan on 2026-11-26 ("全安推荐", meaning
