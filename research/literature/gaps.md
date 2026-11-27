@@ -180,3 +180,56 @@ above are unchanged.
 - The memorisation probe of methodology §9: supported, with repeated samples, a hit-rate gate and
   demeaning by entity and period. Its item-level regression on recall propensity is weakened:
   the propensity may be saturated on a frontier model.
+
+## Streams 13a to 14c, added 2026-11-26 for sub-study S1
+
+Built from `streams/13a_financial_reasoning_benchmarks.md`, `13b_reasoning_item_design.md`,
+`14a_synthetic_data_small_specialists.md`, `14b_distillation_methods_small_students.md` and
+`14c_finance_specialists_analyst_reasoning.md`: 112 rows, 30 with a deep note. A paper read by two
+streams keeps a row in each, as before (11 such rows; the CFA Level III paper has one note,
+`shetty-2025-cfa-level-iii-evaluation`, shared by 13a and 13b). The sections above are unchanged.
+
+**Gaps and the experiments they suggest**
+
+| Gap | Experiment in S1 |
+|---|---|
+| No benchmark of trend, driver or direction judgements on US earnings releases with rule labels (13a, 13b) | Section R, built from as-filed tables with XBRL-checked gold (EXP-0019; R v1, EXP-0053) |
+| No model below 1.5B in any financial reasoning benchmark read; no finance distillation study with a student below 3.8B (13a, 14c) | The 0.8B against the 2B and the 4B on R (EXP-0050; EXP-0059) |
+| No test of whether reasoning gains from distillation survive a change of item family, combination or node (13a, 14a, 14c) | R1.4 and R1.5 held out of the factory; twins (EXP-0059, HF2) |
+| No test of whether task and answer-format variety undoes a small student's single-template lock-in (14a) | C and K2 locked (EXP-0050); F1 against F2 on varied items (EXP-0059, HF1) |
+| Unknown effect of a teacher's wrong answers on a student trained on label items (14a) | Chains kept only when the answer and every checked calculation are right (EXP-0056, EXP-0070) |
+| No weight-averaging study below 3B; no quantified replay ratio for sub-3B students (14b) | Averaging C and K2 with the released 0.8B (EXP-0051: no repair); 20% general data (EXP-0059) |
+| No on-policy distillation or RL study on label or analytical items below 1.5B; none from a 4-bit teacher's logits (14b) | Room measured by sampling (EXP-0051: pass@8 20 points above greedy); F3 left to its own pre-registration |
+| Judge-human agreement on finance analysis measured on at most 124 answers; none for small models' text (13a, 13b, 14c) | Not taken up: every S1 item is graded by rule |
+
+**Already answered: do not redo**
+
+- Finance-tuned models' gains have not survived a change of format (`tong-2026`, `qian-2025`).
+- Do not assume a larger or "thinking" teacher helps a small student; choose the teacher and the
+  chain length by what the student learns (`li-2025`, `zhao-2025`; 13a point 5, 14c point 3).
+- Write rationales forward from the document, never from the gold label (`xiao-2025`,
+  `turpin-2023`; 14c point 1).
+- Holistic LLM judges are unreliable for finance analysis (14c; 13b on judge bias by graded model).
+
+**Design defaults against the literature**
+
+- Many task kinds and answer formats per release, quotas fixed before generation: supported (14a
+  points 1 and 2); S1's factory does this (EXP-0055).
+- Tens of thousands of examples rather than millions, sizes measured at more than one level:
+  supported (14a point 3); S1 trains at 2,000 and 8,000 because of the machine (EXP-0058).
+- Short chains, a sentence or two of rationale before the answer: supported (14a point 4).
+- The 4B rather than the 9B as teacher, the 9B as a pilot only: supported (14a point 5; 14b point 3).
+- General data kept in the mix and its price reported: supported (14a point 7; 14b point 2).
+- Rule-checked chains, forward from the release (DianJin-R1's recipe): supported (14c point 1).
+- RL as a comparison arm at most: supported (13a, 14b point 4, 14c point 7); out of scope before
+  2026-12-15.
+- Checkpoints chosen on development R only: supported (14b point 5).
+
+**Limits of these streams**
+
+- Most evidence on synthetic data and distillation is mathematics and code with verifiable
+  answers; finance evidence is numeric QA and sentiment at 3.8B and above (14a).
+- Teachers in the literature are far stronger relative to their students than a local 4B is to
+  section R (14a).
+- Full texts were read through automated extraction; several tables came out scrambled, and no
+  number was re-keyed from a typeset PDF (13b, 14a).

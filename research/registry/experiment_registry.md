@@ -452,6 +452,9 @@ can be regenerated.
   quarters); kept for label coverage of smaller filers and the later December-quarter labels.
   No model; an engineering step with no hypothesis.
 - **EXP-0060 to EXP-0069** — held for sub-study S2 (2026-11-24; EXP-0050 to 0059 are S1's).
+- **EXP-0070 to EXP-0079** — held for sub-study S1 (2026-11-26; S1's block EXP-0050 to 0059 is
+  used up but for EXP-0059, kept for the main pre-registration). By decision D5 of
+  `research/design/s1_reasoning_exam.md`, S1 takes the next free block after S2's.
 - **EXP-0060** — S2-a name test v2 for the Alpha Vantage replies (fix forward of EXP-0042's test,
   used by EXP-0043/0044's `check`). The 2026-11-23 batch flagged two right transcripts as
   "name missing": Fidelity National Financial, whose call opens "welcome to FNF's Second
@@ -475,7 +478,9 @@ can be regenerated.
   2025 and 2,529 for 2026. The design's "at least 30,301" counted recent files only; overflow
   files and companies that no longer file add the rest. Texts go to `edgar/releases_train/`
   (outside git), the log and counts to `s1/exp0052/`. Fetch started 2026-11-26 13:39, about
-  1.4 releases a second.
+  1.4 releases a second. Done 2026-11-26 23:26 (35,203 seconds, 1.14 a second), with one retry
+  of the 53 server errors (502 and 504): 39,487 releases with text (38,380 fetched, 1,107 reused
+  from the drive), 778 with no press release found, 1 error left.
 - **EXP-0053** — S1 section R v1 builder, the re-plan's "R test builder fix" (re-plan §4.3,
   approved 2026-11-26). `exp0053_s1r_build_v1.py`. An engineering step with no hypothesis and no
   model: EXP-0019's builder, imported unchanged, with two changes. (1) The escape clause, on every
@@ -489,9 +494,11 @@ can be regenerated.
   Train and development built 2026-11-26 (checks pass). Only R1.8 changes: train 527 → 487
   base items (44 dropped by the margin rule), development 594 → 545 (56 dropped); every other
   template's count and label mix equals v0's. Read: one development R1.7 and one R1.8 item, new
-  clause in place. Test side not built yet. Validity probe planned before the test side is used (in the main experiment's
-  pre-registration): the 4I and the released 0.8B on development R1.7 and R1.9 v1 items, to see
-  that R1.7 leaves the floor and R1.9 does not fall.
+  clause in place. The validity probe is EXP-0057. Test side built 2026-11-27 (272 seconds;
+  counts only, `yield_test.json`): 16,193 base items from 1,548 companies and 2,654 releases,
+  40,130 with twins (ids hash `4eaf13d3…`). Only R1.8 changes again: 1,916 → 1,780 base items
+  (828 → 768 companies), flip twins 1,543. Every other template's count, company count and label
+  mix equals v0's. Fewest companies on a template: R1.4, 260.
 - **EXP-0054** — S1 data factory step 1: verified fact sheets of EXP-0052's releases.
   `exp0054_s1f_sheets.py`. An engineering step with no hypothesis and no model. Section R v1's
   builder (EXP-0053) is run over each training-company release with text, so every figure in a
@@ -502,7 +509,10 @@ can be regenerated.
   wording. Runs on the releases fetched so far and again with `--resume` once EXP-0052 is done.
   Output `s1/exp0054/` (outside git). First run 2026-11-26 on the 6,872 releases fetched by
   then (234 companies; texts are fetched in company order): 5,068 with at least one verified
-  figure, 3,718 with at least one R-template item; about 24 releases a second.
+  figure, 3,718 with at least one R-template item; about 24 releases a second. Resumed
+  2026-11-26 after EXP-0052 finished (32,615 more releases, 1,439 seconds): all 39,487 releases,
+  28,908 with at least one verified figure from 1,629 companies, 21,456 with an R-template item;
+  3,671 to 4,245 a year from 2019 to 2025 and 1,811 in 2026; 23,705 quarters, 5,203 years.
 - **EXP-0055** — S1 data factory step 2: varied training items from EXP-0054's sheets.
   `exp0055_s1f_items.py`. An engineering step with no hypothesis and no model; every item is a
   training company's before the cutoff, so Claude reads them. Diluted EPS and income before
@@ -557,7 +567,19 @@ can be regenerated.
   with EXP-0050's prompt, cap, grader and arms 4B, 4I and B0. Rule: the wording is kept if the
   better of 4B and 4I reaches at least 50 on R1.7 (10 in EXP-0050) and neither falls by more than
   10 points on R1.9 against its EXP-0050 score on the same items; otherwise a new builder
-  rewords it before any test item is built. About 35 minutes. Not yet run.
+  rewords it before any test item is built. About 35 minutes. Run 2026-11-26 22:57 to 23:26 from
+  `bc27ad1` (pushed first); `s1/exp0057/scores.json`. **The wording is not kept by the rule:**
+  R1.7 v0 to v1: 4B 10.0 to 14.0, 4I 10.0 to 10.0, B0 2.0 to 8.0; "cannot be determined" on R1.7
+  from 41 to 38 (4B), 40 to 39 (4I), 31 to 19 (B0). R1.9: 4B and 4I 98.0 both times (no fall);
+  B0 68.0 to 44.0 (it says "cannot be determined" on 22 items, not 34). Read from the 4B's
+  development responses: the failures are not a misreading of the clause. The 4B writes about
+  deriving the period and gets the derivation wrong (for example, it holds that the six months
+  need the second quarter when the nine months and the third quarter are shown), and 23 of 50
+  answers hit the 512-token cap before a box. With EXP-0050's hint ("The N-month total minus the
+  latest three months gives the earlier period") the 4B scored 82 on the same template. So R1.7
+  without a hint tests whether a model sees what to compute; no rewording of the escape clause
+  is likely to move it. **Owner's decision, 2026-11-27** ("A"): R v1 is kept as built, and R1.7
+  is tested and counted in-family in EXP-0059, a recorded deviation from this rule (changelog).
 - **EXP-0058** — S1 full fine-tuning speed and memory of the 0.8B at 640, 768 and 896 tokens.
   `exp0058_s1f_sft_speed.py`. An engineering step with no hypothesis: EXP-0014's setup exactly
   (every block trained, embeddings frozen, AdamW 1e-5 with warm-up, batch 1, gradient
@@ -568,8 +590,170 @@ can be regenerated.
   hour), 8.69 GiB; 768 tokens 13.76 s (about 262 an hour), 10.43 GiB; 896 tokens passed 12 GiB
   (12.30) at step 5 and stopped. So a training sequence must stay at or under about 768 tokens
   in the 12 GiB budget, and at 640 it costs 1.4 times a 512-token step.
+- **EXP-0070** — S1 data factory v2 for the main experiment (EXP-0059): short items, short
+  chains, general data. `exp0070_s1f_factory_v2.py`. An engineering step with no hypothesis,
+  from the owner's decisions of 2026-11-26 (changelog). EXP-0055's item maker unchanged but for a
+  300-token excerpt budget (ids "Fv2"); chains by the plain 4B after a brief instruction, each
+  sample capped at 640 tokens less the student's prompt (at most 320), kept by EXP-0056's checks
+  and the 640-token fit; math word problems answered by the released 0.8B (greedy first) and kept
+  if right; B training items answered by the 4B with EXP-0007's standard instruction and kept if
+  right. `check` passes (math problems with a numeric reference on disk: 818, 300 GSM8K and 518
+  MATH). Trial build on the 4,486 sheets so far: 2,877 items of 3,000 wanted, excerpts median
+  285 tokens; every kind full except the whole-release table (87 of 210). Pilots, 2026-11-26
+  23:26 to 23:46 on the trial pool: chains on the first 200 items, 4 samples each, batch 16:
+  4,828 samples an hour, 5.4 GiB, 68 generated tokens median (90th percentile 124); 381 of 800
+  samples kept, 156 of 200 items with a kept chain, kept sequences 479 tokens median (90th
+  percentile 547, all within 640). By kind, items with a kept chain: claim 26 of 33,
+  co-movement 10 of 11, derived 1 of 11, extract 25 of 29, faster or slower 6 of 10, growth 28 of
+  37, margin change 10 of 12, margin direction 11 of 13, margin level 9 of 9, mover 4 of 4, table
+  0 of 2, cannot be determined 26 of 29. Of 148 samples failing the arithmetic check, 15 failed
+  only on a chained expression ("= 1,017 / 6,659 ≈ 15.27%" read as the result 1,017), the rest
+  on a real slip. B: 144 of 200 kept, 47 at the cap (median cap 266 tokens). Math: the 0.8B under
+  "Solve this step by step" hit the 320-token cap on 709 of 814 problems; 80 right (GSM8K 64 of
+  300, MATH 16 of 514). Fixes forward in EXP-0071. Full pool built 2026-11-27 on all 26,527
+  usable sheets (698 seconds; the trial pool kept as `pool_trial.jsonl`): 24,997 items of 30,000
+  wanted, from 9,582 releases of 1,352 companies; short of quota: table 315 of 2,100, margin
+  level 1,644 of 2,100, margin change 2,330 and margin direction 2,338 of 3,000, co-movement 1,879
+  of 2,400, faster or slower 2,471 of 3,000, mover 1,420 of 1,800; 14,671 distinct phrasing
+  skeletons; excerpts 286 tokens median.
+- **EXP-0071** — S1 data factory v2.1: three fixes forward of EXP-0070 after its pilots.
+  `exp0071_s1f_factory_v21.py`. An engineering step with no hypothesis. (1) Arithmetic check: a
+  written number that starts a further expression is not read as a result, and "≈" marks a result
+  as "=" and "\approx" do. (2) Derived items: the teacher gets the method after BRIEF ("the
+  N-month total minus the latest three months gives the earlier period"; EXP-0050's hint, which
+  took the 4B from 10 to 82 on R1.7); the student never sees it. (3) Math: GSM8K only, "Solve this
+  briefly, in a few short lines, then give the final number in \boxed{}.", the cap the full room
+  in 640 tokens (at most 600). Everything else is EXP-0070's; outputs to `s1/exp0071/`. `check`
+  passes. Pilots 2026-11-26 23:49 to 2026-11-27 00:01, the same 200 items and seeds as EXP-0070's:
+  4,899 samples an hour; 413 of 800 samples kept (381 before), 168 of 200 items with a kept chain
+  (156), derived 7 of 11 (1), table 0 of 2; kept sequences 479 tokens median (90th percentile
+  546). Math: 143 of the 300 GSM8K problems right with the 0.8B's greedy answer (64 before), 9 at
+  the cap (212 before); 10,404 problems an hour.
 
 ## Entries
+
+## EXP-0059 — S1 main experiment: distilling financial analysis into the 0.8B (draft, 2026-11-26)
+
+### PRE-REGISTRATION
+- **Status:** draft, 2026-11-27, not approved. Only `fetch` has run (GSM8K's training split;
+  frozen). The owner decided on 2026-11-27 ("A", all three choices as recommended): R1.7 stays
+  in-family as R v1 builds it, against EXP-0057's rule; GSM8K's full training split is
+  downloaded; the work so far is committed and pushed. R v1's test side was built on 2026-11-27
+  by EXP-0053 (counts in its record; Claude saw counts only). Also done: EXP-0070's and
+  EXP-0071's pilots (numbers below) and EXP-0070's full pool. `exp0059_s1f_main.py` is written,
+  and its `check` passes: every pool item's written gold grades right, and 7,473 GSM8K problems
+  have a numeric answer. Generation at scale (chains, math, B answers) is the first step after
+  approval and push, as EXP-0056 requires. The design comes from the approved re-plan
+  (`research/design/s1_finance_distillation_replan.md`) with the owner's decisions of 2026-11-26
+  (changelog: 640-token sequences, 2,000 and 8,000 examples, the plain 4B as teacher, 20%
+  general data).
+- **Claim under test:** a 0.8B trained on short, verified analysis chains written by a 4B, over
+  many kinds of questions about earnings releases, learns reasoning rather than an answer format,
+  carries it to two R families it never practised, and reaches a model 2.5 times its size. These
+  are the re-plan's HF1 to HF3 (§4.3). HF4 (on-policy distillation) is not tested here; it gets
+  its own pre-registration if time allows (EXP-0051 found room for it: pass@8 20 points above
+  greedy on the open templates).
+- **Why the answer is not obvious:** C and K2, trained on one answer layout, scored under 1 on R
+  (EXP-0050). Variety of tasks rather than volume prevents that (stream 14a), and a close teacher
+  helps below 3B (14b), but nothing is published for finance below 3.8B (14c). The training
+  excerpts are short (about 300 tokens) and R's are long (median about 680), so a gain may not
+  carry to R's inputs at all.
+- **Arms** (every student starts from the released Qwen3.5-0.8B, revision `2fc06364…`; one
+  training seed, 1):
+
+  | Arm | What |
+  |---|---|
+  | P0 | The released 0.8B, no training |
+  | P2B | The released Qwen3.5-2B (mlx-community 4-bit, `93760be4…`), no training |
+  | T | The 4B (mlx-community 4-bit, `32f3e8ec…`), the teacher, no calculator |
+  | F1 | Answers only: F2-8k's factory items, each with its gold answer written in the item's format, no chain |
+  | F2-2k | Chains, 2,000 factory examples |
+  | F2-8k | Chains, 8,000 factory examples (F2-2k's 2,000 among them) |
+  | +avg | F2-8k averaged with P0 at a = 0.5; development only (EXP-0051, rule 1) |
+
+  Every trained arm also gets general examples equal to a quarter of its factory examples (20% of
+  its total): half math word problems with the released 0.8B's own right answer, half B training
+  items with the 4B's standard right answer. F1 and F2-8k use the same factory items and the same
+  general examples, so they differ only in the chain.
+- **Training data** (EXP-0070, fixed before any training run):
+  1. **Items.** EXP-0070's pool: 24,997 items (30,000 wanted; the sheets ran out) from 9,582
+     releases of 1,352 training companies accepted before 2026-06-30 (EXP-0052, EXP-0054), made by
+     EXP-0055's item maker with 300-token excerpts; diluted EPS and pre-tax income appear in no
+     item. Several kinds are short of quota (whole-release table 315 of 2,100, margin level 1,644
+     of 2,100). The pool's rank order runs ahead on easy kinds (its first 10,000 hold 17% growth
+     items against a 10% quota), so items are taken in a balanced order: at each step the next
+     item, in rank order, of the kind furthest behind its quota share (`balanced` in the script).
+  2. **Chains.** The 4B with EXP-0071's teacher instruction (EXP-0070's BRIEF, and the
+     derived-period method for derived items) on the first 11,000 items in balanced order, 4
+     samples per item, kept by EXP-0071's checks (EXP-0056's four, with its arithmetic fix) and the
+     640-token fit. One chain per item (the first kept sample), so every example is a distinct
+     item. The items with a kept chain are put in balanced order again; F2-8k takes the first
+     8,000, F2-2k the first 2,000 of those. Pilot (200 items): 84% of
+     items have a kept chain; kept sequences 479 tokens median; table items almost never have one
+     (0 of 2), so F1 and F2 hold almost no table items.
+  3. **F1's targets.** The item's gold written in its format (\boxed{}, an "Answer:" line, JSON,
+     one sentence, or one line per condition), numbers at the precision the tolerance implies.
+  4. **General.** Math: the first 2,400 problems of GSM8K's training split in EXP-0070's seeded
+     order. The split has 7,473 problems, every one with a numeric answer; it is Hugging Face
+     `openai/gsm8k` revision `740312ad…`, MIT licence. `fetch` downloaded it on 2026-11-27 with
+     the owner's approval to `external/gsm8k/`: parquet sha256 `ea82612e…`, jsonl `6043ef64…`.
+     Each problem gets the released 0.8B's greedy answer under EXP-0071's brief instruction,
+     kept if right. F1 and F2-8k take the first 1,000 problems with a kept answer, F2-2k the
+     first 250 of them (pilot: 143 of 300 right, so 1,000 need about 2,100 problems). B: 1,500 of
+     EXP-0014's B training items in EXP-0070's seeded order answered by the 4B; the first 1,000
+     kept for F1 and F2-8k, the first 250 for F2-2k (pilot: 144 of 200 kept).
+- **Training:** EXP-0014's setup. All 24 blocks trained, embeddings frozen; AdamW, learning rate
+  1e-5, linear warm-up over 50 steps, cosine decay to the last step; batch 1; gradient
+  checkpointing; loss on the response only; one epoch; examples shuffled once with seed 1; 12 GiB
+  memory budget; one checkpoint at the end. About 30 hours for the three arms (EXP-0058: 405
+  sequences an hour at 640 tokens, 680 at 512; pilot sequences 479 tokens median).
+- **Development step** (before any test item is run): every trained arm and +avg on EXP-0050's 450
+  development R base items and EXP-0007's 600 B development items, set up as on test. Used only to
+  pick the student for HF3 (the higher development R score of F2-2k and F2-8k) and to report
+  +avg. A trained arm more than 10 points under P0 on B development is reported, and still tested.
+- **Test items** (test companies' releases accepted after 2026-06-30; the program reads them,
+  Claude sees counts only):
+  1. **R v1 base items:** a fresh seeded draw of 167 per template (1,503 in all), at most one item
+     per company per template. In-family templates: R1.1, R1.2, R1.3, R1.6, R1.7, R1.8, R1.9.
+     Held out of the factory: R1.4 (EPS against net income) and R1.5 (tax line). R1.7 is R v1's
+     wording, which EXP-0057's rule did not keep; the owner kept it in-family on 2026-11-27. Every
+     plain model is near its floor there (EXP-0050: 4B 10, B0 2), and the factory's derived items
+     are where a student could learn what to compute.
+  2. **Twins:** the flip and hold twins of every drawn base item that has them, for P0 and F2-8k
+     only.
+  3. **Retention:** B, EXP-0014's 3,000-item test draw; section A, EXP-0014's 300 items (100 each
+     of FinQA, CFA-Easy and FinanceIQ).
+- **Inference:** for every arm, EXP-0050's B0 setup on R: its standard instruction ("Reason
+  briefly, then give the final answer in \boxed{}."), thinking off, greedy, 512 tokens, a forced
+  answer at the cap, no calculator. B and section A as P0 in EXP-0014.
+- **Grading and statistics:** EXP-0050's `grade_r` and R score (the mean over templates of
+  balanced accuracy for labels, accuracy otherwise). In-family score: the mean over the seven
+  in-family templates; held-out score: the mean over R1.4 and R1.5. 95% intervals by company
+  bootstrap, 10,000 resamples, seed 20261124, the same weights for every arm, so differences are
+  paired.
+- **Hypotheses and decision rules:**
+  - **HF1, reasoning beyond format:** F2-8k minus F1 on the in-family score; supported if the
+    interval's lower bound is above 0.
+  - **HF2, a framework, not a template:** supported if (a) F2-8k minus P0 on the held-out score
+    has its lower bound above 0, (b) that held-out gain is at least half of F2-8k's in-family gain
+    over P0 (point estimates), and (c) F2-8k's flip rate (flip twins answered right, among those
+    whose base item the arm answered right) and hold stability (hold twins answered as the base
+    item) are each no more than 5 points worse than P0's (point estimates, as EXP-0050).
+  - **HF3, better than its size:** the student chosen on development minus P2B on the R score
+    (all nine templates); supported if the lower bound is above −3 points.
+  - **Descriptive:** F2-8k against F2-2k; each arm's B and section A accuracy against P0; T minus
+    the best student; scores by template; how often each arm's box holds the right kind of
+    answer; generated tokens; +avg on development; HF1's difference on the six in-family
+    templates other than R1.7, which is kept against EXP-0057's rule.
+- **Contamination label of the result:** clean. Test companies, releases accepted after
+  2026-06-30; the released checkpoints predate that date; students are trained only on
+  pre-cutoff releases of training companies, and the teacher sees only those.
+- **Not in scope:** on-policy distillation (F3), a second seed, the 9B teacher, thinking on,
+  hints, LoRA, any test item in training or development.
+- **Estimated compute:** generation about 10 hours (chains 11,000 items at 4 samples, 4,900
+  samples an hour, about 9; B 1,500 items; math 2,400 problems, about 15 minutes); training
+  about 30; development about 4; test about 28 (R base items 1,503 for six arms about 13, twins
+  about 7, B and section A about 6, scoring and bootstrap under 1). One MLX job at a time.
 
 ## EXP-0051 — S1 re-plan diagnostics: weight averaging and the 0.8B's sampling ceiling (2026-11-26)
 

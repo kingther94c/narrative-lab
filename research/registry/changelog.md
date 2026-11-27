@@ -2,6 +2,35 @@
 
 Newest first. What changed, why, on what evidence, and what it affects.
 
+## 2026-11-27 — S1: R1.7 kept in-family; full GSM8K training split for general data; main experiment drafted
+
+- **What:**
+  1. EXP-0057 ran. By its rule R v1's wording was not kept (the better of 4B and 4I scored 14 on
+     R1.7 against a bar of 50). The owner decided on 2026-11-27 ("A", all three choices as
+     recommended) to keep R v1 as built: R1.7 is tested and counted in-family, a recorded
+     deviation from EXP-0057's rule. EXP-0059 also reports HF1 without R1.7, descriptively. R v1's
+     test side was then built (EXP-0053; 16,193 base items, only R1.8 smaller than v0; counts only).
+  2. GSM8K's full training split (7,473 problems, Hugging Face `openai/gsm8k`, MIT licence, 2.31
+     MB) was downloaded with the owner's approval to the drive's `external/gsm8k/`, never into
+     git. This replaces the "no download" of decision 3 of 2026-11-26. Correction: the earlier
+     report that the full split was on disk was wrong; learning_ai's cache holds 300 of its
+     problems.
+  3. Factory v2 (EXP-0070) and v2.1 (EXP-0071) were built and piloted, and the full pool built
+     (24,997 items of 30,000 wanted).
+  4. The main experiment (EXP-0059) was drafted, pre-registration and script; it is not yet
+     approved.
+  5. EXP-0052's fetch finished, and EXP-0054's sheets were resumed (39,487).
+  6. Literature streams 13a to 14c were merged into the matrix and the gaps.
+  7. EXP-0070 to EXP-0079 are held for S1 (D5).
+- **Why:** in EXP-0057 the 4B's R1.7 failures are a wrong derivation and the token cap, not the
+  escape clause; with the method given it scores 82, so no rewording is likely to move it. R1.7
+  measures whether a model sees what to compute, which the factory's derived items teach. On
+  GSM8K, the 0.8B answered 143 of the 300 problems on disk right, and 1,000 kept answers need
+  about 2,100 problems.
+- **Evidence:** `s1/exp0057/scores.json`; `s1/exp0071/math/pilot/`; `external/gsm8k/manifest.json`.
+- **Assets affected:** experiment registry (EXP-0052, EXP-0053, EXP-0054, EXP-0057, EXP-0059,
+  EXP-0070, EXP-0071, the block note); `exp0059_s1f_main.py`; literature matrix and gaps; roadmap.
+
 ## 2026-11-26 — S1 factory: shorter sequences, smaller sizes, plain 4B teacher (owner-approved)
 
 - **What:** the owner approved three changes to the re-plan on 2026-11-26 ("全安推荐", meaning
