@@ -644,21 +644,22 @@ can be regenerated.
 
 ## Entries
 
-## EXP-0059 — S1 main experiment: distilling financial analysis into the 0.8B (draft, 2026-11-26)
+## EXP-0059 — S1 main experiment: distilling financial analysis into the 0.8B (2026-11-27)
 
 ### PRE-REGISTRATION
-- **Status:** draft, 2026-11-27, not approved. Only `fetch` has run (GSM8K's training split;
-  frozen). The owner decided on 2026-11-27 ("A", all three choices as recommended): R1.7 stays
-  in-family as R v1 builds it, against EXP-0057's rule; GSM8K's full training split is
-  downloaded; the work so far is committed and pushed. R v1's test side was built on 2026-11-27
-  by EXP-0053 (counts in its record; Claude saw counts only). Also done: EXP-0070's and
-  EXP-0071's pilots (numbers below) and EXP-0070's full pool. `exp0059_s1f_main.py` is written,
-  and its `check` passes: every pool item's written gold grades right, and 7,473 GSM8K problems
-  have a numeric answer. Generation at scale (chains, math, B answers) is the first step after
-  approval and push, as EXP-0056 requires. The design comes from the approved re-plan
+- **Status:** approved by the owner 2026-11-27 ("a": approve as written, commit, push, run).
+  Before the push only `fetch` (GSM8K's training split; frozen) and `devdraw` (a smoke test, no
+  model; 446 of 450 counterparts) had run. The owner decided on 2026-11-27 ("A", all three choices
+  as recommended): R1.7 stays in-family as R v1 builds it, against EXP-0057's rule; GSM8K's full
+  training split is downloaded; the work so far is committed and pushed. R v1's test side was
+  built on 2026-11-27 by EXP-0053 (counts in its record; Claude saw counts only). Also done:
+  EXP-0070's and EXP-0071's pilots (numbers below) and EXP-0070's full pool. `exp0059_s1f_main.py`
+  is written, and its `check` passes: every pool item's written gold grades right, and 7,473 GSM8K
+  problems have a numeric answer. Generation at scale (chains, math, B answers) is the first step
+  after approval and push, as EXP-0056 requires. The design comes from the approved re-plan
   (`research/design/s1_finance_distillation_replan.md`) with the owner's decisions of 2026-11-26
-  (changelog: 640-token sequences, 2,000 and 8,000 examples, the plain 4B as teacher, 20%
-  general data).
+  (changelog: 640-token sequences, 2,000 and 8,000 examples, the plain 4B as teacher, 20% general
+  data).
 - **Claim under test:** a 0.8B trained on short, verified analysis chains written by a 4B, over
   many kinds of questions about earnings releases, learns reasoning rather than an answer format,
   carries it to two R families it never practised, and reaches a model 2.5 times its size. These
@@ -719,10 +720,11 @@ can be regenerated.
   checkpointing; loss on the response only; one epoch; examples shuffled once with seed 1; 12 GiB
   memory budget; one checkpoint at the end. About 30 hours for the three arms (EXP-0058: 405
   sequences an hour at 640 tokens, 680 at 512; pilot sequences 479 tokens median).
-- **Development step** (before any test item is run): every trained arm and +avg on EXP-0050's 450
-  development R base items and EXP-0007's 600 B development items, set up as on test. Used only to
-  pick the student for HF3 (the higher development R score of F2-2k and F2-8k) and to report
-  +avg. A trained arm more than 10 points under P0 on B development is reported, and still tested.
+- **Development step** (before any test item is run): every trained arm and +avg on the v1
+  counterparts of EXP-0050's 450 development R base items (446: 4 R1.8 items fall to v1's margin
+  rule) and EXP-0007's 600 B development items, set up as on test. Used only to pick the student
+  for HF3 (the higher development R score of F2-2k and F2-8k) and to report +avg. A trained arm
+  more than 10 points under P0 on B development is reported, and still tested.
 - **Test items** (test companies' releases accepted after 2026-06-30; the program reads them,
   Claude sees counts only):
   1. **R v1 base items:** a fresh seeded draw of 167 per template (1,503 in all), at most one item
